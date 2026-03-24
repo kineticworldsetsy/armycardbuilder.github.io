@@ -737,6 +737,27 @@
   <div id="printSheetArea" style="display:none;"></div>
 
   <script>
+      function refreshAfterFontsLoad() {
+  if (!document.fonts) {
+    setTimeout(() => {
+      renderFantasyPreview();
+      renderSciFiPreview();
+    }, 300);
+    return;
+  }
+
+  Promise.all([
+    document.fonts.ready,
+    document.fonts.load('32px "Frakturika"'),
+    document.fonts.load('700 32px "EB Garamond"')
+  ]).then(() => {
+    renderFantasyPreview();
+    renderSciFiPreview();
+  }).catch(() => {
+    renderFantasyPreview();
+    renderSciFiPreview();
+  });
+}
     (function () {
       function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight = "700", fontStyle = "normal") {
         let size = startSize;
@@ -2124,8 +2145,13 @@
       /* =========================
          Initial load
       ========================= */
-      loadFantasyStateIntoForm();
-      loadSciFiStateIntoForm();
+    loadFantasyStateIntoForm();
+loadSciFiStateIntoForm();
+refreshAfterFontsLoad();
+
+window.addEventListener("load", () => {
+  refreshAfterFontsLoad();
+});
     })();
   </script>
 </div>
