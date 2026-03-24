@@ -8,110 +8,246 @@
 </head>
 <body style="background-color:#ECECEC;">
     
-    <div id="carcosa-card-builder">
+    <div id="army-card-suite">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&display=swap');
 
     @font-face {
       font-family: 'Frakturika';
-      src: url('./FRAKTURI.ttf') format('truetype');
+      src: url('/wp-content/uploads/fonts/Frakturika.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
     }
 
-    #carcosa-card-builder {
+    #army-card-suite {
+      --page-bg: #ececec;
+      --fantasy-panel: #f7f7f4;
+      --fantasy-border: #d9d9d1;
+      --fantasy-accent: #dce97a;
+      --fantasy-dark: #222;
+      --fantasy-soft: #ecece7;
+
+      --sf-purple: #583F8C;
+      --sf-mint: #9ADAC5;
+      --sf-mint-light: #eaf8f3;
+      --sf-panel: #f8fffc;
+      --sf-ink: #2d2350;
+      --sf-soft: #ece8f7;
+
       font-family: Arial, Helvetica, sans-serif;
       color: #222;
-      max-width: 1240px;
+      background: var(--page-bg);
+      padding: 18px;
+      border-radius: 16px;
+      max-width: 1380px;
       margin: 0 auto;
       box-sizing: border-box;
     }
 
-    #carcosa-card-builder *,
-    #carcosa-card-builder *::before,
-    #carcosa-card-builder *::after {
+    #army-card-suite *,
+    #army-card-suite *::before,
+    #army-card-suite *::after {
       box-sizing: border-box;
     }
 
-    #carcosa-card-builder .builder-wrap {
+    #army-card-suite .mode-tabs,
+    #army-card-suite .unit-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    #army-card-suite .mode-tab,
+    #army-card-suite .unit-tab,
+    #army-card-suite .small-btn,
+    #army-card-suite .action-btn {
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    #army-card-suite .mode-tab {
+      padding: 12px 16px;
+      background: #ddd;
+      color: #222;
+    }
+
+    #army-card-suite .mode-tab.active {
+      background: #222;
+      color: #fff;
+    }
+
+    #army-card-suite .suite-page {
+      display: none;
+    }
+
+    #army-card-suite .suite-page.active {
+      display: block;
+    }
+
+    #army-card-suite .builder-wrap {
       display: grid;
-      grid-template-columns: 430px 1fr;
+      grid-template-columns: 460px 1fr;
       gap: 24px;
       align-items: start;
     }
 
-    #carcosa-card-builder .panel {
-      background: #f7f7f4;
-      border: 1px solid #d9d9d1;
-      border-radius: 10px;
+    #army-card-suite .panel {
+      border-radius: 14px;
       padding: 18px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+      box-shadow: 0 4px 14px rgba(0,0,0,.06);
     }
 
-    #carcosa-card-builder h2,
-    #carcosa-card-builder h3 {
+    #army-card-suite .fantasy-page .panel {
+      background: var(--fantasy-panel);
+      border: 1px solid var(--fantasy-border);
+    }
+
+    #army-card-suite .scifi-page .panel {
+      background: var(--sf-panel);
+      border: 2px solid rgba(88, 63, 140, 0.25);
+    }
+
+    #army-card-suite h2,
+    #army-card-suite h3 {
       margin: 0 0 14px 0;
       line-height: 1.2;
     }
 
-    #carcosa-card-builder .form-grid {
+    #army-card-suite .fantasy-page h2,
+    #army-card-suite .fantasy-page h3 {
+      color: #222;
+    }
+
+    #army-card-suite .scifi-page h2,
+    #army-card-suite .scifi-page h3 {
+      color: var(--sf-purple);
+    }
+
+    #army-card-suite .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    #carcosa-card-builder .full {
+    #army-card-suite .full {
       grid-column: 1 / -1;
     }
 
-    #carcosa-card-builder label {
+    #army-card-suite label {
       display: block;
       font-size: 13px;
       font-weight: 700;
       margin-bottom: 5px;
+    }
+
+    #army-card-suite .fantasy-page label {
       color: #333;
     }
 
-    #carcosa-card-builder input[type="text"],
-    #carcosa-card-builder input[type="number"],
-    #carcosa-card-builder select,
-    #carcosa-card-builder textarea {
+    #army-card-suite .scifi-page label {
+      color: var(--sf-purple);
+    }
+
+    #army-card-suite input[type="text"],
+    #army-card-suite input[type="number"],
+    #army-card-suite select,
+    #army-card-suite textarea {
       width: 100%;
       padding: 10px 12px;
-      border: 1px solid #bfc3bc;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 14px;
       background: #fff;
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    #carcosa-card-builder textarea {
+    #army-card-suite .fantasy-page input[type="text"],
+    #army-card-suite .fantasy-page input[type="number"],
+    #army-card-suite .fantasy-page select,
+    #army-card-suite .fantasy-page textarea {
+      border: 1px solid #bfc3bc;
+    }
+
+    #army-card-suite .scifi-page input[type="text"],
+    #army-card-suite .scifi-page input[type="number"],
+    #army-card-suite .scifi-page select,
+    #army-card-suite .scifi-page textarea {
+      border: 1px solid rgba(88, 63, 140, 0.25);
+      color: var(--sf-ink);
+    }
+
+    #army-card-suite textarea {
       resize: vertical;
       min-height: 58px;
       line-height: 1.35;
     }
 
-    #carcosa-card-builder .keywords-box {
-      border: 1px solid #d6d6cf;
-      border-radius: 10px;
+    #army-card-suite .unit-tab {
+      padding: 10px 14px;
+      background: #ddd;
+      color: #222;
+    }
+
+    #army-card-suite .fantasy-page .unit-tab.active {
+      background: var(--fantasy-accent);
+      color: #111;
+    }
+
+    #army-card-suite .fantasy-page .small-btn {
+      background: #222;
+      color: #fff;
+      padding: 10px 12px;
+    }
+
+    #army-card-suite .fantasy-page .small-btn.add {
+      background: var(--fantasy-accent);
+      color: #111;
+    }
+
+    #army-card-suite .small-btn.danger {
+      background: #7d2e2e;
+      color: #fff;
+    }
+
+    #army-card-suite .keywords-box {
+      border-radius: 12px;
       padding: 12px;
       background: #fff;
     }
 
-    #carcosa-card-builder .keyword-block {
-      border: 1px solid #e1e1d9;
-      border-radius: 10px;
+    #army-card-suite .fantasy-page .keywords-box {
+      border: 1px solid #d6d6cf;
+    }
+
+    #army-card-suite .scifi-page .keywords-box {
+      border: 1px solid rgba(88, 63, 140, 0.18);
+    }
+
+    #army-card-suite .keyword-block {
+      border-radius: 12px;
       padding: 10px;
-      background: #fbfbf8;
       margin-bottom: 10px;
     }
 
-    #carcosa-card-builder .keyword-block:last-child {
+    #army-card-suite .fantasy-page .keyword-block {
+      border: 1px solid #e1e1d9;
+      background: #fbfbf8;
+    }
+
+    #army-card-suite .scifi-page .keyword-block {
+      border: 1px solid rgba(88, 63, 140, 0.12);
+      background: var(--sf-mint-light);
+    }
+
+    #army-card-suite .keyword-block:last-child {
       margin-bottom: 0;
     }
 
-    #carcosa-card-builder .keyword-top {
+    #army-card-suite .keyword-top {
       display: grid;
       grid-template-columns: 1fr auto auto;
       gap: 8px;
@@ -119,35 +255,44 @@
       margin-bottom: 8px;
     }
 
-    #carcosa-card-builder .kw-btn {
+    #army-card-suite .kw-btn {
       border: none;
-      border-radius: 8px;
-      width: 38px;
-      height: 38px;
+      border-radius: 10px;
+      width: 40px;
+      height: 40px;
       font-size: 22px;
       line-height: 1;
       cursor: pointer;
       font-weight: 700;
     }
 
-    #carcosa-card-builder .kw-add {
-      background: #dce97a;
-      color: #1b1b1b;
+    #army-card-suite .fantasy-page .kw-add {
+      background: var(--fantasy-accent);
+      color: #111;
     }
 
-    #carcosa-card-builder .kw-remove {
+    #army-card-suite .fantasy-page .kw-remove {
       background: #2c2c2c;
       color: #fff;
     }
 
-    #carcosa-card-builder .stat-list {
+    #army-card-suite .scifi-page .kw-add {
+      background: var(--sf-purple);
+      color: #fff;
+    }
+
+    #army-card-suite .scifi-page .kw-remove {
+      background: #2f244e;
+      color: #fff;
+    }
+
+    #army-card-suite .stat-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    #carcosa-card-builder .stat-item {
-      border: 1px solid #d8d8d1;
+    #army-card-suite .stat-item {
       border-radius: 10px;
       background: #fff;
       padding: 10px;
@@ -157,16 +302,22 @@
       align-items: start;
     }
 
-    #carcosa-card-builder .stat-item.dragging {
+    #army-card-suite .fantasy-page .stat-item {
+      border: 1px solid #d8d8d1;
+    }
+
+    #army-card-suite .scifi-page .stat-item {
+      border: 1px solid rgba(88, 63, 140, 0.18);
+    }
+
+    #army-card-suite .stat-item.dragging {
       opacity: 0.45;
     }
 
-    #carcosa-card-builder .drag-handle {
+    #army-card-suite .drag-handle {
       width: 38px;
       height: 38px;
-      border: 1px solid #ccc;
       border-radius: 8px;
-      background: #f1f1ec;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -174,93 +325,150 @@
       user-select: none;
       font-size: 18px;
       line-height: 1;
+    }
+
+    #army-card-suite .fantasy-page .drag-handle {
+      border: 1px solid #ccc;
+      background: #f1f1ec;
       color: #444;
     }
 
-    #carcosa-card-builder .drag-handle:active {
-      cursor: grabbing;
+    #army-card-suite .scifi-page .drag-handle {
+      border: 1px solid rgba(88, 63, 140, 0.2);
+      background: #f1eef9;
+      color: var(--sf-purple);
     }
 
-    #carcosa-card-builder .stat-item.drag-over {
+    #army-card-suite .stat-item.drag-over {
       outline: 2px dashed #b8c84c;
       outline-offset: 2px;
     }
 
-    #carcosa-card-builder .stat-fields {
+    #army-card-suite .scifi-page .stat-item.drag-over {
+      outline-color: var(--sf-purple);
+    }
+
+    #army-card-suite .stat-fields {
       display: grid;
       grid-template-columns: 1fr 120px;
       gap: 10px;
       align-items: end;
     }
 
-    #carcosa-card-builder .stat-note {
+    #army-card-suite .stat-note {
       margin-top: 6px;
       font-size: 12px;
       color: #666;
     }
 
-    #carcosa-card-builder .actions {
+    #army-card-suite .scifi-page .stat-note {
+      color: #75689e;
+    }
+
+    #army-card-suite .actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       margin-top: 16px;
     }
 
-    #carcosa-card-builder .actions button {
-      border: none;
-      border-radius: 8px;
+    #army-card-suite .action-btn {
       padding: 11px 16px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
     }
 
-    #carcosa-card-builder .btn-primary {
-      background: #dce97a;
+    #army-card-suite .fantasy-page .primary {
+      background: var(--fantasy-accent);
       color: #111;
     }
 
-    #carcosa-card-builder .btn-dark {
+    #army-card-suite .fantasy-page .dark {
       background: #222;
       color: #fff;
     }
 
-    #carcosa-card-builder .btn-light {
-      background: #ecece7;
+    #army-card-suite .fantasy-page .light {
+      background: var(--fantasy-soft);
       color: #222;
     }
 
-    #carcosa-card-builder .preview-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    #army-card-suite .scifi-page .primary {
+      background: var(--sf-purple);
+      color: #fff;
     }
 
-    #carcosa-card-builder .preview-note {
+    #army-card-suite .scifi-page .accent {
+      background: var(--sf-mint);
+      color: var(--sf-ink);
+    }
+
+    #army-card-suite .scifi-page .light {
+      background: var(--sf-soft);
+      color: var(--sf-purple);
+    }
+
+    #army-card-suite .preview-note {
       font-size: 13px;
+    }
+
+    #army-card-suite .fantasy-page .preview-note {
       color: #555;
     }
 
-    #carcosa-card-builder .canvas-shell {
-      background: #e9e9e3;
-      border: 1px solid #d4d4cc;
-      border-radius: 12px;
+    #army-card-suite .scifi-page .preview-note {
+      color: var(--sf-purple);
+    }
+
+    #army-card-suite .canvas-shell {
+      border-radius: 14px;
       padding: 16px;
       overflow: auto;
     }
 
-    #carcosa-card-builder canvas {
+    #army-card-suite .fantasy-page .canvas-shell {
+      background: #e9e9e3;
+      border: 1px solid #d4d4cc;
+    }
+
+    #army-card-suite .scifi-page .canvas-shell {
+      background: linear-gradient(180deg, #b8eadb 0%, #9adac5 100%);
+      border: 2px solid rgba(88, 63, 140, 0.18);
+    }
+
+    #army-card-suite canvas {
       display: block;
       width: 100%;
       max-width: 840px;
       aspect-ratio: 7 / 5;
       background: #fff;
-      border-radius: 6px;
+      border-radius: 8px;
       box-shadow: 0 8px 24px rgba(0,0,0,.14);
     }
 
-    @media (max-width: 980px) {
-      #carcosa-card-builder .builder-wrap {
+    #army-card-suite .unit-count-wrap {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    #army-card-suite .count-btn {
+      height: 42px;
+      border: none;
+      border-radius: 10px;
+      background: var(--sf-purple);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #army-card-suite .unit-count-wrap input {
+      text-align: center;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1020px) {
+      #army-card-suite .builder-wrap {
         grid-template-columns: 1fr;
       }
     }
@@ -269,11 +477,11 @@
       body * {
         visibility: hidden !important;
       }
-      #carcosa-print-only,
-      #carcosa-print-only * {
+      #fantasy-print-area,
+      #fantasy-print-area * {
         visibility: visible !important;
       }
-      #carcosa-print-only {
+      #fantasy-print-area {
         position: absolute;
         left: 0;
         top: 0;
@@ -281,276 +489,145 @@
     }
   </style>
 
-  <div class="builder-wrap">
-    <div class="panel">
-      <h2>Unit Card Builder</h2>
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-page="fantasyPage">Fantasy Builder</button>
+    <button class="mode-tab" data-page="scifiPage">Sci-Fi Builder</button>
+  </div>
 
-      <div class="form-grid">
-        <div class="full">
-          <label for="unitName">Unit Name</label>
-          <input id="unitName" type="text" value="The Mob of Carcosa" />
-        </div>
-
-        <div class="full">
-          <label for="unitType">Unit Type</label>
-          <select id="unitType">
-            <option>Light Infantry</option>
-            <option>Ranged Infantry</option>
-            <option>Heavy Infantry</option>
-            <option>Monstrous Infantry</option>
-            <option>Light Cavalry</option>
-            <option>Heavy Cavalry</option>
-            <option>Chariot</option>
-            <option>War Wagon</option>
-            <option>Monster</option>
-            <option>Beasts</option>
-            <option>Artillery</option>
-          </select>
-        </div>
-
-        <div class="full">
-          <label>Reorder Stat Fields</label>
-          <div class="stat-list" id="statList"></div>
-        </div>
-
-        <div class="full">
-          <label>Keywords & Reminder Text</label>
-          <div class="keywords-box" id="keywordsBox"></div>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn-primary" id="downloadPngBtn">Download PNG</button>
-        <button class="btn-dark" id="printBtn">Print Card</button>
-        <button class="btn-light" id="resetBtn">Load Example</button>
+  <div id="fantasyPage" class="suite-page fantasy-page active">
+    <div class="panel" style="margin-bottom:16px;">
+      <h3>Fantasy Units</h3>
+      <div class="unit-tabs" id="fantasyUnitTabs"></div>
+      <div class="actions" style="margin-top:0;">
+        <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
+        <button class="small-btn danger" id="fantasyDeleteUnitBtn">Delete Current Unit</button>
       </div>
     </div>
 
-    <div class="panel preview-wrap">
-      <h3>Preview</h3>
-      <div class="preview-note">
-        Card size is rendered at 300 DPI for print: <strong>3.5" × 2.5"</strong> landscape.
+    <div class="builder-wrap">
+      <div class="panel">
+        <h2>Fantasy Army Builder</h2>
+
+        <div class="form-grid">
+          <div class="full">
+            <label for="fantasyUnitName">Unit Name</label>
+            <input id="fantasyUnitName" type="text" />
+          </div>
+
+          <div class="full">
+            <label for="fantasyUnitType">Unit Type</label>
+            <select id="fantasyUnitType">
+              <option>Light Infantry</option>
+              <option>Ranged Infantry</option>
+              <option>Heavy Infantry</option>
+              <option>Monstrous Infantry</option>
+              <option>Light Cavalry</option>
+              <option>Heavy Cavalry</option>
+              <option>Chariot</option>
+              <option>War Wagon</option>
+              <option>Monster</option>
+              <option>Beasts</option>
+              <option>Artillery</option>
+            </select>
+          </div>
+
+          <div class="full">
+            <label>Reorder Stat Fields</label>
+            <div class="stat-list" id="fantasyStatList"></div>
+          </div>
+
+          <div class="full">
+            <label>Keywords & Reminder Text</label>
+            <div class="keywords-box" id="fantasyKeywordsBox"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="action-btn primary" id="fantasyDownloadPngBtn">Download Current PNG</button>
+          <button class="action-btn dark" id="fantasyPrintAllBtn">Print Fantasy Cards</button>
+          <button class="action-btn light" id="fantasyResetUnitBtn">Reset Current Unit</button>
+        </div>
       </div>
-      <div class="canvas-shell">
-        <canvas id="cardCanvas" width="1050" height="750"></canvas>
+
+      <div class="panel">
+        <h3>Preview</h3>
+        <div class="preview-note">
+          Card size is rendered at 300 DPI for print: <strong>3.5" × 2.5"</strong> landscape.
+        </div>
+        <div class="canvas-shell">
+          <canvas id="fantasyCardCanvas" width="1050" height="750"></canvas>
+        </div>
       </div>
     </div>
   </div>
 
-  <div id="carcosa-print-only" style="display:none;"></div>
+  <div id="scifiPage" class="suite-page scifi-page">
+    <div class="builder-wrap">
+      <div class="panel">
+        <h2>Sci-Fi Army Builder</h2>
+
+        <div class="form-grid">
+          <div class="full">
+            <label for="sfUnitName">Unit Name</label>
+            <input id="sfUnitName" type="text" value="DUST RUNNERS" />
+          </div>
+
+          <div class="full">
+            <label for="sfUnitType">Unit Type</label>
+            <select id="sfUnitType">
+              <option>Rabble</option>
+              <option>Light Infantry</option>
+              <option>Heavy Infantry</option>
+              <option>Light Armored Vehicle</option>
+              <option>Heavy Armored Vehicle</option>
+              <option>War Behemoth</option>
+            </select>
+          </div>
+
+          <div class="full">
+            <label>Reorder Stat Fields</label>
+            <div class="stat-list" id="sfStatList"></div>
+          </div>
+
+          <div class="full">
+            <label for="sfUnitCount">Unit Count</label>
+            <div class="unit-count-wrap">
+              <button type="button" class="count-btn" id="sfCountDown">◀</button>
+              <input id="sfUnitCount" type="number" min="1" max="99" value="1" />
+              <button type="button" class="count-btn" id="sfCountUp">▶</button>
+            </div>
+          </div>
+
+          <div class="full">
+            <label>Keywords & Reminder Text</label>
+            <div class="keywords-box" id="sfKeywordsBox"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="action-btn primary" id="sfDownloadPngBtn">Download PNG</button>
+          <button class="action-btn accent" id="sfPrintBtn">Print Card</button>
+          <button class="action-btn light" id="sfResetBtn">Load Example</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Preview</h3>
+        <div class="preview-note">
+          Card size is rendered at 300 DPI for print: <strong>3.5" × 2.5"</strong> landscape.
+        </div>
+        <div class="canvas-shell">
+          <canvas id="sfCardCanvas" width="1050" height="750"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="fantasy-print-area" style="display:none;"></div>
 
   <script>
     (function () {
-      const canvas = document.getElementById("cardCanvas");
-      const ctx = canvas.getContext("2d");
-
-      const els = {
-        unitName: document.getElementById("unitName"),
-        unitType: document.getElementById("unitType"),
-        statList: document.getElementById("statList"),
-        keywordsBox: document.getElementById("keywordsBox"),
-        downloadPngBtn: document.getElementById("downloadPngBtn"),
-        printBtn: document.getElementById("printBtn"),
-        resetBtn: document.getElementById("resetBtn")
-      };
-
-      const statDefinitions = [
-        { key: "speed", label: "Speed", note: "Shown on card and affected by order" },
-        { key: "range", label: "Range", note: "Shown on card and affected by order" },
-        { key: "strikes", label: "Strikes", note: "Shown on card and affected by order" },
-        { key: "courage", label: "Courage", note: "Shown on card and affected by order" },
-        { key: "points", label: "Points", note: "Shown on card and affected by order" },
-        { key: "altPoints", label: "(Points)", note: "Can be rearranged here, but always appears under Points in parentheses" }
-      ];
-
-      let draggedStatItem = null;
-
-      function makeStatItem(def, value = "") {
-        const item = document.createElement("div");
-        item.className = "stat-item";
-        item.dataset.key = def.key;
-        item.draggable = true;
-
-        const handle = document.createElement("div");
-        handle.className = "drag-handle";
-        handle.title = "Drag to reorder";
-        handle.innerHTML = "☰";
-
-        const content = document.createElement("div");
-
-        const fields = document.createElement("div");
-        fields.className = "stat-fields";
-
-        const labelWrap = document.createElement("div");
-        const label = document.createElement("label");
-        label.textContent = def.label;
-        label.style.marginBottom = "0";
-        labelWrap.appendChild(label);
-
-        const inputWrap = document.createElement("div");
-        const input = document.createElement("input");
-        input.type = "number";
-        input.value = value;
-        input.className = "stat-input";
-        input.dataset.key = def.key;
-
-        if (def.key === "range") {
-          input.placeholder = "blank = none";
-        }
-
-        inputWrap.appendChild(input);
-
-        fields.appendChild(labelWrap);
-        fields.appendChild(inputWrap);
-
-        const note = document.createElement("div");
-        note.className = "stat-note";
-        note.textContent = def.note;
-
-        content.appendChild(fields);
-        content.appendChild(note);
-
-        item.appendChild(handle);
-        item.appendChild(content);
-
-        bindStatDragEvents(item);
-        input.addEventListener("input", renderCard);
-        input.addEventListener("change", renderCard);
-
-        return item;
-      }
-
-      function bindStatDragEvents(item) {
-        item.addEventListener("dragstart", () => {
-          draggedStatItem = item;
-          item.classList.add("dragging");
-        });
-
-        item.addEventListener("dragend", () => {
-          item.classList.remove("dragging");
-          draggedStatItem = null;
-          Array.from(els.statList.children).forEach(child => child.classList.remove("drag-over"));
-          renderCard();
-        });
-
-        item.addEventListener("dragover", (e) => {
-          e.preventDefault();
-        });
-
-        item.addEventListener("dragenter", (e) => {
-          e.preventDefault();
-          if (item !== draggedStatItem) item.classList.add("drag-over");
-        });
-
-        item.addEventListener("dragleave", () => {
-          item.classList.remove("drag-over");
-        });
-
-        item.addEventListener("drop", (e) => {
-          e.preventDefault();
-          item.classList.remove("drag-over");
-          if (!draggedStatItem || draggedStatItem === item) return;
-
-          const items = Array.from(els.statList.children);
-          const draggedIndex = items.indexOf(draggedStatItem);
-          const targetIndex = items.indexOf(item);
-
-          if (draggedIndex < targetIndex) {
-            els.statList.insertBefore(draggedStatItem, item.nextSibling);
-          } else {
-            els.statList.insertBefore(draggedStatItem, item);
-          }
-        });
-      }
-
-      function makeKeywordBlock(keywordValue = "", reminderValue = "") {
-        const block = document.createElement("div");
-        block.className = "keyword-block";
-
-        const top = document.createElement("div");
-        top.className = "keyword-top";
-
-        const keywordInput = document.createElement("input");
-        keywordInput.type = "text";
-        keywordInput.placeholder = "Keyword";
-        keywordInput.value = keywordValue;
-        keywordInput.className = "keyword-input";
-
-        const addBtn = document.createElement("button");
-        addBtn.type = "button";
-        addBtn.className = "kw-btn kw-add";
-        addBtn.textContent = "+";
-
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.className = "kw-btn kw-remove";
-        removeBtn.textContent = "−";
-
-        const reminder = document.createElement("textarea");
-        reminder.placeholder = "Reminder text";
-        reminder.value = reminderValue;
-        reminder.className = "keyword-reminder";
-
-        addBtn.addEventListener("click", () => {
-          const newBlock = makeKeywordBlock("", "");
-          block.after(newBlock);
-          bindKeywordEvents(newBlock);
-          renderCard();
-        });
-
-        removeBtn.addEventListener("click", () => {
-          const blocks = els.keywordsBox.querySelectorAll(".keyword-block");
-          if (blocks.length > 1) {
-            block.remove();
-            renderCard();
-          } else {
-            keywordInput.value = "";
-            reminder.value = "";
-            renderCard();
-          }
-        });
-
-        top.appendChild(keywordInput);
-        top.appendChild(addBtn);
-        top.appendChild(removeBtn);
-
-        block.appendChild(top);
-        block.appendChild(reminder);
-
-        return block;
-      }
-
-      function bindKeywordEvents(block) {
-        const keywordInput = block.querySelector(".keyword-input");
-        const reminder = block.querySelector(".keyword-reminder");
-
-        keywordInput.addEventListener("input", renderCard);
-        reminder.addEventListener("input", renderCard);
-      }
-
-      function getKeywordData() {
-        return Array.from(els.keywordsBox.querySelectorAll(".keyword-block"))
-          .map(block => {
-            return {
-              keyword: block.querySelector(".keyword-input").value.trim(),
-              reminder: block.querySelector(".keyword-reminder").value.trim()
-            };
-          })
-          .filter(item => item.keyword || item.reminder);
-      }
-
-      function getStatDataInUiOrder() {
-        return Array.from(els.statList.querySelectorAll(".stat-item")).map(item => {
-          const key = item.dataset.key;
-          const input = item.querySelector(".stat-input");
-          return {
-            key,
-            label: statDefinitions.find(d => d.key === key).label,
-            value: (input.value || "").trim()
-          };
-        });
-      }
-
+      /* ---------- shared helpers ---------- */
       function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight = "700", fontStyle = "normal") {
         let size = startSize;
         while (size > minSize) {
@@ -567,17 +644,14 @@
 
         paragraphs.forEach(paragraph => {
           const words = paragraph.split(/\s+/).filter(Boolean);
-
           if (!words.length) {
             allLines.push("");
             return;
           }
-
           let line = "";
           for (let i = 0; i < words.length; i++) {
             const testLine = line ? line + " " + words[i] : words[i];
             const testWidth = ctx.measureText(testLine).width;
-
             if (testWidth > maxWidth && line) {
               allLines.push(line);
               line = words[i];
@@ -585,16 +659,323 @@
               line = testLine;
             }
           }
-
           if (line) allLines.push(line);
         });
 
         return allLines;
       }
 
-      function drawGrungeBorder(ctx, x, y, w, h) {
-        ctx.save();
+      function roughRect(ctx, x, y, w, h, jitter, step) {
+        ctx.beginPath();
+        roughLine(ctx, x, y, x + w, y, jitter, step);
+        roughLine(ctx, x + w, y, x + w, y + h, jitter, step);
+        roughLine(ctx, x + w, y + h, x, y + h, jitter, step);
+        roughLine(ctx, x, y + h, x, y, jitter, step);
+        ctx.stroke();
+      }
 
+      function roughLine(ctx, x1, y1, x2, y2, jitter, step) {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const segments = Math.max(2, Math.floor(dist / step));
+        for (let i = 0; i <= segments; i++) {
+          const t = i / segments;
+          const x = x1 + dx * t + (Math.random() - 0.5) * jitter;
+          const y = y1 + dy * t + (Math.random() - 0.5) * jitter;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+      }
+
+      function drawBlob(ctx, x, y, w, h) {
+        ctx.beginPath();
+        const pts = 10;
+        for (let i = 0; i < pts; i++) {
+          const px = x + (i / (pts - 1)) * w;
+          const py = y + (Math.random() * h);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        for (let i = pts - 1; i >= 0; i--) {
+          const px = x + (i / (pts - 1)) * w;
+          const py = y + h + (Math.random() * h * 0.25);
+          ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function downloadCanvas(canvas, filenameBase) {
+        const link = document.createElement("a");
+        const safeName = (filenameBase || "unit-card")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+        link.download = `${safeName || "unit-card"}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
+      /* ---------- suite page tabs ---------- */
+      document.querySelectorAll("#army-card-suite .mode-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#army-card-suite .mode-tab").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll("#army-card-suite .suite-page").forEach(p => p.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.page).classList.add("active");
+        });
+      });
+
+      /* ---------- fantasy builder ---------- */
+      const fantasyCanvas = document.getElementById("fantasyCardCanvas");
+      const fctx = fantasyCanvas.getContext("2d");
+
+      const fantasyEls = {
+        unitTabs: document.getElementById("fantasyUnitTabs"),
+        addUnitBtn: document.getElementById("fantasyAddUnitBtn"),
+        deleteUnitBtn: document.getElementById("fantasyDeleteUnitBtn"),
+        unitName: document.getElementById("fantasyUnitName"),
+        unitType: document.getElementById("fantasyUnitType"),
+        statList: document.getElementById("fantasyStatList"),
+        keywordsBox: document.getElementById("fantasyKeywordsBox"),
+        downloadBtn: document.getElementById("fantasyDownloadPngBtn"),
+        printAllBtn: document.getElementById("fantasyPrintAllBtn"),
+        resetUnitBtn: document.getElementById("fantasyResetUnitBtn")
+      };
+
+      const fantasyStatDefinitions = [
+        { key: "speed", label: "Speed", note: "Shown on card and affected by order" },
+        { key: "range", label: "Range", note: "Shown on card and affected by order" },
+        { key: "strikes", label: "Strikes", note: "Shown on card and affected by order" },
+        { key: "courage", label: "Courage", note: "Shown on card and affected by order" },
+        { key: "points", label: "Points", note: "Shown on card and affected by order" },
+        { key: "altPoints", label: "(Points)", note: "Can be rearranged here, but always appears under Points" }
+      ];
+
+      function createDefaultFantasyUnit(name = "New Unit") {
+        return {
+          id: "u_" + Math.random().toString(36).slice(2, 9),
+          unitName: name,
+          unitType: "Light Infantry",
+          statOrder: ["speed", "range", "strikes", "courage", "points", "altPoints"],
+          stats: {
+            speed: "8",
+            range: "",
+            strikes: "10",
+            courage: "10",
+            points: "275",
+            altPoints: ""
+          },
+          keywords: [
+            { keyword: "Unruly", reminder: "Does not benefit from Command" }
+          ]
+        };
+      }
+
+      const fantasyState = {
+        units: [createDefaultFantasyUnit("The Mob of Carcosa")],
+        activeUnitId: null
+      };
+      fantasyState.activeUnitId = fantasyState.units[0].id;
+
+      function getActiveFantasyUnit() {
+        return fantasyState.units.find(u => u.id === fantasyState.activeUnitId);
+      }
+
+      function renderFantasyUnitTabs() {
+        fantasyEls.unitTabs.innerHTML = "";
+        fantasyState.units.forEach(unit => {
+          const btn = document.createElement("button");
+          btn.className = "unit-tab" + (unit.id === fantasyState.activeUnitId ? " active" : "");
+          btn.textContent = unit.unitName || "Untitled Unit";
+          btn.addEventListener("click", () => {
+            saveFantasyFormIntoActiveUnit();
+            fantasyState.activeUnitId = unit.id;
+            loadFantasyUnitIntoForm();
+          });
+          fantasyEls.unitTabs.appendChild(btn);
+        });
+      }
+
+      function makeFantasyStatItem(def, value = "") {
+        const item = document.createElement("div");
+        item.className = "stat-item";
+        item.dataset.key = def.key;
+        item.draggable = true;
+
+        const handle = document.createElement("div");
+        handle.className = "drag-handle";
+        handle.innerHTML = "☰";
+        handle.title = "Drag to reorder";
+
+        const content = document.createElement("div");
+        const fields = document.createElement("div");
+        fields.className = "stat-fields";
+
+        const labelWrap = document.createElement("div");
+        const label = document.createElement("label");
+        label.textContent = def.label;
+        label.style.marginBottom = "0";
+        labelWrap.appendChild(label);
+
+        const inputWrap = document.createElement("div");
+        const input = document.createElement("input");
+        input.type = "number";
+        input.className = "stat-input";
+        input.value = value;
+        input.dataset.key = def.key;
+        inputWrap.appendChild(input);
+
+        fields.appendChild(labelWrap);
+        fields.appendChild(inputWrap);
+
+        const note = document.createElement("div");
+        note.className = "stat-note";
+        note.textContent = def.note;
+
+        content.appendChild(fields);
+        content.appendChild(note);
+
+        item.appendChild(handle);
+        item.appendChild(content);
+
+        input.addEventListener("input", () => {
+          saveFantasyFormIntoActiveUnit();
+          renderFantasyPreview();
+          renderFantasyUnitTabs();
+        });
+        input.addEventListener("change", () => {
+          saveFantasyFormIntoActiveUnit();
+          renderFantasyPreview();
+          renderFantasyUnitTabs();
+        });
+
+        bindDragReorder(fantasyEls.statList, item, () => {
+          saveFantasyFormIntoActiveUnit();
+          renderFantasyPreview();
+        });
+
+        return item;
+      }
+
+      function makeFantasyKeywordBlock(keywordValue = "", reminderValue = "") {
+        const block = document.createElement("div");
+        block.className = "keyword-block";
+
+        const top = document.createElement("div");
+        top.className = "keyword-top";
+
+        const keywordInput = document.createElement("input");
+        keywordInput.type = "text";
+        keywordInput.placeholder = "Keyword";
+        keywordInput.className = "keyword-input";
+        keywordInput.value = keywordValue;
+
+        const addBtn = document.createElement("button");
+        addBtn.type = "button";
+        addBtn.className = "kw-btn kw-add";
+        addBtn.textContent = "+";
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "kw-btn kw-remove";
+        removeBtn.textContent = "−";
+
+        const reminder = document.createElement("textarea");
+        reminder.className = "keyword-reminder";
+        reminder.placeholder = "Reminder text";
+        reminder.value = reminderValue;
+
+        addBtn.addEventListener("click", () => {
+          const newBlock = makeFantasyKeywordBlock("", "");
+          block.after(newBlock);
+          bindFantasyKeywordEvents(newBlock);
+          saveFantasyFormIntoActiveUnit();
+          renderFantasyPreview();
+        });
+
+        removeBtn.addEventListener("click", () => {
+          const blocks = fantasyEls.keywordsBox.querySelectorAll(".keyword-block");
+          if (blocks.length > 1) block.remove();
+          else {
+            keywordInput.value = "";
+            reminder.value = "";
+          }
+          saveFantasyFormIntoActiveUnit();
+          renderFantasyPreview();
+        });
+
+        top.appendChild(keywordInput);
+        top.appendChild(addBtn);
+        top.appendChild(removeBtn);
+        block.appendChild(top);
+        block.appendChild(reminder);
+
+        return block;
+      }
+
+      function bindFantasyKeywordEvents(block) {
+        block.querySelector(".keyword-input").addEventListener("input", () => {
+          saveFantasyFormIntoActiveUnit();
+          renderFantasyPreview();
+          renderFantasyUnitTabs();
+        });
+        block.querySelector(".keyword-reminder").addEventListener("input", () => {
+          saveFantasyFormIntoActiveUnit();
+          renderFantasyPreview();
+        });
+      }
+
+      function saveFantasyFormIntoActiveUnit() {
+        const unit = getActiveFantasyUnit();
+        if (!unit) return;
+
+        unit.unitName = fantasyEls.unitName.value.trim() || "Untitled Unit";
+        unit.unitType = fantasyEls.unitType.value;
+
+        unit.statOrder = Array.from(fantasyEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
+        unit.stats = {};
+        Array.from(fantasyEls.statList.querySelectorAll(".stat-item")).forEach(item => {
+          const key = item.dataset.key;
+          const value = item.querySelector(".stat-input").value.trim();
+          unit.stats[key] = value;
+        });
+
+        unit.keywords = Array.from(fantasyEls.keywordsBox.querySelectorAll(".keyword-block")).map(block => ({
+          keyword: block.querySelector(".keyword-input").value.trim(),
+          reminder: block.querySelector(".keyword-reminder").value.trim()
+        })).filter(item => item.keyword || item.reminder);
+      }
+
+      function loadFantasyUnitIntoForm() {
+        const unit = getActiveFantasyUnit();
+        if (!unit) return;
+
+        fantasyEls.unitName.value = unit.unitName;
+        fantasyEls.unitType.value = unit.unitType;
+
+        fantasyEls.statList.innerHTML = "";
+        unit.statOrder.forEach(key => {
+          const def = fantasyStatDefinitions.find(d => d.key === key);
+          fantasyEls.statList.appendChild(makeFantasyStatItem(def, unit.stats[key] || ""));
+        });
+
+        fantasyEls.keywordsBox.innerHTML = "";
+        const kws = unit.keywords.length ? unit.keywords : [{ keyword: "", reminder: "" }];
+        kws.forEach(k => {
+          const block = makeFantasyKeywordBlock(k.keyword, k.reminder);
+          fantasyEls.keywordsBox.appendChild(block);
+          bindFantasyKeywordEvents(block);
+        });
+
+        renderFantasyUnitTabs();
+        renderFantasyPreview();
+      }
+
+      function drawFantasyBorder(ctx, x, y, w, h) {
+        ctx.save();
         ctx.strokeStyle = "#1c1c1c";
         ctx.fillStyle = "#1c1c1c";
         ctx.lineCap = "round";
@@ -622,65 +1003,26 @@
           [x + w - 26, y + 140, 10, 42],
           [x + w - 28, y + 310, 11, 28]
         ];
-
         blotches.forEach(([bx, by, bw, bh]) => drawBlob(ctx, bx, by, bw, bh));
         ctx.restore();
       }
 
-      function roughRect(ctx, x, y, w, h, jitter, step) {
-        ctx.beginPath();
-        roughLine(ctx, x, y, x + w, y, jitter, step);
-        roughLine(ctx, x + w, y, x + w, y + h, jitter, step);
-        roughLine(ctx, x + w, y + h, x, y + h, jitter, step);
-        roughLine(ctx, x, y + h, x, y, jitter, step);
-        ctx.stroke();
-      }
-
-      function roughLine(ctx, x1, y1, x2, y2, jitter, step) {
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const segments = Math.max(2, Math.floor(dist / step));
-
-        for (let i = 0; i <= segments; i++) {
-          const t = i / segments;
-          const x = x1 + dx * t + (Math.random() - 0.5) * jitter;
-          const y = y1 + dy * t + (Math.random() - 0.5) * jitter;
-
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-      }
-
-      function drawBlob(ctx, x, y, w, h) {
-        ctx.beginPath();
-        const pts = 10;
-        for (let i = 0; i < pts; i++) {
-          const px = x + (i / (pts - 1)) * w;
-          const py = y + (Math.random() * h);
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        for (let i = pts - 1; i >= 0; i--) {
-          const px = x + (i / (pts - 1)) * w;
-          const py = y + h + (Math.random() * h * 0.25);
-          ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-        ctx.fill();
-      }
-
-      function renderCard() {
-        const statData = getStatDataInUiOrder();
+      function renderFantasyCardToCanvas(unit, canvas) {
+        const ctx = canvas.getContext("2d");
+        const statData = unit.statOrder.map(key => ({
+          key,
+          label: fantasyStatDefinitions.find(d => d.key === key).label,
+          value: unit.stats[key] || ""
+        }));
         const mainStatOrder = statData.filter(s => s.key !== "altPoints");
         const altPointsEntry = statData.find(s => s.key === "altPoints");
 
         const data = {
-          unitName: (els.unitName.value || "").trim() || "Untitled Unit",
-          unitType: (els.unitType.value || "").trim(),
+          unitName: unit.unitName || "Untitled Unit",
+          unitType: unit.unitType || "",
           stats: mainStatOrder,
           altPoints: altPointsEntry ? altPointsEntry.value : "",
-          keywords: getKeywordData()
+          keywords: unit.keywords || []
         };
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -696,7 +1038,7 @@
           ctx.fillRect(px, py, s, s);
         }
 
-        drawGrungeBorder(ctx, 0, 0, canvas.width, canvas.height);
+        drawFantasyBorder(ctx, 0, 0, canvas.width, canvas.height);
 
         const innerX = 55;
         const innerY = 42;
@@ -792,7 +1134,6 @@
           }
         });
 
-        /* FIXED KEYWORD POSITIONING */
         const kwTop = innerY + 330;
         const kwLeft = innerX + 42;
         const kwWidth = innerW - 84;
@@ -800,9 +1141,7 @@
         let keywordFontSize = 36;
         let reminderFontSize = 22;
 
-        const totalKeywordChars = data.keywords.reduce((sum, item) => {
-          return sum + item.keyword.length + item.reminder.length;
-        }, 0);
+        const totalKeywordChars = data.keywords.reduce((sum, item) => sum + item.keyword.length + item.reminder.length, 0);
 
         if (data.keywords.length >= 3) {
           keywordFontSize = 31;
@@ -822,10 +1161,7 @@
           let totalHeight = 0;
 
           data.keywords.forEach(item => {
-            const block = {
-              keywordLines: [],
-              reminderLines: []
-            };
+            const block = { keywordLines: [], reminderLines: [] };
 
             if (item.keyword) {
               ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
@@ -838,16 +1174,12 @@
             }
 
             let blockHeight = 0;
-            if (block.keywordLines.length) {
-              blockHeight += block.keywordLines.length * (keywordFontSize + 5);
-            }
+            if (block.keywordLines.length) blockHeight += block.keywordLines.length * (keywordFontSize + 5);
             if (block.reminderLines.length) {
               if (block.keywordLines.length) blockHeight += 4;
               blockHeight += block.reminderLines.length * (reminderFontSize + 4);
             }
             blockHeight += 11;
-
-            block.height = blockHeight;
             totalHeight += blockHeight;
             blocks.push(block);
           });
@@ -865,7 +1197,6 @@
         }
 
         let currentY = kwTop;
-
         layout.blocks.forEach(block => {
           if (block.keywordLines.length) {
             ctx.fillStyle = "#202020";
@@ -890,77 +1221,652 @@
         });
       }
 
-      function downloadCanvas() {
-        const link = document.createElement("a");
-        const safeName = (els.unitName.value || "unit-card")
-          .trim()
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-+|-+$/g, "");
-
-        link.download = `${safeName || "unit-card"}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+      function renderFantasyPreview() {
+        saveFantasyFormIntoActiveUnit();
+        const unit = getActiveFantasyUnit();
+        if (unit) renderFantasyCardToCanvas(unit, fantasyCanvas);
       }
 
-      function printCanvas() {
-        const printArea = document.getElementById("carcosa-print-only");
-        const img = new Image();
-        img.src = canvas.toDataURL("image/png");
-        img.style.width = "3.5in";
-        img.style.height = "2.5in";
-        img.style.display = "block";
+      function bindDragReorder(container, item, onEnd) {
+        item.addEventListener("dragstart", () => {
+          container._draggedItem = item;
+          item.classList.add("dragging");
+        });
 
+        item.addEventListener("dragend", () => {
+          item.classList.remove("dragging");
+          container._draggedItem = null;
+          Array.from(container.children).forEach(child => child.classList.remove("drag-over"));
+          onEnd();
+        });
+
+        item.addEventListener("dragover", e => e.preventDefault());
+
+        item.addEventListener("dragenter", e => {
+          e.preventDefault();
+          if (item !== container._draggedItem) item.classList.add("drag-over");
+        });
+
+        item.addEventListener("dragleave", () => item.classList.remove("drag-over"));
+
+        item.addEventListener("drop", e => {
+          e.preventDefault();
+          item.classList.remove("drag-over");
+          const draggedItem = container._draggedItem;
+          if (!draggedItem || draggedItem === item) return;
+
+          const items = Array.from(container.children);
+          const draggedIndex = items.indexOf(draggedItem);
+          const targetIndex = items.indexOf(item);
+
+          if (draggedIndex < targetIndex) container.insertBefore(draggedItem, item.nextSibling);
+          else container.insertBefore(draggedItem, item);
+        });
+      }
+
+      fantasyEls.unitName.addEventListener("input", () => {
+        saveFantasyFormIntoActiveUnit();
+        renderFantasyUnitTabs();
+        renderFantasyPreview();
+      });
+
+      fantasyEls.unitType.addEventListener("change", () => {
+        saveFantasyFormIntoActiveUnit();
+        renderFantasyPreview();
+      });
+
+      fantasyEls.addUnitBtn.addEventListener("click", () => {
+        saveFantasyFormIntoActiveUnit();
+        const newUnit = createDefaultFantasyUnit("New Unit " + (fantasyState.units.length + 1));
+        fantasyState.units.push(newUnit);
+        fantasyState.activeUnitId = newUnit.id;
+        loadFantasyUnitIntoForm();
+      });
+
+      fantasyEls.deleteUnitBtn.addEventListener("click", () => {
+        if (fantasyState.units.length <= 1) return;
+        const idx = fantasyState.units.findIndex(u => u.id === fantasyState.activeUnitId);
+        fantasyState.units.splice(idx, 1);
+        fantasyState.activeUnitId = fantasyState.units[Math.max(0, idx - 1)].id;
+        loadFantasyUnitIntoForm();
+      });
+
+      fantasyEls.resetUnitBtn.addEventListener("click", () => {
+        const unit = getActiveFantasyUnit();
+        const replacement = createDefaultFantasyUnit(unit.unitName || "New Unit");
+        replacement.id = unit.id;
+        fantasyState.units[fantasyState.units.findIndex(u => u.id === unit.id)] = replacement;
+        loadFantasyUnitIntoForm();
+      });
+
+      fantasyEls.downloadBtn.addEventListener("click", () => {
+        saveFantasyFormIntoActiveUnit();
+        const unit = getActiveFantasyUnit();
+        renderFantasyCardToCanvas(unit, fantasyCanvas);
+        downloadCanvas(fantasyCanvas, unit.unitName || "fantasy-unit-card");
+      });
+
+      fantasyEls.printAllBtn.addEventListener("click", () => {
+        saveFantasyFormIntoActiveUnit();
+        const printArea = document.getElementById("fantasy-print-area");
         printArea.innerHTML = "";
         printArea.style.display = "block";
-        printArea.appendChild(img);
+
+        fantasyState.units.forEach((unit, index) => {
+          const tempCanvas = document.createElement("canvas");
+          tempCanvas.width = 1050;
+          tempCanvas.height = 750;
+          renderFantasyCardToCanvas(unit, tempCanvas);
+
+          const img = new Image();
+          img.src = tempCanvas.toDataURL("image/png");
+          img.style.width = "3.5in";
+          img.style.height = "2.5in";
+          img.style.display = "block";
+          img.style.marginBottom = index === fantasyState.units.length - 1 ? "0" : "0.25in";
+          printArea.appendChild(img);
+        });
 
         setTimeout(() => {
           window.print();
           setTimeout(() => {
             printArea.style.display = "none";
-          }, 500);
+          }, 400);
         }, 150);
+      });
+
+      loadFantasyUnitIntoForm();
+
+      /* ---------- sci-fi builder ---------- */
+      const sfCanvas = document.getElementById("sfCardCanvas");
+      const sctx = sfCanvas.getContext("2d");
+
+      const sfEls = {
+        unitName: document.getElementById("sfUnitName"),
+        unitType: document.getElementById("sfUnitType"),
+        statList: document.getElementById("sfStatList"),
+        unitCount: document.getElementById("sfUnitCount"),
+        countDown: document.getElementById("sfCountDown"),
+        countUp: document.getElementById("sfCountUp"),
+        keywordsBox: document.getElementById("sfKeywordsBox"),
+        downloadBtn: document.getElementById("sfDownloadPngBtn"),
+        printBtn: document.getElementById("sfPrintBtn"),
+        resetBtn: document.getElementById("sfResetBtn")
+      };
+
+      const sfStatDefinitions = [
+        { key: "cost", label: "Cost", note: "Shown on card and affected by order" },
+        { key: "altCost", label: "(Cost)", note: "Can be rearranged here, but always appears under Cost" },
+        { key: "range", label: "Range", note: "Shown on card and affected by order" },
+        { key: "move", label: "Move", note: "Shown on card and affected by order" },
+        { key: "combat", label: "Combat", note: "Shown on card and affected by order" },
+        { key: "defense", label: "Defense", note: "Shown on card and affected by order" },
+        { key: "morale", label: "Morale", note: "Shown on card and affected by order" }
+      ];
+
+      const sfState = {
+        unitName: "DUST RUNNERS",
+        unitType: "Light Infantry",
+        unitCount: "1",
+        statOrder: ["cost", "altCost", "range", "move", "combat", "defense", "morale"],
+        stats: {
+          cost: "50",
+          altCost: "40",
+          range: "24",
+          move: "6",
+          combat: "4",
+          defense: "5",
+          morale: "7"
+        },
+        keywords: [
+          { keyword: "SCOUT", reminder: "MAY REDEPLOY AFTER DEPLOYMENT." },
+          { keyword: "SCRAP ARMOR", reminder: "IGNORE THE FIRST FAILED DEFENSE EACH ROUND." }
+        ]
+      };
+
+      function clampSciFiCount() {
+        let value = parseInt(sfEls.unitCount.value || "1", 10);
+        if (isNaN(value)) value = 1;
+        value = Math.max(1, Math.min(99, value));
+        sfEls.unitCount.value = value;
       }
 
-      function populateStats(values) {
-        els.statList.innerHTML = "";
-        statDefinitions.forEach(def => {
-          const item = makeStatItem(def, values[def.key] || "");
-          els.statList.appendChild(item);
+      function saveSciFiForm() {
+        clampSciFiCount();
+        sfState.unitName = sfEls.unitName.value.trim() || "UNTITLED UNIT";
+        sfState.unitType = sfEls.unitType.value;
+        sfState.unitCount = sfEls.unitCount.value.trim() || "1";
+        sfState.statOrder = Array.from(sfEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
+        sfState.stats = {};
+        Array.from(sfEls.statList.querySelectorAll(".stat-item")).forEach(item => {
+          sfState.stats[item.dataset.key] = item.querySelector(".stat-input").value.trim();
+        });
+        sfState.keywords = Array.from(sfEls.keywordsBox.querySelectorAll(".keyword-block")).map(block => ({
+          keyword: block.querySelector(".keyword-input").value.trim(),
+          reminder: block.querySelector(".keyword-reminder").value.trim()
+        })).filter(item => item.keyword || item.reminder);
+      }
+
+      function makeSciFiStatItem(def, value = "") {
+        const item = document.createElement("div");
+        item.className = "stat-item";
+        item.dataset.key = def.key;
+        item.draggable = true;
+
+        const handle = document.createElement("div");
+        handle.className = "drag-handle";
+        handle.innerHTML = "☰";
+
+        const content = document.createElement("div");
+        const fields = document.createElement("div");
+        fields.className = "stat-fields";
+
+        const labelWrap = document.createElement("div");
+        const label = document.createElement("label");
+        label.textContent = def.label;
+        label.style.marginBottom = "0";
+        labelWrap.appendChild(label);
+
+        const inputWrap = document.createElement("div");
+        const input = document.createElement("input");
+        input.type = "number";
+        input.className = "stat-input";
+        input.value = value;
+        inputWrap.appendChild(input);
+
+        fields.appendChild(labelWrap);
+        fields.appendChild(inputWrap);
+
+        const note = document.createElement("div");
+        note.className = "stat-note";
+        note.textContent = def.note;
+
+        content.appendChild(fields);
+        content.appendChild(note);
+
+        item.appendChild(handle);
+        item.appendChild(content);
+
+        input.addEventListener("input", () => {
+          saveSciFiForm();
+          renderSciFiPreview();
+        });
+        input.addEventListener("change", () => {
+          saveSciFiForm();
+          renderSciFiPreview();
+        });
+
+        bindDragReorder(sfEls.statList, item, () => {
+          saveSciFiForm();
+          renderSciFiPreview();
+        });
+
+        return item;
+      }
+
+      function makeSciFiKeywordBlock(keywordValue = "", reminderValue = "") {
+        const block = document.createElement("div");
+        block.className = "keyword-block";
+
+        const top = document.createElement("div");
+        top.className = "keyword-top";
+
+        const keywordInput = document.createElement("input");
+        keywordInput.type = "text";
+        keywordInput.placeholder = "Keyword";
+        keywordInput.className = "keyword-input";
+        keywordInput.value = keywordValue;
+
+        const addBtn = document.createElement("button");
+        addBtn.type = "button";
+        addBtn.className = "kw-btn kw-add";
+        addBtn.textContent = "+";
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "kw-btn kw-remove";
+        removeBtn.textContent = "−";
+
+        const reminder = document.createElement("textarea");
+        reminder.className = "keyword-reminder";
+        reminder.placeholder = "Reminder text";
+        reminder.value = reminderValue;
+
+        addBtn.addEventListener("click", () => {
+          const newBlock = makeSciFiKeywordBlock("", "");
+          block.after(newBlock);
+          bindSciFiKeywordEvents(newBlock);
+          saveSciFiForm();
+          renderSciFiPreview();
+        });
+
+        removeBtn.addEventListener("click", () => {
+          const blocks = sfEls.keywordsBox.querySelectorAll(".keyword-block");
+          if (blocks.length > 1) block.remove();
+          else {
+            keywordInput.value = "";
+            reminder.value = "";
+          }
+          saveSciFiForm();
+          renderSciFiPreview();
+        });
+
+        top.appendChild(keywordInput);
+        top.appendChild(addBtn);
+        top.appendChild(removeBtn);
+        block.appendChild(top);
+        block.appendChild(reminder);
+
+        return block;
+      }
+
+      function bindSciFiKeywordEvents(block) {
+        block.querySelector(".keyword-input").addEventListener("input", () => {
+          saveSciFiForm();
+          renderSciFiPreview();
+        });
+        block.querySelector(".keyword-reminder").addEventListener("input", () => {
+          saveSciFiForm();
+          renderSciFiPreview();
         });
       }
 
-      function loadExample() {
-        els.unitName.value = "The Mob of Carcosa";
-        els.unitType.value = "Light Infantry";
-
-        populateStats({
-          speed: "8",
-          range: "",
-          strikes: "10",
-          courage: "10",
-          points: "275",
-          altPoints: ""
-        });
-
-        els.keywordsBox.innerHTML = "";
-        const block = makeKeywordBlock("Unruly", "Does not benefit from Command");
-        els.keywordsBox.appendChild(block);
-        bindKeywordEvents(block);
-
-        renderCard();
+      function formatSciFiStatValue(key, value) {
+        const raw = String(value || "").trim();
+        if (raw === "") return "—";
+        switch (key) {
+          case "cost": return `${raw}PTS`;
+          case "range": return `${raw}"`;
+          case "move": return `${raw}"`;
+          case "combat": return `${raw}+`;
+          case "defense": return `${raw}+`;
+          case "morale": return raw;
+          default: return raw;
+        }
       }
 
-      els.unitName.addEventListener("input", renderCard);
-      els.unitType.addEventListener("input", renderCard);
-      els.unitType.addEventListener("change", renderCard);
+      function drawSciFiBorder(ctx, x, y, w, h) {
+        ctx.save();
+        ctx.strokeStyle = "#583F8C";
+        ctx.fillStyle = "#583F8C";
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
 
-      els.downloadPngBtn.addEventListener("click", downloadCanvas);
-      els.printBtn.addEventListener("click", printCanvas);
-      els.resetBtn.addEventListener("click", loadExample);
+        ctx.lineWidth = 8;
+        roughRect(ctx, x + 16, y + 16, w - 32, h - 32, 5, 7);
 
-      loadExample();
+        ctx.globalAlpha = 0.45;
+        ctx.lineWidth = 3;
+        roughRect(ctx, x + 28, y + 28, w - 56, h - 56, 7, 8);
+
+        ctx.globalAlpha = 0.9;
+        drawBlob(ctx, x + 18, y + 20, 50, 12);
+        drawBlob(ctx, x + w - 85, y + 20, 52, 12);
+        drawBlob(ctx, x + 20, y + h - 38, 58, 13);
+        drawBlob(ctx, x + w - 95, y + h - 38, 62, 13);
+
+        ctx.globalAlpha = 0.18;
+        ctx.fillRect(x + 46, y + 46, w - 92, 6);
+        ctx.fillRect(x + 46, y + h - 52, w - 92, 6);
+        ctx.restore();
+      }
+
+      function renderSciFiCardToCanvas(canvas) {
+        const ctx = canvas.getContext("2d");
+        saveSciFiForm();
+
+        const statData = sfState.statOrder.map(key => ({
+          key,
+          label: sfStatDefinitions.find(d => d.key === key).label,
+          value: sfState.stats[key] || ""
+        }));
+        const mainStats = statData.filter(s => s.key !== "altCost");
+        const altCostEntry = statData.find(s => s.key === "altCost");
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#F7FFFB";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < 950; i++) {
+          const alpha = Math.random() * 0.03;
+          ctx.fillStyle = `rgba(88,63,140,${alpha})`;
+          const px = Math.random() * canvas.width;
+          const py = Math.random() * canvas.height;
+          const s = Math.random() * 2 + 0.5;
+          ctx.fillRect(px, py, s, s);
+        }
+
+        ctx.fillStyle = "rgba(154,218,197,0.22)";
+        ctx.fillRect(38, 44, canvas.width - 76, canvas.height - 88);
+
+        drawSciFiBorder(ctx, 0, 0, canvas.width, canvas.height);
+
+        const innerX = 55;
+        const innerY = 42;
+        const innerW = canvas.width - 110;
+        const innerH = canvas.height - 84;
+
+        const titleMaxWidth = innerW - 40;
+        let titleStart = 76;
+        if (sfState.unitName.length > 18) titleStart = 68;
+        if (sfState.unitName.length > 26) titleStart = 60;
+        if (sfState.unitName.length > 34) titleStart = 52;
+        if (sfState.unitName.length > 42) titleStart = 46;
+
+        const titleSize = fitText(
+          ctx,
+          sfState.unitName,
+          titleMaxWidth,
+          titleStart,
+          28,
+          '"Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+          "normal",
+          "normal"
+        );
+
+        ctx.fillStyle = "#583F8C";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.font = `normal ${titleSize}px "Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif`;
+        ctx.fillText(sfState.unitName, canvas.width / 2, innerY + 2);
+
+        ctx.fillStyle = "#583F8C";
+        ctx.font = `normal 700 32px "EB Garamond", Garamond, Georgia, serif`;
+        ctx.fillText(sfState.unitType.toUpperCase(), canvas.width / 2, innerY + 92);
+
+        ctx.font = `normal 700 24px "EB Garamond", Garamond, Georgia, serif`;
+        ctx.fillText(`UNIT COUNT ${sfState.unitCount}`, canvas.width / 2, innerY + 128);
+
+        const statsTop = innerY + 182;
+        const labelY = statsTop;
+        const valueY = statsTop + 36;
+        const altValueY = valueY + 76;
+
+        const colXs = [
+          innerX + 55,
+          innerX + 210,
+          innerX + 365,
+          innerX + 545,
+          innerX + 720,
+          innerX + 875
+        ];
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+
+        mainStats.forEach((stat, i) => {
+          const x = colXs[i];
+          const displayValue = formatSciFiStatValue(stat.key, stat.value);
+
+          ctx.fillStyle = "#583F8C";
+          ctx.font = `normal 700 26px "EB Garamond", Garamond, Georgia, serif`;
+          ctx.fillText(stat.label.toUpperCase(), x, labelY);
+
+          const valueSize = fitText(
+            ctx,
+            displayValue,
+            145,
+            stat.key === "cost" ? 58 : 66,
+            26,
+            '"EB Garamond", Garamond, Georgia, serif',
+            "700",
+            "normal"
+          );
+
+          ctx.fillStyle = "#2F2350";
+          ctx.font = `normal 700 ${valueSize}px "EB Garamond", Garamond, Georgia, serif`;
+          ctx.fillText(displayValue, x, valueY);
+
+          if (stat.key === "cost" && altCostEntry && altCostEntry.value) {
+            const altText = `(${altCostEntry.value}PTS)`;
+            const altSize = fitText(
+              ctx,
+              altText,
+              140,
+              36,
+              20,
+              '"EB Garamond", Garamond, Georgia, serif',
+              "700",
+              "normal"
+            );
+            ctx.fillStyle = "#583F8C";
+            ctx.font = `normal 700 ${altSize}px "EB Garamond", Garamond, Georgia, serif`;
+            ctx.fillText(altText, x, altValueY);
+          }
+        });
+
+        const kwTop = innerY + 318;
+        const kwLeft = innerX + 40;
+        const kwWidth = innerW - 80;
+
+        let keywordFontSize = 34;
+        let reminderFontSize = 21;
+
+        const totalKeywordChars = sfState.keywords.reduce((sum, item) => sum + item.keyword.length + item.reminder.length, 0);
+
+        if (sfState.keywords.length >= 3) {
+          keywordFontSize = 30;
+          reminderFontSize = 18;
+        }
+        if (sfState.keywords.length >= 5 || totalKeywordChars > 110) {
+          keywordFontSize = 26;
+          reminderFontSize = 16;
+        }
+        if (sfState.keywords.length >= 7 || totalKeywordChars > 180) {
+          keywordFontSize = 22;
+          reminderFontSize = 14;
+        }
+
+        function buildKeywordLayout() {
+          const blocks = [];
+          let totalHeight = 0;
+
+          sfState.keywords.forEach(item => {
+            const block = { keywordLines: [], reminderLines: [] };
+
+            if (item.keyword) {
+              ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+              block.keywordLines = wrapText(ctx, item.keyword.toUpperCase(), kwWidth);
+            }
+
+            if (item.reminder) {
+              ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+              block.reminderLines = wrapText(ctx, item.reminder.toUpperCase(), kwWidth - 8);
+            }
+
+            let blockHeight = 0;
+            if (block.keywordLines.length) blockHeight += block.keywordLines.length * (keywordFontSize + 5);
+            if (block.reminderLines.length) {
+              if (block.keywordLines.length) blockHeight += 4;
+              blockHeight += block.reminderLines.length * (reminderFontSize + 4);
+            }
+            blockHeight += 11;
+            totalHeight += blockHeight;
+            blocks.push(block);
+          });
+
+          return { blocks, totalHeight };
+        }
+
+        let layout = buildKeywordLayout();
+        const maxKeywordHeight = innerH - 350;
+
+        while (layout.totalHeight > maxKeywordHeight && keywordFontSize > 16) {
+          keywordFontSize -= 2;
+          reminderFontSize = Math.max(12, reminderFontSize - 1);
+          layout = buildKeywordLayout();
+        }
+
+        let currentY = kwTop;
+        layout.blocks.forEach(block => {
+          if (block.keywordLines.length) {
+            ctx.fillStyle = "#583F8C";
+            ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+            block.keywordLines.forEach(line => {
+              ctx.fillText(line, kwLeft, currentY);
+              currentY += keywordFontSize + 5;
+            });
+          }
+          if (block.reminderLines.length) {
+            if (block.keywordLines.length) currentY += 4;
+            ctx.fillStyle = "#3D3066";
+            ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+            block.reminderLines.forEach(line => {
+              ctx.fillText(line, kwLeft + 6, currentY);
+              currentY += reminderFontSize + 4;
+            });
+          }
+          currentY += 11;
+        });
+      }
+
+      function renderSciFiPreview() {
+        renderSciFiCardToCanvas(sfCanvas);
+      }
+
+      function loadSciFiForm() {
+        sfEls.unitName.value = sfState.unitName;
+        sfEls.unitType.value = sfState.unitType;
+        sfEls.unitCount.value = sfState.unitCount;
+
+        sfEls.statList.innerHTML = "";
+        sfState.statOrder.forEach(key => {
+          const def = sfStatDefinitions.find(d => d.key === key);
+          sfEls.statList.appendChild(makeSciFiStatItem(def, sfState.stats[key] || ""));
+        });
+
+        sfEls.keywordsBox.innerHTML = "";
+        const kws = sfState.keywords.length ? sfState.keywords : [{ keyword: "", reminder: "" }];
+        kws.forEach(k => {
+          const block = makeSciFiKeywordBlock(k.keyword, k.reminder);
+          sfEls.keywordsBox.appendChild(block);
+          bindSciFiKeywordEvents(block);
+        });
+
+        renderSciFiPreview();
+      }
+
+      sfEls.unitName.addEventListener("input", renderSciFiPreview);
+      sfEls.unitType.addEventListener("change", renderSciFiPreview);
+      sfEls.unitCount.addEventListener("input", renderSciFiPreview);
+
+      sfEls.countDown.addEventListener("click", () => {
+        clampSciFiCount();
+        sfEls.unitCount.value = Math.max(1, parseInt(sfEls.unitCount.value, 10) - 1);
+        renderSciFiPreview();
+      });
+
+      sfEls.countUp.addEventListener("click", () => {
+        clampSciFiCount();
+        sfEls.unitCount.value = Math.min(99, parseInt(sfEls.unitCount.value, 10) + 1);
+        renderSciFiPreview();
+      });
+
+      sfEls.downloadBtn.addEventListener("click", () => {
+        renderSciFiPreview();
+        downloadCanvas(sfCanvas, sfEls.unitName.value || "scifi-unit-card");
+      });
+
+      sfEls.printBtn.addEventListener("click", () => {
+        renderSciFiPreview();
+        const win = window.open("", "_blank");
+        const img = sfCanvas.toDataURL("image/png");
+        win.document.write(`
+          <html>
+            <head><title>Print Card</title></head>
+            <body style="margin:0;padding:0;">
+              <img src="${img}" style="width:3.5in;height:2.5in;display:block;" />
+              <script>
+                window.onload = function(){ window.print(); }
+              <\/script>
+            </body>
+          </html>
+        `);
+        win.document.close();
+      });
+
+      sfEls.resetBtn.addEventListener("click", () => {
+        sfState.unitName = "DUST RUNNERS";
+        sfState.unitType = "Light Infantry";
+        sfState.unitCount = "1";
+        sfState.statOrder = ["cost", "altCost", "range", "move", "combat", "defense", "morale"];
+        sfState.stats = {
+          cost: "50",
+          altCost: "40",
+          range: "24",
+          move: "6",
+          combat: "4",
+          defense: "5",
+          morale: "7"
+        };
+        sfState.keywords = [
+          { keyword: "SCOUT", reminder: "MAY REDEPLOY AFTER DEPLOYMENT." },
+          { keyword: "SCRAP ARMOR", reminder: "IGNORE THE FIRST FAILED DEFENSE EACH ROUND." }
+        ];
+        loadSciFiForm();
+      });
+
+      loadSciFiForm();
     })();
   </script>
 </div>
