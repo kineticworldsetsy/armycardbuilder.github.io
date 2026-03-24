@@ -3,18 +3,711 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Pages Site</title>
+    <title>Army Unit Card Builder</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Website</h1>
-    </header>
-    <main>
-        <p>This is a basic HTML site hosted on GitHub Pages.</p>
-    </main>
-    <footer>
-        <p>&copy; 2026</p>
-    </footer>
+    <div id="carcosa-card-builder">
+  <style>
+    #carcosa-card-builder {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #222;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    #carcosa-card-builder *,
+    #carcosa-card-builder *::before,
+    #carcosa-card-builder *::after {
+      box-sizing: border-box;
+    }
+
+    #carcosa-card-builder .builder-wrap {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    #carcosa-card-builder .panel {
+      background: #f7f7f4;
+      border: 1px solid #d9d9d1;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    }
+
+    #carcosa-card-builder h2,
+    #carcosa-card-builder h3 {
+      margin: 0 0 14px 0;
+      line-height: 1.2;
+    }
+
+    #carcosa-card-builder .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    #carcosa-card-builder .full {
+      grid-column: 1 / -1;
+    }
+
+    #carcosa-card-builder label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    #carcosa-card-builder input[type="text"],
+    #carcosa-card-builder input[type="number"],
+    #carcosa-card-builder select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #bfc3bc;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    #carcosa-card-builder input[type="number"]::-webkit-outer-spin-button,
+    #carcosa-card-builder input[type="number"]::-webkit-inner-spin-button {
+      opacity: 1;
+    }
+
+    #carcosa-card-builder .keywords-box {
+      border: 1px solid #d6d6cf;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    #carcosa-card-builder .keyword-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    #carcosa-card-builder .keyword-row:last-child {
+      margin-bottom: 0;
+    }
+
+    #carcosa-card-builder .kw-btn {
+      border: none;
+      border-radius: 8px;
+      width: 38px;
+      height: 38px;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    #carcosa-card-builder .kw-add {
+      background: #dce97a;
+      color: #1b1b1b;
+    }
+
+    #carcosa-card-builder .kw-remove {
+      background: #2c2c2c;
+      color: #fff;
+    }
+
+    #carcosa-card-builder .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    #carcosa-card-builder .actions button {
+      border: none;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #carcosa-card-builder .btn-primary {
+      background: #dce97a;
+      color: #111;
+    }
+
+    #carcosa-card-builder .btn-dark {
+      background: #222;
+      color: #fff;
+    }
+
+    #carcosa-card-builder .btn-light {
+      background: #ecece7;
+      color: #222;
+    }
+
+    #carcosa-card-builder .preview-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #carcosa-card-builder .preview-note {
+      font-size: 13px;
+      color: #555;
+    }
+
+    #carcosa-card-builder .canvas-shell {
+      background: #e9e9e3;
+      border: 1px solid #d4d4cc;
+      border-radius: 12px;
+      padding: 16px;
+      overflow: auto;
+    }
+
+    #carcosa-card-builder canvas {
+      display: block;
+      width: 100%;
+      max-width: 840px;
+      aspect-ratio: 7 / 5;
+      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.14);
+    }
+
+    @media (max-width: 950px) {
+      #carcosa-card-builder .builder-wrap {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #carcosa-print-only,
+      #carcosa-print-only * {
+        visibility: visible !important;
+      }
+      #carcosa-print-only {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    }
+  </style>
+
+  <div class="builder-wrap">
+    <div class="panel">
+      <h2>Unit Card Builder</h2>
+
+      <div class="form-grid">
+        <div class="full">
+          <label for="unitName">Unit Name</label>
+          <input id="unitName" type="text" value="The Mob of Carcosa" />
+        </div>
+
+        <div class="full">
+          <label for="unitType">Unit Type</label>
+          <select id="unitType">
+            <option>Light Infantry</option>
+            <option>Ranged Infantry</option>
+            <option>Heavy Infantry</option>
+            <option>Monstrous Infantry</option>
+            <option>Light Cavalry</option>
+            <option>Heavy Cavalry</option>
+            <option>Chariot</option>
+            <option>War Wagon</option>
+            <option>Monster</option>
+            <option>Beasts</option>
+            <option>Artillery</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="speed">Speed</label>
+          <input id="speed" type="number" value="8" />
+        </div>
+
+        <div>
+          <label for="range">Range</label>
+          <input id="range" type="number" placeholder="Leave blank for none" />
+        </div>
+
+        <div>
+          <label for="strikes">Strikes</label>
+          <input id="strikes" type="number" value="10" />
+        </div>
+
+        <div>
+          <label for="courage">Courage</label>
+          <input id="courage" type="number" value="10" />
+        </div>
+
+        <div class="full">
+          <label for="points">Points</label>
+          <input id="points" type="number" value="275" />
+        </div>
+
+        <div class="full">
+          <label>Keywords</label>
+          <div class="keywords-box" id="keywordsBox"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" id="downloadPngBtn">Download PNG</button>
+        <button class="btn-dark" id="printBtn">Print Card</button>
+        <button class="btn-light" id="resetBtn">Load Example</button>
+      </div>
+    </div>
+
+    <div class="panel preview-wrap">
+      <h3>Preview</h3>
+      <div class="preview-note">
+        Card size is rendered at 300 DPI for print: <strong>3.5" × 2.5"</strong> landscape.
+      </div>
+      <div class="canvas-shell">
+        <canvas id="cardCanvas" width="1050" height="750"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="carcosa-print-only" style="display:none;"></div>
+
+  <script>
+    (function () {
+      const canvas = document.getElementById("cardCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const els = {
+        unitName: document.getElementById("unitName"),
+        unitType: document.getElementById("unitType"),
+        speed: document.getElementById("speed"),
+        range: document.getElementById("range"),
+        strikes: document.getElementById("strikes"),
+        courage: document.getElementById("courage"),
+        points: document.getElementById("points"),
+        keywordsBox: document.getElementById("keywordsBox"),
+        downloadPngBtn: document.getElementById("downloadPngBtn"),
+        printBtn: document.getElementById("printBtn"),
+        resetBtn: document.getElementById("resetBtn")
+      };
+
+      function makeKeywordRow(value = "") {
+        const row = document.createElement("div");
+        row.className = "keyword-row";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Keyword";
+        input.value = value;
+
+        const addBtn = document.createElement("button");
+        addBtn.type = "button";
+        addBtn.className = "kw-btn kw-add";
+        addBtn.textContent = "+";
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "kw-btn kw-remove";
+        removeBtn.textContent = "−";
+
+        addBtn.addEventListener("click", () => {
+          const newRow = makeKeywordRow("");
+          row.after(newRow);
+          bindRowEvents(newRow);
+          renderCard();
+        });
+
+        removeBtn.addEventListener("click", () => {
+          const rows = els.keywordsBox.querySelectorAll(".keyword-row");
+          if (rows.length > 1) {
+            row.remove();
+            renderCard();
+          } else {
+            input.value = "";
+            renderCard();
+          }
+        });
+
+        row.appendChild(input);
+        row.appendChild(addBtn);
+        row.appendChild(removeBtn);
+
+        return row;
+      }
+
+      function bindRowEvents(row) {
+        const input = row.querySelector('input[type="text"]');
+        input.addEventListener("input", renderCard);
+      }
+
+      function getKeywords() {
+        return Array.from(els.keywordsBox.querySelectorAll('input[type="text"]'))
+          .map(i => i.value.trim())
+          .filter(Boolean);
+      }
+
+      function toTitleCase(str) {
+        return (str || "")
+          .toLowerCase()
+          .replace(/\b\w/g, c => c.toUpperCase());
+      }
+
+      function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontStyle = "") {
+        let size = startSize;
+        while (size > minSize) {
+          ctx.font = `${fontStyle} ${size}px ${fontFamily}`;
+          if (ctx.measureText(text).width <= maxWidth) return size;
+          size -= 1;
+        }
+        return minSize;
+      }
+
+      function wrapText(ctx, text, maxWidth) {
+        const words = text.split(/\s+/);
+        const lines = [];
+        let line = "";
+
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line ? line + " " + words[i] : words[i];
+          const testWidth = ctx.measureText(testLine).width;
+          if (testWidth > maxWidth && line) {
+            lines.push(line);
+            line = words[i];
+          } else {
+            line = testLine;
+          }
+        }
+
+        if (line) lines.push(line);
+        return lines;
+      }
+
+      function drawGrungeBorder(ctx, x, y, w, h) {
+        ctx.save();
+
+        ctx.strokeStyle = "#1c1c1c";
+        ctx.fillStyle = "#1c1c1c";
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        // Main rough border
+        ctx.lineWidth = 8;
+        roughRect(ctx, x + 16, y + 16, w - 32, h - 32, 7, 6);
+
+        // Secondary broken border
+        ctx.globalAlpha = 0.6;
+        ctx.lineWidth = 3;
+        roughRect(ctx, x + 24, y + 24, w - 48, h - 48, 10, 4);
+
+        // Ink blotches / worn corners
+        ctx.globalAlpha = 0.95;
+        const blotches = [
+          [x + 18, y + 20, 34, 16],
+          [x + 80, y + 18, 30, 12],
+          [x + w - 75, y + 22, 28, 14],
+          [x + w - 38, y + 26, 18, 9],
+          [x + 22, y + h - 42, 42, 16],
+          [x + 66, y + h - 28, 22, 10],
+          [x + w - 100, y + h - 35, 46, 18],
+          [x + w - 44, y + h - 24, 20, 10],
+          [x + 14, y + 120, 12, 36],
+          [x + 20, y + 250, 10, 34],
+          [x + w - 26, y + 140, 10, 42],
+          [x + w - 28, y + 310, 11, 28]
+        ];
+
+        blotches.forEach(([bx, by, bw, bh]) => {
+          drawBlob(ctx, bx, by, bw, bh);
+        });
+
+        ctx.restore();
+      }
+
+      function roughRect(ctx, x, y, w, h, jitter, step) {
+        ctx.beginPath();
+
+        roughLine(ctx, x, y, x + w, y, jitter, step);
+        roughLine(ctx, x + w, y, x + w, y + h, jitter, step);
+        roughLine(ctx, x + w, y + h, x, y + h, jitter, step);
+        roughLine(ctx, x, y + h, x, y, jitter, step);
+
+        ctx.stroke();
+      }
+
+      function roughLine(ctx, x1, y1, x2, y2, jitter, step) {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const segments = Math.max(2, Math.floor(dist / step));
+
+        for (let i = 0; i <= segments; i++) {
+          const t = i / segments;
+          const x = x1 + dx * t + (Math.random() - 0.5) * jitter;
+          const y = y1 + dy * t + (Math.random() - 0.5) * jitter;
+
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+      }
+
+      function drawBlob(ctx, x, y, w, h) {
+        ctx.beginPath();
+        const pts = 10;
+        for (let i = 0; i < pts; i++) {
+          const px = x + (i / (pts - 1)) * w;
+          const py = y + (Math.random() * h);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        for (let i = pts - 1; i >= 0; i--) {
+          const px = x + (i / (pts - 1)) * w;
+          const py = y + h + (Math.random() * h * 0.25);
+          ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      function renderCard() {
+        const data = {
+          unitName: (els.unitName.value || "").trim() || "Untitled Unit",
+          unitType: (els.unitType.value || "").trim(),
+          speed: (els.speed.value || "").trim(),
+          range: (els.range.value || "").trim(),
+          strikes: (els.strikes.value || "").trim(),
+          courage: (els.courage.value || "").trim(),
+          points: (els.points.value || "").trim(),
+          keywords: getKeywords()
+        };
+
+        // Background
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#fcfcf9";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Very subtle paper texture
+        for (let i = 0; i < 900; i++) {
+          const alpha = Math.random() * 0.03;
+          ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+          const px = Math.random() * canvas.width;
+          const py = Math.random() * canvas.height;
+          const s = Math.random() * 2 + 0.5;
+          ctx.fillRect(px, py, s, s);
+        }
+
+        drawGrungeBorder(ctx, 0, 0, canvas.width, canvas.height);
+
+        const innerX = 55;
+        const innerY = 42;
+        const innerW = canvas.width - 110;
+        const innerH = canvas.height - 84;
+
+        // Title
+        const titleMaxWidth = innerW - 30;
+        let titleStart = 74;
+        if (data.unitName.length > 22) titleStart = 64;
+        if (data.unitName.length > 30) titleStart = 56;
+        if (data.unitName.length > 40) titleStart = 48;
+
+        const titleSize = fitText(
+          ctx,
+          data.unitName.toLowerCase(),
+          titleMaxWidth,
+          titleStart,
+          30,
+          '"Palatino Linotype", "Book Antiqua", Georgia, serif',
+          "italic"
+        );
+
+        ctx.fillStyle = "#232323";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.font = `italic ${titleSize}px "Palatino Linotype", "Book Antiqua", Georgia, serif`;
+        ctx.fillText(data.unitName.toLowerCase(), canvas.width / 2, innerY + 8);
+
+        // Unit type
+        ctx.font = `small-caps 28px Georgia, serif`;
+        ctx.fillStyle = "#4a4a4a";
+        ctx.fillText(data.unitType.toLowerCase(), canvas.width / 2, innerY + 92);
+
+        // Stats row labels
+        const statsTop = innerY + 150;
+        const labelY = statsTop;
+        const valueY = statsTop + 38;
+
+        const colXs = [
+          innerX + 70,
+          innerX + 250,
+          innerX + 450,
+          innerX + 655,
+          innerX + 835
+        ];
+
+        const labels = ["SPEED", "RANGE", "STRIKES", "COURAGE", "POINTS"];
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#2f2f2f";
+        ctx.font = `26px Georgia, serif`;
+
+        labels.forEach((label, i) => {
+          ctx.fillText(label, colXs[i], labelY);
+        });
+
+        // Values
+        ctx.fillStyle = "#111";
+        ctx.font = `72px Georgia, serif`;
+
+        const rangeDisplay = data.range === "" ? "—" : data.range;
+
+        const values = [
+          data.speed || "—",
+          rangeDisplay,
+          data.strikes || "—",
+          data.courage || "—",
+          data.points || "—"
+        ];
+
+        values.forEach((val, i) => {
+          const size = fitText(
+            ctx,
+            String(val),
+            140,
+            i === 4 ? 72 : 78,
+            42,
+            "Georgia, serif",
+            ""
+          );
+          ctx.font = `${size}px Georgia, serif`;
+          ctx.fillText(String(val), colXs[i], valueY);
+        });
+
+        // Keywords area
+        const kwTop = innerY + 285;
+        const kwLeft = innerX + 10;
+        const kwWidth = innerW - 20;
+        const keywordText = data.keywords.length ? data.keywords.map(k => k.toUpperCase()) : [];
+
+        let keywordFontSize = 38;
+        if (keywordText.length >= 4) keywordFontSize = 32;
+        if (keywordText.length >= 6) keywordFontSize = 28;
+        if (keywordText.join(" ").length > 80) keywordFontSize = 24;
+        if (keywordText.join(" ").length > 120) keywordFontSize = 20;
+
+        ctx.fillStyle = "#202020";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.font = `${keywordFontSize}px Georgia, serif`;
+
+        const keywordLines = [];
+        keywordText.forEach(kw => {
+          const wrapped = wrapText(ctx, kw, kwWidth);
+          wrapped.forEach(line => keywordLines.push(line));
+        });
+
+        const lineHeight = keywordFontSize + 12;
+
+        // If too many lines, shrink more
+        const maxKeywordHeight = innerH - 320;
+        while ((keywordLines.length * lineHeight) > maxKeywordHeight && keywordFontSize > 16) {
+          keywordFontSize -= 2;
+          ctx.font = `${keywordFontSize}px Georgia, serif`;
+
+          const recalc = [];
+          keywordText.forEach(kw => {
+            const wrapped = wrapText(ctx, kw, kwWidth);
+            wrapped.forEach(line => recalc.push(line));
+          });
+
+          keywordLines.length = 0;
+          recalc.forEach(line => keywordLines.push(line));
+        }
+
+        ctx.font = `${keywordFontSize}px Georgia, serif`;
+        keywordLines.forEach((line, idx) => {
+          ctx.fillText(line, kwLeft, kwTop + (idx * (keywordFontSize + 10)));
+        });
+      }
+
+      function downloadCanvas() {
+        const link = document.createElement("a");
+        const safeName = (els.unitName.value || "unit-card")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+
+        link.download = `${safeName || "unit-card"}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
+      function printCanvas() {
+        const printArea = document.getElementById("carcosa-print-only");
+        const img = new Image();
+        img.src = canvas.toDataURL("image/png");
+        img.style.width = "3.5in";
+        img.style.height = "2.5in";
+        img.style.display = "block";
+
+        printArea.innerHTML = "";
+        printArea.style.display = "block";
+        printArea.appendChild(img);
+
+        setTimeout(() => {
+          window.print();
+          setTimeout(() => {
+            printArea.style.display = "none";
+          }, 500);
+        }, 150);
+      }
+
+      function loadExample() {
+        els.unitName.value = "The Mob of Carcosa";
+        els.unitType.value = "Light Infantry";
+        els.speed.value = "8";
+        els.range.value = "";
+        els.strikes.value = "10";
+        els.courage.value = "10";
+        els.points.value = "275";
+
+        els.keywordsBox.innerHTML = "";
+        const row = makeKeywordRow("Unruly");
+        els.keywordsBox.appendChild(row);
+        bindRowEvents(row);
+
+        renderCard();
+      }
+
+      [
+        els.unitName,
+        els.unitType,
+        els.speed,
+        els.range,
+        els.strikes,
+        els.courage,
+        els.points
+      ].forEach(el => {
+        el.addEventListener("input", renderCard);
+        el.addEventListener("change", renderCard);
+      });
+
+      els.downloadPngBtn.addEventListener("click", downloadCanvas);
+      els.printBtn.addEventListener("click", printCanvas);
+      els.resetBtn.addEventListener("click", loadExample);
+
+      // Initial keyword row
+      const initialRow = makeKeywordRow("Unruly");
+      els.keywordsBox.appendChild(initialRow);
+      bindRowEvents(initialRow);
+
+      loadExample();
+    })();
+  </script>
+</div>
 </body>
 </html>
