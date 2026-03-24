@@ -910,8 +910,59 @@ button[data-builder="scifi"].active,
     renderSciFiPreview();
   });
 }
-    (function () {
-      function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight = "700", fontStyle = "normal") {
+(async function(){
+      
+
+  async function ensureAppFontsLoaded() {
+    const fontPromises = [];
+
+    try {
+      if (document.fonts && document.fonts.load) {
+        fontPromises.push(document.fonts.load('16px "Frakturika"'));
+        fontPromises.push(document.fonts.load('700 16px "EB Garamond"'));
+      }
+    } catch (e) {}
+
+    const fontFace = new FontFace(
+      "Frakturika",
+      'url("fonts/Fracturi.ttf") format("truetype")'
+    );
+
+    try {
+      const loadedFace = await fontFace.load();
+      if (document.fonts && ![...document.fonts].some(f => f.family === loadedFace.family)) {
+        document.fonts.add(loadedFace);
+      }
+    } catch (e) {
+      console.warn("Frakturika manual font load failed:", e);
+    }
+
+    try {
+      if (document.fonts && document.fonts.ready) {
+        await Promise.race([
+          document.fonts.ready,
+          new Promise(resolve => setTimeout(resolve, 1200))
+        ]);
+        await Promise.allSettled(fontPromises);
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+    } catch (e) {}
+
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  }
+
+  if (document.fonts && document.fonts.addEventListener) {
+    document.fonts.addEventListener("loadingdone", () => {
+      try {
+        if (typeof renderFantasyCard === "function") renderFantasyCard();
+        if (typeof renderSciFiCard === "function") renderSciFiCard();
+      } catch (e) {}
+    });
+  }
+
+
+function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight = "700", fontStyle = "normal") {
         let size = startSize;
         while (size > minSize) {
           ctx.font = `${fontStyle} ${fontWeight} ${size}px ${fontFamily}`;
@@ -2348,7 +2399,8 @@ button[data-builder="scifi"].active,
       /* =========================
          Initial load
       ========================= */
-    loadFantasyStateIntoForm();
+    await ensureAppFontsLoaded();
+loadFantasyStateIntoForm();
 loadSciFiStateIntoForm();
 refreshAfterFontsLoad();
 
