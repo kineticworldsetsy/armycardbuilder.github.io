@@ -579,9 +579,10 @@
       <h3>Fantasy Units</h3>
       <div class="unit-tabs" id="fantasyUnitTabs"></div>
       <div class="actions" style="margin-top:0;">
-        <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
-        <button class="small-btn danger" id="fantasyDeleteUnitBtn">Delete Current Unit</button>
-      </div>
+      <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
+      <button class="small-btn" id="fantasyCopyUnitBtn">Copy Unit</button>
+      <button class="small-btn danger" id="fantasyDeleteUnitBtn">Delete Current Unit</button>
+</div>
     </div>
 
     <div class="builder-wrap">
@@ -656,11 +657,12 @@
     <div class="panel" style="margin-bottom:16px;">
       <h3>Sci-Fi Units</h3>
       <div class="unit-tabs" id="scifiUnitTabs"></div>
-      <div class="actions" style="margin-top:0;">
-        <button class="small-btn add" id="scifiAddUnitBtn">+ Add Unit</button>
-        <button class="small-btn danger" id="scifiDeleteUnitBtn">Delete Current Unit</button>
-      </div>
-    </div>
+    
+    <div class="actions" style="margin-top:0;">
+  <button class="small-btn add" id="scifiAddUnitBtn">+ Add Unit</button>
+  <button class="small-btn" id="scifiCopyUnitBtn">Copy Unit</button>
+  <button class="small-btn danger" id="scifiDeleteUnitBtn">Delete Current Unit</button>
+</div>
 
     <div class="builder-wrap">
       <div class="panel">
@@ -737,6 +739,13 @@
   <div id="printSheetArea" style="display:none;"></div>
 
   <script>
+
+function cloneUnit(unit, prefix) {
+  return {
+    ...JSON.parse(JSON.stringify(unit)),
+    id: prefix + "_" + Math.random().toString(36).slice(2, 9)
+  };
+}
       function refreshAfterFontsLoad() {
   if (!document.fonts) {
     setTimeout(() => {
@@ -987,6 +996,7 @@
         saveArmyBtn: document.getElementById("fantasySaveArmyBtn"),
         copyArmyBtn: document.getElementById("fantasyCopyArmyBtn"),
         loadArmyBtn: document.getElementById("fantasyLoadArmyBtn"),
+          copyUnitBtn: document.getElementById("fantasyCopyUnitBtn"),
         codeStatus: document.getElementById("fantasyCodeStatus")
       };
 
@@ -1471,7 +1481,18 @@
         fantasyState.activeUnitId = unit.id;
         loadFantasyStateIntoForm();
       });
+/* SCI-FI: add this event listener right after the existing addUnitBtn listener */
 
+sfEls.copyUnitBtn.addEventListener("click", () => {
+  saveSciFiFormIntoState();
+  const current = getActiveSciFiUnit();
+  if (!current) return;
+
+  const unit = cloneUnit(current, "s");
+  sfState.units.push(unit);
+  sfState.activeUnitId = unit.id;
+  loadSciFiStateIntoForm();
+});
       fantasyEls.deleteUnitBtn.addEventListener("click", () => {
         if (fantasyState.units.length <= 1) return;
         const idx = fantasyState.units.findIndex(u => u.id === fantasyState.activeUnitId);
@@ -1548,6 +1569,7 @@
         saveArmyBtn: document.getElementById("sfSaveArmyBtn"),
         copyArmyBtn: document.getElementById("sfCopyArmyBtn"),
         loadArmyBtn: document.getElementById("sfLoadArmyBtn"),
+copyUnitBtn: document.getElementById("scifiCopyUnitBtn"),
         codeStatus: document.getElementById("sfCodeStatus")
       };
 
@@ -2087,6 +2109,18 @@
         sfState.activeUnitId = unit.id;
         loadSciFiStateIntoForm();
       });
+        /* FANTASY: add this event listener right after the existing addUnitBtn listener */
+
+fantasyEls.copyUnitBtn.addEventListener("click", () => {
+  saveFantasyFormIntoState();
+  const current = getActiveFantasyUnit();
+  if (!current) return;
+
+  const unit = cloneUnit(current, "f");
+  fantasyState.units.push(unit);
+  fantasyState.activeUnitId = unit.id;
+  loadFantasyStateIntoForm();
+});
 
       sfEls.deleteUnitBtn.addEventListener("click", () => {
         if (sfState.units.length <= 1) return;
