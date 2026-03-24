@@ -579,10 +579,10 @@
       <h3>Fantasy Units</h3>
       <div class="unit-tabs" id="fantasyUnitTabs"></div>
       <div class="actions" style="margin-top:0;">
-      <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
-      <button class="small-btn" id="fantasyCopyUnitBtn">Copy Unit</button>
-      <button class="small-btn danger" id="fantasyDeleteUnitBtn">Delete Current Unit</button>
-</div>
+        <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
+        <button class="small-btn" id="fantasyCopyUnitBtn">Copy Unit</button>
+        <button class="small-btn danger" id="fantasyDeleteUnitBtn">Delete Current Unit</button>
+      </div>
     </div>
 
     <div class="builder-wrap">
@@ -657,12 +657,12 @@
     <div class="panel" style="margin-bottom:16px;">
       <h3>Sci-Fi Units</h3>
       <div class="unit-tabs" id="scifiUnitTabs"></div>
-    
-    <div class="actions" style="margin-top:0;">
-  <button class="small-btn add" id="scifiAddUnitBtn">+ Add Unit</button>
-  <button class="small-btn" id="scifiCopyUnitBtn">Copy Unit</button>
-  <button class="small-btn danger" id="scifiDeleteUnitBtn">Delete Current Unit</button>
-</div>
+      <div class="actions" style="margin-top:0;">
+        <button class="small-btn add" id="scifiAddUnitBtn">+ Add Unit</button>
+        <button class="small-btn" id="scifiCopyUnitBtn">Copy Unit</button>
+        <button class="small-btn danger" id="scifiDeleteUnitBtn">Delete Current Unit</button>
+      </div>
+    </div>
 
     <div class="builder-wrap">
       <div class="panel">
@@ -739,13 +739,6 @@
   <div id="printSheetArea" style="display:none;"></div>
 
   <script>
-
-function cloneUnit(unit, prefix) {
-  return {
-    ...JSON.parse(JSON.stringify(unit)),
-    id: prefix + "_" + Math.random().toString(36).slice(2, 9)
-  };
-}
       function refreshAfterFontsLoad() {
   if (!document.fonts) {
     setTimeout(() => {
@@ -977,6 +970,13 @@ function cloneUnit(unit, prefix) {
         });
       });
 
+      function cloneUnit(unit, prefix) {
+        return {
+          ...JSON.parse(JSON.stringify(unit)),
+          id: prefix + "_" + Math.random().toString(36).slice(2, 9)
+        };
+      }
+
       /* =========================
          Fantasy builder
       ========================= */
@@ -984,6 +984,7 @@ function cloneUnit(unit, prefix) {
       const fantasyEls = {
         unitTabs: document.getElementById("fantasyUnitTabs"),
         addUnitBtn: document.getElementById("fantasyAddUnitBtn"),
+        copyUnitBtn: document.getElementById("fantasyCopyUnitBtn"),
         deleteUnitBtn: document.getElementById("fantasyDeleteUnitBtn"),
         unitName: document.getElementById("fantasyUnitName"),
         unitType: document.getElementById("fantasyUnitType"),
@@ -996,7 +997,6 @@ function cloneUnit(unit, prefix) {
         saveArmyBtn: document.getElementById("fantasySaveArmyBtn"),
         copyArmyBtn: document.getElementById("fantasyCopyArmyBtn"),
         loadArmyBtn: document.getElementById("fantasyLoadArmyBtn"),
-          copyUnitBtn: document.getElementById("fantasyCopyUnitBtn"),
         codeStatus: document.getElementById("fantasyCodeStatus")
       };
 
@@ -1481,18 +1481,18 @@ function cloneUnit(unit, prefix) {
         fantasyState.activeUnitId = unit.id;
         loadFantasyStateIntoForm();
       });
-/* SCI-FI: add this event listener right after the existing addUnitBtn listener */
 
-sfEls.copyUnitBtn.addEventListener("click", () => {
-  saveSciFiFormIntoState();
-  const current = getActiveSciFiUnit();
-  if (!current) return;
+      fantasyEls.copyUnitBtn.addEventListener("click", () => {
+        saveFantasyFormIntoState();
+        const current = getActiveFantasyUnit();
+        if (!current) return;
 
-  const unit = cloneUnit(current, "s");
-  sfState.units.push(unit);
-  sfState.activeUnitId = unit.id;
-  loadSciFiStateIntoForm();
-});
+        const unit = cloneUnit(current, "f");
+        fantasyState.units.push(unit);
+        fantasyState.activeUnitId = unit.id;
+        loadFantasyStateIntoForm();
+      });
+
       fantasyEls.deleteUnitBtn.addEventListener("click", () => {
         if (fantasyState.units.length <= 1) return;
         const idx = fantasyState.units.findIndex(u => u.id === fantasyState.activeUnitId);
@@ -1554,6 +1554,7 @@ sfEls.copyUnitBtn.addEventListener("click", () => {
       const sfEls = {
         unitTabs: document.getElementById("scifiUnitTabs"),
         addUnitBtn: document.getElementById("scifiAddUnitBtn"),
+        copyUnitBtn: document.getElementById("scifiCopyUnitBtn"),
         deleteUnitBtn: document.getElementById("scifiDeleteUnitBtn"),
         unitName: document.getElementById("sfUnitName"),
         unitType: document.getElementById("sfUnitType"),
@@ -1569,7 +1570,6 @@ sfEls.copyUnitBtn.addEventListener("click", () => {
         saveArmyBtn: document.getElementById("sfSaveArmyBtn"),
         copyArmyBtn: document.getElementById("sfCopyArmyBtn"),
         loadArmyBtn: document.getElementById("sfLoadArmyBtn"),
-copyUnitBtn: document.getElementById("scifiCopyUnitBtn"),
         codeStatus: document.getElementById("sfCodeStatus")
       };
 
@@ -1846,7 +1846,6 @@ copyUnitBtn: document.getElementById("scifiCopyUnitBtn"),
         drawBlob(ctx, x + w - 95, y + h - 38, 62, 13);
 
         ctx.globalAlpha = 0.18;
-        ctx.fillRect(x + 46, y + 46, w - 92, 6);
         ctx.fillRect(x + 46, y + h - 52, w - 92, 6);
         ctx.restore();
       }
@@ -1892,23 +1891,44 @@ copyUnitBtn: document.getElementById("scifiCopyUnitBtn"),
           "normal"
         );
 
-        ctx.fillStyle = "#583F8C";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(88,63,140,0.38)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(innerX + 18, innerY + 18);
+        ctx.lineTo(innerX + innerW - 18, innerY + 18);
+        ctx.stroke();
+        ctx.restore();
+
+        const titleY = innerY + 26;
+        ctx.fillStyle = "#583F8C";
         ctx.font = `normal ${titleSize}px "Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif`;
-        ctx.fillText(unit.unitName, canvas.width / 2, innerY + 2);
+        ctx.fillText(unit.unitName, canvas.width / 2, titleY);
+
+        const nameDividerY = titleY + titleSize + 6;
+        ctx.save();
+        ctx.strokeStyle = "rgba(88,63,140,0.18)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2 - 205, nameDividerY);
+        ctx.lineTo(canvas.width / 2 + 205, nameDividerY);
+        ctx.stroke();
+        ctx.restore();
 
         ctx.fillStyle = "#583F8C";
         ctx.font = `normal 700 32px "EB Garamond", Garamond, Georgia, serif`;
-        ctx.fillText(unit.unitType.toUpperCase(), canvas.width / 2, innerY + 92);
+        ctx.fillText(unit.unitType.toUpperCase(), canvas.width / 2, innerY + 112);
 
         ctx.font = `normal 700 24px "EB Garamond", Garamond, Georgia, serif`;
-        ctx.fillText(`UNIT COUNT ${unit.unitCount}`, canvas.width / 2, innerY + 128);
+        ctx.fillText(`UNIT COUNT ${unit.unitCount}`, canvas.width / 2, innerY + 148);
 
-        const statsTop = innerY + 182;
+        const statsTop = innerY + 202;
         const labelY = statsTop;
         const valueY = statsTop + 36;
-        const altValueY = valueY + 76;
+        const altValueY = valueY + 42;
         const colXs = [innerX + 55, innerX + 210, innerX + 365, innerX + 545, innerX + 720, innerX + 875];
 
         ctx.textAlign = "center";
@@ -1929,9 +1949,9 @@ copyUnitBtn: document.getElementById("scifiCopyUnitBtn"),
 
           if (stat.key === "cost" && altCost && altCost.value) {
             const altText = `(${altCost.value}PTS)`;
-            const altSize = fitText(ctx, altText, 140, 36, 20, '"EB Garamond", Garamond, Georgia, serif');
+            const altSize = fitText(ctx, altText, 140, Math.max(24, Math.round(valueSize * 0.46)), 18, '"EB Garamond", Garamond, Georgia, serif', "italic", "700");
             ctx.fillStyle = "#583F8C";
-            ctx.font = `normal 700 ${altSize}px "EB Garamond", Garamond, Georgia, serif`;
+            ctx.font = `italic 700 ${altSize}px "EB Garamond", Garamond, Georgia, serif`;
             ctx.fillText(altText, x, altValueY);
           }
         });
@@ -2109,18 +2129,17 @@ copyUnitBtn: document.getElementById("scifiCopyUnitBtn"),
         sfState.activeUnitId = unit.id;
         loadSciFiStateIntoForm();
       });
-        /* FANTASY: add this event listener right after the existing addUnitBtn listener */
 
-fantasyEls.copyUnitBtn.addEventListener("click", () => {
-  saveFantasyFormIntoState();
-  const current = getActiveFantasyUnit();
-  if (!current) return;
+      sfEls.copyUnitBtn.addEventListener("click", () => {
+        saveSciFiFormIntoState();
+        const current = getActiveSciFiUnit();
+        if (!current) return;
 
-  const unit = cloneUnit(current, "f");
-  fantasyState.units.push(unit);
-  fantasyState.activeUnitId = unit.id;
-  loadFantasyStateIntoForm();
-});
+        const unit = cloneUnit(current, "s");
+        sfState.units.push(unit);
+        sfState.activeUnitId = unit.id;
+        loadSciFiStateIntoForm();
+      });
 
       sfEls.deleteUnitBtn.addEventListener("click", () => {
         if (sfState.units.length <= 1) return;
