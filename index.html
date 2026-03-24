@@ -6,18 +6,30 @@
     <title>Army Unit Card Builder</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body style="background-color:#ECECEC;">
     <div id="carcosa-card-builder">
-        <style>
-  body {
-    background-color: #ECECEC;
-  }
-</style>
   <style>
+      
+    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&display=swap');
+
+    /*
+      IMPORTANT:
+      Frakturika appears to be personal-use only on common font listings.
+      If you have the legal right to use it on your site, upload the font
+      file to your hosting and replace the URL below.
+    */
+    @font-face {
+      font-family: 'Frakturika';
+      src: url('./Frakturika.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
     #carcosa-card-builder {
       font-family: Arial, Helvetica, sans-serif;
       color: #222;
-      max-width: 1200px;
+      max-width: 1240px;
       margin: 0 auto;
       box-sizing: border-box;
     }
@@ -30,7 +42,7 @@
 
     #carcosa-card-builder .builder-wrap {
       display: grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: 430px 1fr;
       gap: 24px;
       align-items: start;
     }
@@ -69,18 +81,21 @@
 
     #carcosa-card-builder input[type="text"],
     #carcosa-card-builder input[type="number"],
-    #carcosa-card-builder select {
+    #carcosa-card-builder select,
+    #carcosa-card-builder textarea {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #bfc3bc;
       border-radius: 8px;
       font-size: 14px;
       background: #fff;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    #carcosa-card-builder input[type="number"]::-webkit-outer-spin-button,
-    #carcosa-card-builder input[type="number"]::-webkit-inner-spin-button {
-      opacity: 1;
+    #carcosa-card-builder textarea {
+      resize: vertical;
+      min-height: 58px;
+      line-height: 1.35;
     }
 
     #carcosa-card-builder .keywords-box {
@@ -90,16 +105,24 @@
       background: #fff;
     }
 
-    #carcosa-card-builder .keyword-row {
+    #carcosa-card-builder .keyword-block {
+      border: 1px solid #e1e1d9;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fbfbf8;
+      margin-bottom: 10px;
+    }
+
+    #carcosa-card-builder .keyword-block:last-child {
+      margin-bottom: 0;
+    }
+
+    #carcosa-card-builder .keyword-top {
       display: grid;
       grid-template-columns: 1fr auto auto;
       gap: 8px;
-      margin-bottom: 8px;
       align-items: center;
-    }
-
-    #carcosa-card-builder .keyword-row:last-child {
-      margin-bottom: 0;
+      margin-bottom: 8px;
     }
 
     #carcosa-card-builder .kw-btn {
@@ -121,6 +144,65 @@
     #carcosa-card-builder .kw-remove {
       background: #2c2c2c;
       color: #fff;
+    }
+
+    #carcosa-card-builder .stat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #carcosa-card-builder .stat-item {
+      border: 1px solid #d8d8d1;
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    #carcosa-card-builder .stat-item.dragging {
+      opacity: 0.45;
+    }
+
+    #carcosa-card-builder .drag-handle {
+      width: 38px;
+      height: 38px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f1f1ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      user-select: none;
+      font-size: 18px;
+      line-height: 1;
+      color: #444;
+    }
+
+    #carcosa-card-builder .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    #carcosa-card-builder .stat-item.drag-over {
+      outline: 2px dashed #b8c84c;
+      outline-offset: 2px;
+    }
+
+    #carcosa-card-builder .stat-fields {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 10px;
+      align-items: end;
+    }
+
+    #carcosa-card-builder .stat-note {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #666;
     }
 
     #carcosa-card-builder .actions {
@@ -183,7 +265,7 @@
       box-shadow: 0 8px 24px rgba(0,0,0,.14);
     }
 
-    @media (max-width: 950px) {
+    @media (max-width: 980px) {
       #carcosa-card-builder .builder-wrap {
         grid-template-columns: 1fr;
       }
@@ -232,33 +314,13 @@
           </select>
         </div>
 
-        <div>
-          <label for="speed">Speed</label>
-          <input id="speed" type="number" value="8" />
-        </div>
-
-        <div>
-          <label for="range">Range</label>
-          <input id="range" type="number" placeholder="Leave blank for none" />
-        </div>
-
-        <div>
-          <label for="strikes">Strikes</label>
-          <input id="strikes" type="number" value="10" />
-        </div>
-
-        <div>
-          <label for="courage">Courage</label>
-          <input id="courage" type="number" value="10" />
+        <div class="full">
+          <label>Reorder Stat Fields</label>
+          <div class="stat-list" id="statList"></div>
         </div>
 
         <div class="full">
-          <label for="points">Points</label>
-          <input id="points" type="number" value="275" />
-        </div>
-
-        <div class="full">
-          <label>Keywords</label>
+          <label>Keywords & Reminder Text</label>
           <div class="keywords-box" id="keywordsBox"></div>
         </div>
       </div>
@@ -291,25 +353,134 @@
       const els = {
         unitName: document.getElementById("unitName"),
         unitType: document.getElementById("unitType"),
-        speed: document.getElementById("speed"),
-        range: document.getElementById("range"),
-        strikes: document.getElementById("strikes"),
-        courage: document.getElementById("courage"),
-        points: document.getElementById("points"),
+        statList: document.getElementById("statList"),
         keywordsBox: document.getElementById("keywordsBox"),
         downloadPngBtn: document.getElementById("downloadPngBtn"),
         printBtn: document.getElementById("printBtn"),
         resetBtn: document.getElementById("resetBtn")
       };
 
-      function makeKeywordRow(value = "") {
-        const row = document.createElement("div");
-        row.className = "keyword-row";
+      const statDefinitions = [
+        { key: "speed", label: "Speed", note: "Shown on card and affected by order" },
+        { key: "range", label: "Range", note: "Shown on card and affected by order" },
+        { key: "strikes", label: "Strikes", note: "Shown on card and affected by order" },
+        { key: "courage", label: "Courage", note: "Shown on card and affected by order" },
+        { key: "points", label: "Points", note: "Shown on card and affected by order" },
+        { key: "altPoints", label: "(Points)", note: "Can be rearranged here, but always appears under Points in parentheses" }
+      ];
 
+      let draggedStatItem = null;
+
+      function makeStatItem(def, value = "") {
+        const item = document.createElement("div");
+        item.className = "stat-item";
+        item.dataset.key = def.key;
+        item.draggable = true;
+
+        const handle = document.createElement("div");
+        handle.className = "drag-handle";
+        handle.title = "Drag to reorder";
+        handle.innerHTML = "☰";
+
+        const content = document.createElement("div");
+
+        const fields = document.createElement("div");
+        fields.className = "stat-fields";
+
+        const labelWrap = document.createElement("div");
+        const label = document.createElement("label");
+        label.textContent = def.label;
+        label.style.marginBottom = "0";
+        labelWrap.appendChild(label);
+
+        const inputWrap = document.createElement("div");
         const input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = "Keyword";
+        input.type = "number";
         input.value = value;
+        input.className = "stat-input";
+        input.dataset.key = def.key;
+
+        if (def.key === "range") {
+          input.placeholder = "blank = none";
+        }
+
+        inputWrap.appendChild(input);
+
+        fields.appendChild(labelWrap);
+        fields.appendChild(inputWrap);
+
+        const note = document.createElement("div");
+        note.className = "stat-note";
+        note.textContent = def.note;
+
+        content.appendChild(fields);
+        content.appendChild(note);
+
+        item.appendChild(handle);
+        item.appendChild(content);
+
+        bindStatDragEvents(item);
+        input.addEventListener("input", renderCard);
+        input.addEventListener("change", renderCard);
+
+        return item;
+      }
+
+      function bindStatDragEvents(item) {
+        item.addEventListener("dragstart", () => {
+          draggedStatItem = item;
+          item.classList.add("dragging");
+        });
+
+        item.addEventListener("dragend", () => {
+          item.classList.remove("dragging");
+          draggedStatItem = null;
+          Array.from(els.statList.children).forEach(child => child.classList.remove("drag-over"));
+          renderCard();
+        });
+
+        item.addEventListener("dragover", (e) => {
+          e.preventDefault();
+        });
+
+        item.addEventListener("dragenter", (e) => {
+          e.preventDefault();
+          if (item !== draggedStatItem) item.classList.add("drag-over");
+        });
+
+        item.addEventListener("dragleave", () => {
+          item.classList.remove("drag-over");
+        });
+
+        item.addEventListener("drop", (e) => {
+          e.preventDefault();
+          item.classList.remove("drag-over");
+          if (!draggedStatItem || draggedStatItem === item) return;
+
+          const items = Array.from(els.statList.children);
+          const draggedIndex = items.indexOf(draggedStatItem);
+          const targetIndex = items.indexOf(item);
+
+          if (draggedIndex < targetIndex) {
+            els.statList.insertBefore(draggedStatItem, item.nextSibling);
+          } else {
+            els.statList.insertBefore(draggedStatItem, item);
+          }
+        });
+      }
+
+      function makeKeywordBlock(keywordValue = "", reminderValue = "") {
+        const block = document.createElement("div");
+        block.className = "keyword-block";
+
+        const top = document.createElement("div");
+        top.className = "keyword-top";
+
+        const keywordInput = document.createElement("input");
+        keywordInput.type = "text";
+        keywordInput.placeholder = "Keyword";
+        keywordInput.value = keywordValue;
+        keywordInput.className = "keyword-input";
 
         const addBtn = document.createElement("button");
         addBtn.type = "button";
@@ -321,52 +492,75 @@
         removeBtn.className = "kw-btn kw-remove";
         removeBtn.textContent = "−";
 
+        const reminder = document.createElement("textarea");
+        reminder.placeholder = "Reminder text";
+        reminder.value = reminderValue;
+        reminder.className = "keyword-reminder";
+
         addBtn.addEventListener("click", () => {
-          const newRow = makeKeywordRow("");
-          row.after(newRow);
-          bindRowEvents(newRow);
+          const newBlock = makeKeywordBlock("", "");
+          block.after(newBlock);
+          bindKeywordEvents(newBlock);
           renderCard();
         });
 
         removeBtn.addEventListener("click", () => {
-          const rows = els.keywordsBox.querySelectorAll(".keyword-row");
-          if (rows.length > 1) {
-            row.remove();
+          const blocks = els.keywordsBox.querySelectorAll(".keyword-block");
+          if (blocks.length > 1) {
+            block.remove();
             renderCard();
           } else {
-            input.value = "";
+            keywordInput.value = "";
+            reminder.value = "";
             renderCard();
           }
         });
 
-        row.appendChild(input);
-        row.appendChild(addBtn);
-        row.appendChild(removeBtn);
+        top.appendChild(keywordInput);
+        top.appendChild(addBtn);
+        top.appendChild(removeBtn);
 
-        return row;
+        block.appendChild(top);
+        block.appendChild(reminder);
+
+        return block;
       }
 
-      function bindRowEvents(row) {
-        const input = row.querySelector('input[type="text"]');
-        input.addEventListener("input", renderCard);
+      function bindKeywordEvents(block) {
+        const keywordInput = block.querySelector(".keyword-input");
+        const reminder = block.querySelector(".keyword-reminder");
+
+        keywordInput.addEventListener("input", renderCard);
+        reminder.addEventListener("input", renderCard);
       }
 
-      function getKeywords() {
-        return Array.from(els.keywordsBox.querySelectorAll('input[type="text"]'))
-          .map(i => i.value.trim())
-          .filter(Boolean);
+      function getKeywordData() {
+        return Array.from(els.keywordsBox.querySelectorAll(".keyword-block"))
+          .map(block => {
+            return {
+              keyword: block.querySelector(".keyword-input").value.trim(),
+              reminder: block.querySelector(".keyword-reminder").value.trim()
+            };
+          })
+          .filter(item => item.keyword || item.reminder);
       }
 
-      function toTitleCase(str) {
-        return (str || "")
-          .toLowerCase()
-          .replace(/\b\w/g, c => c.toUpperCase());
+      function getStatDataInUiOrder() {
+        return Array.from(els.statList.querySelectorAll(".stat-item")).map(item => {
+          const key = item.dataset.key;
+          const input = item.querySelector(".stat-input");
+          return {
+            key,
+            label: statDefinitions.find(d => d.key === key).label,
+            value: (input.value || "").trim()
+          };
+        });
       }
 
-      function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontStyle = "") {
+      function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight = "700", fontStyle = "normal") {
         let size = startSize;
         while (size > minSize) {
-          ctx.font = `${fontStyle} ${size}px ${fontFamily}`;
+          ctx.font = `${fontStyle} ${fontWeight} ${size}px ${fontFamily}`;
           if (ctx.measureText(text).width <= maxWidth) return size;
           size -= 1;
         }
@@ -374,23 +568,34 @@
       }
 
       function wrapText(ctx, text, maxWidth) {
-        const words = text.split(/\s+/);
-        const lines = [];
-        let line = "";
+        const paragraphs = String(text).split("\n");
+        const allLines = [];
 
-        for (let i = 0; i < words.length; i++) {
-          const testLine = line ? line + " " + words[i] : words[i];
-          const testWidth = ctx.measureText(testLine).width;
-          if (testWidth > maxWidth && line) {
-            lines.push(line);
-            line = words[i];
-          } else {
-            line = testLine;
+        paragraphs.forEach(paragraph => {
+          const words = paragraph.split(/\s+/).filter(Boolean);
+
+          if (!words.length) {
+            allLines.push("");
+            return;
           }
-        }
 
-        if (line) lines.push(line);
-        return lines;
+          let line = "";
+          for (let i = 0; i < words.length; i++) {
+            const testLine = line ? line + " " + words[i] : words[i];
+            const testWidth = ctx.measureText(testLine).width;
+
+            if (testWidth > maxWidth && line) {
+              allLines.push(line);
+              line = words[i];
+            } else {
+              line = testLine;
+            }
+          }
+
+          if (line) allLines.push(line);
+        });
+
+        return allLines;
       }
 
       function drawGrungeBorder(ctx, x, y, w, h) {
@@ -401,16 +606,13 @@
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
 
-        // Main rough border
         ctx.lineWidth = 8;
         roughRect(ctx, x + 16, y + 16, w - 32, h - 32, 7, 6);
 
-        // Secondary broken border
         ctx.globalAlpha = 0.6;
         ctx.lineWidth = 3;
         roughRect(ctx, x + 24, y + 24, w - 48, h - 48, 10, 4);
 
-        // Ink blotches / worn corners
         ctx.globalAlpha = 0.95;
         const blotches = [
           [x + 18, y + 20, 34, 16],
@@ -427,21 +629,16 @@
           [x + w - 28, y + 310, 11, 28]
         ];
 
-        blotches.forEach(([bx, by, bw, bh]) => {
-          drawBlob(ctx, bx, by, bw, bh);
-        });
-
+        blotches.forEach(([bx, by, bw, bh]) => drawBlob(ctx, bx, by, bw, bh));
         ctx.restore();
       }
 
       function roughRect(ctx, x, y, w, h, jitter, step) {
         ctx.beginPath();
-
         roughLine(ctx, x, y, x + w, y, jitter, step);
         roughLine(ctx, x + w, y, x + w, y + h, jitter, step);
         roughLine(ctx, x + w, y + h, x, y + h, jitter, step);
         roughLine(ctx, x, y + h, x, y, jitter, step);
-
         ctx.stroke();
       }
 
@@ -480,23 +677,22 @@
       }
 
       function renderCard() {
+        const statData = getStatDataInUiOrder();
+        const mainStatOrder = statData.filter(s => s.key !== "altPoints");
+        const altPointsEntry = statData.find(s => s.key === "altPoints");
+
         const data = {
           unitName: (els.unitName.value || "").trim() || "Untitled Unit",
           unitType: (els.unitType.value || "").trim(),
-          speed: (els.speed.value || "").trim(),
-          range: (els.range.value || "").trim(),
-          strikes: (els.strikes.value || "").trim(),
-          courage: (els.courage.value || "").trim(),
-          points: (els.points.value || "").trim(),
-          keywords: getKeywords()
+          stats: mainStatOrder,
+          altPoints: altPointsEntry ? altPointsEntry.value : "",
+          keywords: getKeywordData()
         };
 
-        // Background
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#fcfcf9";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Very subtle paper texture
         for (let i = 0; i < 900; i++) {
           const alpha = Math.random() * 0.03;
           ctx.fillStyle = `rgba(0,0,0,${alpha})`;
@@ -513,38 +709,38 @@
         const innerW = canvas.width - 110;
         const innerH = canvas.height - 84;
 
-        // Title
         const titleMaxWidth = innerW - 30;
-        let titleStart = 74;
-        if (data.unitName.length > 22) titleStart = 64;
-        if (data.unitName.length > 30) titleStart = 56;
-        if (data.unitName.length > 40) titleStart = 48;
+        let titleStart = 76;
+        if (data.unitName.length > 18) titleStart = 68;
+        if (data.unitName.length > 26) titleStart = 60;
+        if (data.unitName.length > 34) titleStart = 52;
+        if (data.unitName.length > 42) titleStart = 46;
 
         const titleSize = fitText(
           ctx,
-          data.unitName.toLowerCase(),
+          data.unitName,
           titleMaxWidth,
           titleStart,
-          30,
-          '"Palatino Linotype", "Book Antiqua", Georgia, serif',
-          "italic"
+          28,
+          '"Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+          "normal",
+          "normal"
         );
 
         ctx.fillStyle = "#232323";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.font = `italic ${titleSize}px "Palatino Linotype", "Book Antiqua", Georgia, serif`;
-        ctx.fillText(data.unitName.toLowerCase(), canvas.width / 2, innerY + 8);
+        ctx.font = `normal ${titleSize}px "Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif`;
+        ctx.fillText(data.unitName, canvas.width / 2, innerY + 4);
 
-        // Unit type
-        ctx.font = `small-caps 28px Georgia, serif`;
+        ctx.font = `normal 700 29px "EB Garamond", Garamond, Georgia, serif`;
         ctx.fillStyle = "#4a4a4a";
-        ctx.fillText(data.unitType.toLowerCase(), canvas.width / 2, innerY + 92);
+        ctx.fillText(data.unitType.toLowerCase(), canvas.width / 2, innerY + 96);
 
-        // Stats row labels
-        const statsTop = innerY + 150;
+        const statsTop = innerY + 152;
         const labelY = statsTop;
-        const valueY = statsTop + 38;
+        const valueY = statsTop + 36;
+        const altValueY = valueY + 78;
 
         const colXs = [
           innerX + 70,
@@ -554,87 +750,148 @@
           innerX + 835
         ];
 
-        const labels = ["SPEED", "RANGE", "STRIKES", "COURAGE", "POINTS"];
         ctx.textAlign = "center";
-        ctx.fillStyle = "#2f2f2f";
-        ctx.font = `26px Georgia, serif`;
+        ctx.textBaseline = "top";
 
-        labels.forEach((label, i) => {
-          ctx.fillText(label, colXs[i], labelY);
-        });
+        data.stats.forEach((stat, i) => {
+          const x = colXs[i];
+          const labelText = stat.label.toUpperCase();
 
-        // Values
-        ctx.fillStyle = "#111";
-        ctx.font = `72px Georgia, serif`;
+          ctx.fillStyle = "#2f2f2f";
+          ctx.font = `normal 700 26px "EB Garamond", Garamond, Georgia, serif`;
+          ctx.fillText(labelText, x, labelY);
 
-        const rangeDisplay = data.range === "" ? "—" : data.range;
+          let displayValue = stat.value;
+          if (stat.key === "range" && displayValue === "") displayValue = "—";
+          if (displayValue === "") displayValue = "—";
 
-        const values = [
-          data.speed || "—",
-          rangeDisplay,
-          data.strikes || "—",
-          data.courage || "—",
-          data.points || "—"
-        ];
-
-        values.forEach((val, i) => {
-          const size = fitText(
+          const valueSize = fitText(
             ctx,
-            String(val),
-            140,
-            i === 4 ? 72 : 78,
-            42,
-            "Georgia, serif",
-            ""
+            String(displayValue),
+            145,
+            stat.key === "points" ? 72 : 78,
+            40,
+            '"EB Garamond", Garamond, Georgia, serif',
+            "700",
+            "normal"
           );
-          ctx.font = `${size}px Georgia, serif`;
-          ctx.fillText(String(val), colXs[i], valueY);
+
+          ctx.fillStyle = "#111";
+          ctx.font = `normal 700 ${valueSize}px "EB Garamond", Garamond, Georgia, serif`;
+          ctx.fillText(String(displayValue), x, valueY);
+
+          if (stat.key === "points" && data.altPoints) {
+            const altText = `(${data.altPoints})`;
+            const altSize = fitText(
+              ctx,
+              altText,
+              140,
+              46,
+              24,
+              '"EB Garamond", Garamond, Georgia, serif',
+              "700",
+              "normal"
+            );
+            ctx.fillStyle = "#444";
+            ctx.font = `normal 700 ${altSize}px "EB Garamond", Garamond, Georgia, serif`;
+            ctx.fillText(altText, x, altValueY);
+          }
         });
 
-        // Keywords area
-        const kwTop = innerY + 285;
+        const kwTop = innerY + 315;
         const kwLeft = innerX + 10;
         const kwWidth = innerW - 20;
-        const keywordText = data.keywords.length ? data.keywords.map(k => k.toUpperCase()) : [];
 
-        let keywordFontSize = 38;
-        if (keywordText.length >= 4) keywordFontSize = 32;
-        if (keywordText.length >= 6) keywordFontSize = 28;
-        if (keywordText.join(" ").length > 80) keywordFontSize = 24;
-        if (keywordText.join(" ").length > 120) keywordFontSize = 20;
+        let keywordFontSize = 36;
+        let reminderFontSize = 22;
 
-        ctx.fillStyle = "#202020";
-        ctx.textAlign = "left";
-        ctx.textBaseline = "top";
-        ctx.font = `${keywordFontSize}px Georgia, serif`;
+        const totalKeywordChars = data.keywords.reduce((sum, item) => {
+          return sum + item.keyword.length + item.reminder.length;
+        }, 0);
 
-        const keywordLines = [];
-        keywordText.forEach(kw => {
-          const wrapped = wrapText(ctx, kw, kwWidth);
-          wrapped.forEach(line => keywordLines.push(line));
-        });
-
-        const lineHeight = keywordFontSize + 12;
-
-        // If too many lines, shrink more
-        const maxKeywordHeight = innerH - 320;
-        while ((keywordLines.length * lineHeight) > maxKeywordHeight && keywordFontSize > 16) {
-          keywordFontSize -= 2;
-          ctx.font = `${keywordFontSize}px Georgia, serif`;
-
-          const recalc = [];
-          keywordText.forEach(kw => {
-            const wrapped = wrapText(ctx, kw, kwWidth);
-            wrapped.forEach(line => recalc.push(line));
-          });
-
-          keywordLines.length = 0;
-          recalc.forEach(line => keywordLines.push(line));
+        if (data.keywords.length >= 3) {
+          keywordFontSize = 31;
+          reminderFontSize = 19;
+        }
+        if (data.keywords.length >= 5 || totalKeywordChars > 110) {
+          keywordFontSize = 27;
+          reminderFontSize = 17;
+        }
+        if (data.keywords.length >= 7 || totalKeywordChars > 180) {
+          keywordFontSize = 23;
+          reminderFontSize = 15;
         }
 
-        ctx.font = `${keywordFontSize}px Georgia, serif`;
-        keywordLines.forEach((line, idx) => {
-          ctx.fillText(line, kwLeft, kwTop + (idx * (keywordFontSize + 10)));
+        function buildKeywordLayout() {
+          const blocks = [];
+          let totalHeight = 0;
+
+          data.keywords.forEach(item => {
+            const block = {
+              keywordLines: [],
+              reminderLines: []
+            };
+
+            if (item.keyword) {
+              ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+              block.keywordLines = wrapText(ctx, item.keyword.toUpperCase(), kwWidth);
+            }
+
+            if (item.reminder) {
+              ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+              block.reminderLines = wrapText(ctx, item.reminder, kwWidth - 8);
+            }
+
+            let blockHeight = 0;
+            if (block.keywordLines.length) {
+              blockHeight += block.keywordLines.length * (keywordFontSize + 5);
+            }
+            if (block.reminderLines.length) {
+              if (block.keywordLines.length) blockHeight += 4;
+              blockHeight += block.reminderLines.length * (reminderFontSize + 4);
+            }
+            blockHeight += 11;
+
+            block.height = blockHeight;
+            totalHeight += blockHeight;
+            blocks.push(block);
+          });
+
+          return { blocks, totalHeight };
+        }
+
+        let layout = buildKeywordLayout();
+        const maxKeywordHeight = innerH - 350;
+
+        while (layout.totalHeight > maxKeywordHeight && keywordFontSize > 17) {
+          keywordFontSize -= 2;
+          reminderFontSize = Math.max(12, reminderFontSize - 1);
+          layout = buildKeywordLayout();
+        }
+
+        let currentY = kwTop;
+
+        layout.blocks.forEach(block => {
+          if (block.keywordLines.length) {
+            ctx.fillStyle = "#202020";
+            ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+            block.keywordLines.forEach(line => {
+              ctx.fillText(line, kwLeft, currentY);
+              currentY += keywordFontSize + 5;
+            });
+          }
+
+          if (block.reminderLines.length) {
+            if (block.keywordLines.length) currentY += 4;
+            ctx.fillStyle = "#444";
+            ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
+            block.reminderLines.forEach(line => {
+              ctx.fillText(line, kwLeft + 4, currentY);
+              currentY += reminderFontSize + 4;
+            });
+          }
+
+          currentY += 11;
         });
       }
 
@@ -671,48 +928,45 @@
         }, 150);
       }
 
+      function populateStats(values) {
+        els.statList.innerHTML = "";
+        statDefinitions.forEach(def => {
+          const item = makeStatItem(def, values[def.key] || "");
+          els.statList.appendChild(item);
+        });
+      }
+
       function loadExample() {
         els.unitName.value = "The Mob of Carcosa";
         els.unitType.value = "Light Infantry";
-        els.speed.value = "8";
-        els.range.value = "";
-        els.strikes.value = "10";
-        els.courage.value = "10";
-        els.points.value = "275";
+
+        populateStats({
+          speed: "8",
+          range: "",
+          strikes: "10",
+          courage: "10",
+          points: "275",
+          altPoints: ""
+        });
 
         els.keywordsBox.innerHTML = "";
-        const row = makeKeywordRow("Unruly");
-        els.keywordsBox.appendChild(row);
-        bindRowEvents(row);
+        const block = makeKeywordBlock("Unruly", "Does not benefit from Command");
+        els.keywordsBox.appendChild(block);
+        bindKeywordEvents(block);
 
         renderCard();
       }
 
-      [
-        els.unitName,
-        els.unitType,
-        els.speed,
-        els.range,
-        els.strikes,
-        els.courage,
-        els.points
-      ].forEach(el => {
-        el.addEventListener("input", renderCard);
-        el.addEventListener("change", renderCard);
-      });
+      els.unitName.addEventListener("input", renderCard);
+      els.unitType.addEventListener("input", renderCard);
+      els.unitType.addEventListener("change", renderCard);
 
       els.downloadPngBtn.addEventListener("click", downloadCanvas);
       els.printBtn.addEventListener("click", printCanvas);
       els.resetBtn.addEventListener("click", loadExample);
 
-      // Initial keyword row
-      const initialRow = makeKeywordRow("Unruly");
-      els.keywordsBox.appendChild(initialRow);
-      bindRowEvents(initialRow);
-
       loadExample();
     })();
   </script>
-</div>
-</body>
+</div></body>
 </html>
