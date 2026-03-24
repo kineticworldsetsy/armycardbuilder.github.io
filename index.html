@@ -7,20 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body style="background-color:#ECECEC;">
+    
     <div id="carcosa-card-builder">
   <style>
-      
     @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&display=swap');
 
-    /*
-      IMPORTANT:
-      Frakturika appears to be personal-use only on common font listings.
-      If you have the legal right to use it on your site, upload the font
-      file to your hosting and replace the URL below.
-    */
     @font-face {
       font-family: 'Frakturika';
-      src: url('./FRAKTURI.ttf') format('truetype');
+      src: url('/wp-content/uploads/fonts/Frakturika.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
@@ -733,14 +727,14 @@
         ctx.font = `normal ${titleSize}px "Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif`;
         ctx.fillText(data.unitName, canvas.width / 2, innerY + 4);
 
-        ctx.font = `normal 700 29px "EB Garamond", Garamond, Georgia, serif`;
+        ctx.font = `normal 700 34px "EB Garamond", Garamond, Georgia, serif`;
         ctx.fillStyle = "#4a4a4a";
-        ctx.fillText(data.unitType.toLowerCase(), canvas.width / 2, innerY + 96);
+        ctx.fillText(data.unitType.toUpperCase(), canvas.width / 2, innerY + 96);
 
-        const statsTop = innerY + 152;
+        const statsTop = innerY + 154;
         const labelY = statsTop;
-        const valueY = statsTop + 36;
-        const altValueY = valueY + 78;
+        const valueY = statsTop + 40;
+        const altValueY = valueY + 82;
 
         const colXs = [
           innerX + 70,
@@ -758,7 +752,7 @@
           const labelText = stat.label.toUpperCase();
 
           ctx.fillStyle = "#2f2f2f";
-          ctx.font = `normal 700 26px "EB Garamond", Garamond, Georgia, serif`;
+          ctx.font = `normal 700 30px "EB Garamond", Garamond, Georgia, serif`;
           ctx.fillText(labelText, x, labelY);
 
           let displayValue = stat.value;
@@ -768,9 +762,9 @@
           const valueSize = fitText(
             ctx,
             String(displayValue),
-            145,
-            stat.key === "points" ? 72 : 78,
-            40,
+            150,
+            stat.key === "points" ? 78 : 84,
+            44,
             '"EB Garamond", Garamond, Georgia, serif',
             "700",
             "normal"
@@ -778,16 +772,16 @@
 
           ctx.fillStyle = "#111";
           ctx.font = `normal 700 ${valueSize}px "EB Garamond", Garamond, Georgia, serif`;
-          ctx.fillText(String(displayValue), x, valueY);
+          ctx.fillText(String(displayValue).toUpperCase(), x, valueY);
 
           if (stat.key === "points" && data.altPoints) {
-            const altText = `(${data.altPoints})`;
+            const altText = `(${String(data.altPoints).toUpperCase()})`;
             const altSize = fitText(
               ctx,
               altText,
-              140,
-              46,
-              24,
+              145,
+              50,
+              26,
               '"EB Garamond", Garamond, Georgia, serif',
               "700",
               "normal"
@@ -798,9 +792,10 @@
           }
         });
 
-        const kwTop = innerY + 315;
-        const kwLeft = innerX + 10;
-        const kwWidth = innerW - 20;
+        /* FIXED KEYWORD POSITIONING */
+        const kwTop = innerY + 330;
+        const kwLeft = innerX + 42;
+        const kwWidth = innerW - 84;
 
         let keywordFontSize = 36;
         let reminderFontSize = 22;
@@ -839,7 +834,7 @@
 
             if (item.reminder) {
               ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-              block.reminderLines = wrapText(ctx, item.reminder, kwWidth - 8);
+              block.reminderLines = wrapText(ctx, item.reminder.toUpperCase(), kwWidth - 8);
             }
 
             let blockHeight = 0;
@@ -861,7 +856,7 @@
         }
 
         let layout = buildKeywordLayout();
-        const maxKeywordHeight = innerH - 350;
+        const maxKeywordHeight = innerH - 365;
 
         while (layout.totalHeight > maxKeywordHeight && keywordFontSize > 17) {
           keywordFontSize -= 2;
@@ -886,7 +881,7 @@
             ctx.fillStyle = "#444";
             ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
             block.reminderLines.forEach(line => {
-              ctx.fillText(line, kwLeft + 4, currentY);
+              ctx.fillText(line, kwLeft + 6, currentY);
               currentY += reminderFontSize + 4;
             });
           }
@@ -968,5 +963,6 @@
       loadExample();
     })();
   </script>
-</div></body>
+</div>
+</body>
 </html>
