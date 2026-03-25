@@ -10,7 +10,7 @@
     
 <div id="army-card-suite">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&family=MedievalSharp&family=UnifrakturCook:wght@700&family=Cormorant+Unicase:wght@700&family=Pirata+One&family=Cinzel+Decorative:wght@700&family=Orbitron:wght@700&family=Audiowide&family=Exo+2:wght@700&family=Russo+One&display=swap');
 
     @font-face {
       font-family: 'Frakturika';
@@ -558,6 +558,51 @@
       color: var(--sf-purple);
     }
 
+    #army-card-suite .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    #army-card-suite .preview-header h3 {
+      margin: 0;
+    }
+
+    #army-card-suite .font-picker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    #army-card-suite .font-picker label {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    #army-card-suite .font-picker select {
+      min-width: 220px;
+      max-width: 280px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #army-card-suite .fantasy-page .font-picker select {
+      border: 1px solid #bfc3bc;
+      color: #222;
+    }
+
+    #army-card-suite .scifi-page .font-picker select {
+      border: 1px solid rgba(88, 63, 140, 0.25);
+      color: var(--sf-ink);
+    }
+
     #army-card-suite .preview-note {
       font-size: 13px;
     }
@@ -893,7 +938,24 @@ button[data-builder="scifi"].active,
       </div>
 
       <div class="panel">
-        <h3>Preview</h3>
+        <div class="preview-header">
+          <h3>Preview</h3>
+          <div class="font-picker">
+            <label for="fantasyTitleFont">Title Font</label>
+            <select id="fantasyTitleFont">
+              <option value="frakturika" selected>Frakturika</option>
+              <option value="medievalsharp">Medieval Sharp</option>
+              <option value="unifrakturcook">UnifrakturCook</option>
+              <option value="cormorantunicase">Cormorant Unicase</option>
+              <option value="pirataone">Pirata One</option>
+              <option value="cinzeldecorative">Cinzel Decorative</option>
+              <option value="orbitron">Orbitron</option>
+              <option value="audiowide">Audiowide</option>
+              <option value="exo2">Exo 2</option>
+              <option value="russoone">Russo One</option>
+            </select>
+          </div>
+        </div>
         <div class="preview-note">
           Card size is rendered at 300 DPI for print: <strong>3.5" × 2.5"</strong> landscape.
         </div>
@@ -967,7 +1029,24 @@ button[data-builder="scifi"].active,
       </div>
 
       <div class="panel">
-        <h3>Preview</h3>
+        <div class="preview-header">
+          <h3>Preview</h3>
+          <div class="font-picker">
+            <label for="sfTitleFont">Title Font</label>
+            <select id="sfTitleFont">
+              <option value="frakturika" selected>Frakturika</option>
+              <option value="medievalsharp">Medieval Sharp</option>
+              <option value="unifrakturcook">UnifrakturCook</option>
+              <option value="cormorantunicase">Cormorant Unicase</option>
+              <option value="pirataone">Pirata One</option>
+              <option value="cinzeldecorative">Cinzel Decorative</option>
+              <option value="orbitron">Orbitron</option>
+              <option value="audiowide">Audiowide</option>
+              <option value="exo2">Exo 2</option>
+              <option value="russoone">Russo One</option>
+            </select>
+          </div>
+        </div>
         <div class="preview-note">
           Card size is rendered at 300 DPI for print: <strong>3.5" × 2.5"</strong> landscape.
         </div>
@@ -993,6 +1072,15 @@ button[data-builder="scifi"].active,
   Promise.all([
     document.fonts.ready,
     document.fonts.load('32px "Frakturika"'),
+    document.fonts.load('32px "MedievalSharp"'),
+    document.fonts.load('32px "UnifrakturCook"'),
+    document.fonts.load('32px "Cormorant Unicase"'),
+    document.fonts.load('32px "Pirata One"'),
+    document.fonts.load('32px "Cinzel Decorative"'),
+    document.fonts.load('32px "Orbitron"'),
+    document.fonts.load('32px "Audiowide"'),
+    document.fonts.load('32px "Exo 2"'),
+    document.fonts.load('32px "Russo One"'),
     document.fonts.load('700 32px "EB Garamond"')
   ]).then(() => {
     renderFantasyPreview();
@@ -1011,6 +1099,15 @@ button[data-builder="scifi"].active,
     try {
       if (document.fonts && document.fonts.load) {
         fontPromises.push(document.fonts.load('16px "Frakturika"'));
+        fontPromises.push(document.fonts.load('16px "MedievalSharp"'));
+        fontPromises.push(document.fonts.load('16px "UnifrakturCook"'));
+        fontPromises.push(document.fonts.load('16px "Cormorant Unicase"'));
+        fontPromises.push(document.fonts.load('16px "Pirata One"'));
+        fontPromises.push(document.fonts.load('16px "Cinzel Decorative"'));
+        fontPromises.push(document.fonts.load('16px "Orbitron"'));
+        fontPromises.push(document.fonts.load('16px "Audiowide"'));
+        fontPromises.push(document.fonts.load('16px "Exo 2"'));
+        fontPromises.push(document.fonts.load('16px "Russo One"'));
         fontPromises.push(document.fonts.load('700 16px "EB Garamond"'));
       }
     } catch (e) {}
@@ -1054,7 +1151,35 @@ button[data-builder="scifi"].active,
   }
 
 
-function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight = "700", fontStyle = "normal") {
+const TITLE_FONT_MAP = {
+        frakturika: '"Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+        medievalsharp: '"MedievalSharp", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+        unifrakturcook: '"UnifrakturCook", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+        cormorantunicase: '"Cormorant Unicase", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+        pirataone: '"Pirata One", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+        cinzeldecorative: '"Cinzel Decorative", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+        orbitron: '"Orbitron", "Trebuchet MS", Arial, sans-serif',
+        audiowide: '"Audiowide", "Trebuchet MS", Arial, sans-serif',
+        exo2: '"Exo 2", "Trebuchet MS", Arial, sans-serif',
+        russoone: '"Russo One", "Trebuchet MS", Arial, sans-serif'
+      };
+
+      function getTitleFontStack(key) {
+        return TITLE_FONT_MAP[key] || TITLE_FONT_MAP.frakturika;
+      }
+
+      async function loadTitleFont(key) {
+        const fontStack = getTitleFontStack(key);
+        if (!document.fonts || !document.fonts.load) return;
+        try {
+          await Promise.allSettled([
+            document.fonts.load(`32px ${fontStack}`),
+            document.fonts.load(`64px ${fontStack}`)
+          ]);
+        } catch (e) {}
+      }
+
+      function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight = "700", fontStyle = "normal") {
         let size = startSize;
         while (size > minSize) {
           ctx.font = `${fontStyle} ${fontWeight} ${size}px ${fontFamily}`;
@@ -1551,7 +1676,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         saveArmyBtn: document.getElementById("fantasySaveArmyBtn"),
         copyArmyBtn: document.getElementById("fantasyCopyArmyBtn"),
         loadArmyBtn: document.getElementById("fantasyLoadArmyBtn"),
-        codeStatus: document.getElementById("fantasyCodeStatus")
+        codeStatus: document.getElementById("fantasyCodeStatus"),
+        titleFont: document.getElementById("fantasyTitleFont")
       };
 
       const fantasyStatDefinitions = [
@@ -1569,6 +1695,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           unitName: name,
           unitType: "Light Infantry",
           showAltPoints: false,
+          titleFont: "frakturika",
           statOrder: ["speed", "range", "strikes", "courage", "points", "altPoints"],
           stats: {
             speed: "8",
@@ -1793,6 +1920,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         unit.unitName = fantasyEls.unitName.value.trim() || "Untitled Unit";
         unit.unitType = fantasyEls.unitType.value;
+        unit.titleFont = fantasyEls.titleFont.value || "frakturika";
 
         const visibleStatOrder = Array.from(fantasyEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
         unit.showAltPoints = !!fantasyEls.statList.querySelector('.stat-item[data-key="points"] .stat-extra input[type="checkbox"]')?.checked;
@@ -1815,6 +1943,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         fantasyEls.unitName.value = unit.unitName;
         fantasyEls.unitType.value = unit.unitType;
+        fantasyEls.titleFont.value = unit.titleFont || "frakturika";
 
         fantasyEls.statList.innerHTML = "";
         unit.statOrder = normalizeLinkedStatOrder(unit.statOrder, "points", "altPoints");
@@ -1903,7 +2032,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         ctx.fillStyle = "#232323";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.font = `normal ${titleSize}px "Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif`;
+        ctx.font = `normal ${titleSize}px ${getTitleFontStack(unit.titleFont)}`;
         ctx.fillText(unit.unitName, canvas.width / 2, innerY + 4);
 
         ctx.font = `normal 700 34px "EB Garamond", Garamond, Georgia, serif`;
@@ -1986,6 +2115,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
             unit.unitName,
             unit.unitType,
             unit.showAltPoints ? 1 : 0,
+            unit.titleFont || "frakturika",
             unit.statOrder,
             unit.stats.speed || "",
             unit.stats.range || "",
@@ -2006,16 +2136,21 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 10) throw new Error("bad");
             const hasShowAltPointsFlag = Array.isArray(row[2]) ? false : true;
+            const hasTitleFont = hasShowAltPointsFlag && typeof row[3] === "string" && !Array.isArray(row[3]);
             const showAltPoints = hasShowAltPointsFlag ? !!row[2] : false;
+            const titleFont = hasTitleFont ? String(row[3] || "frakturika") : "frakturika";
             const statOrder = hasShowAltPointsFlag
-              ? (Array.isArray(row[3]) ? row[3].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"])
+              ? (hasTitleFont
+                ? (Array.isArray(row[4]) ? row[4].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"])
+                : (Array.isArray(row[3]) ? row[3].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"]))
               : (Array.isArray(row[2]) ? row[2].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"]);
-            const baseIndex = hasShowAltPointsFlag ? 4 : 3;
+            const baseIndex = hasShowAltPointsFlag ? (hasTitleFont ? 5 : 4) : 3;
             return {
               id: "f_" + Math.random().toString(36).slice(2, 9),
               unitName: String(row[0] || "Untitled Unit"),
               unitType: String(row[1] || "Light Infantry"),
               showAltPoints,
+              titleFont,
               statOrder,
               stats: {
                 speed: String(row[baseIndex + 0] || ""),
@@ -2051,6 +2186,13 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
       fantasyEls.unitType.addEventListener("change", () => {
         saveFantasyFormIntoState();
         renderFantasyPreview();
+      });
+
+      fantasyEls.titleFont.addEventListener("change", async () => {
+        saveFantasyFormIntoState();
+        await loadTitleFont(fantasyEls.titleFont.value);
+        renderFantasyPreview();
+        renderFantasyUnitTabs();
       });
 
       fantasyEls.addUnitBtn.addEventListener("click", () => {
@@ -2146,7 +2288,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         saveArmyBtn: document.getElementById("sfSaveArmyBtn"),
         copyArmyBtn: document.getElementById("sfCopyArmyBtn"),
         loadArmyBtn: document.getElementById("sfLoadArmyBtn"),
-        codeStatus: document.getElementById("sfCodeStatus")
+        codeStatus: document.getElementById("sfCodeStatus"),
+        titleFont: document.getElementById("sfTitleFont")
       };
 
       const sfStatDefinitions = [
@@ -2165,6 +2308,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           unitName: name,
           unitType: "Light Infantry",
           showAltCost: false,
+          titleFont: "frakturika",
           statOrder: ["cost", "altCost", "range", "move", "combat", "defense", "morale"],
           stats: {
             cost: "50",
@@ -2395,6 +2539,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         unit.unitName = sfEls.unitName.value.trim() || "UNTITLED UNIT";
         unit.unitType = sfEls.unitType.value;
+        unit.titleFont = sfEls.titleFont.value || "frakturika";
 
         const visibleStatOrder = Array.from(sfEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
         unit.showAltCost = !!sfEls.statList.querySelector('.stat-item[data-key="cost"] .stat-extra input[type="checkbox"]')?.checked;
@@ -2417,6 +2562,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         sfEls.unitName.value = unit.unitName;
         sfEls.unitType.value = unit.unitType;
+        sfEls.titleFont.value = unit.titleFont || "frakturika";
 
         sfEls.statList.innerHTML = "";
         unit.statOrder = normalizeLinkedStatOrder(unit.statOrder, "cost", "altCost");
@@ -2533,7 +2679,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         const titleY = innerY + 26;
         ctx.fillStyle = "#583F8C";
-        ctx.font = `normal ${titleSize}px "Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif`;
+        ctx.font = `normal ${titleSize}px ${getTitleFontStack(unit.titleFont)}`;
         ctx.fillText(unit.unitName, canvas.width / 2, titleY);
 
         const nameDividerY = titleY + titleSize + 6;
@@ -2625,6 +2771,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           u: sfState.units.map(unit => [
             unit.unitName,
             unit.unitType,
+            unit.titleFont || "frakturika",
             unit.statOrder,
             unit.stats.cost || "",
             unit.stats.altCost || "",
@@ -2645,15 +2792,20 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           if (!raw || raw.t !== "s" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 11) throw new Error("bad");
-            const hasLegacyUnitCount = !Array.isArray(row[2]);
-            const statOrder = hasLegacyUnitCount
+            const hasTitleFont = typeof row[2] === "string" && !Array.isArray(row[2]);
+            const hasLegacyUnitCount = !hasTitleFont && !Array.isArray(row[2]);
+            const titleFont = hasTitleFont ? String(row[2] || "frakturika") : "frakturika";
+            const statOrder = hasTitleFont
               ? (Array.isArray(row[3]) ? row[3].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"])
-              : (Array.isArray(row[2]) ? row[2].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"]);
-            const baseIndex = hasLegacyUnitCount ? 4 : 3;
+              : hasLegacyUnitCount
+                ? (Array.isArray(row[3]) ? row[3].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"])
+                : (Array.isArray(row[2]) ? row[2].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"]);
+            const baseIndex = hasTitleFont ? 4 : (hasLegacyUnitCount ? 4 : 3);
             return {
               id: "s_" + Math.random().toString(36).slice(2, 9),
               unitName: String(row[0] || "Untitled Unit"),
               unitType: String(row[1] || "Light Infantry"),
+              titleFont,
               statOrder,
               stats: {
                 cost: String(row[baseIndex + 0] || ""),
@@ -2690,6 +2842,13 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
       sfEls.unitType.addEventListener("change", () => {
         saveSciFiFormIntoState();
         renderSciFiPreview();
+      });
+
+      sfEls.titleFont.addEventListener("change", async () => {
+        saveSciFiFormIntoState();
+        await loadTitleFont(sfEls.titleFont.value);
+        renderSciFiPreview();
+        renderSciFiUnitTabs();
       });
 
       sfEls.addUnitBtn.addEventListener("click", () => {
