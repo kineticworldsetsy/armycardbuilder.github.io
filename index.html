@@ -186,6 +186,54 @@
       line-height: 1.35;
     }
 
+    #army-card-suite .keyword-reminder-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    #army-card-suite .keyword-align-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    #army-card-suite .fantasy-page .keyword-align-toggle {
+      border: 1px solid #d6d6cf;
+      background: #f6f6f0;
+      color: #222;
+    }
+
+    #army-card-suite .scifi-page .keyword-align-toggle {
+      border: 1px solid rgba(88, 63, 140, 0.18);
+      background: #f4f0fb;
+      color: var(--sf-purple);
+    }
+
+    #army-card-suite .keyword-align-toggle input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #army-card-suite .keyword-align-toggle .arrow-icon {
+      line-height: 1;
+      opacity: 0.55;
+      transform: translateY(-1px);
+    }
+
+    #army-card-suite .keyword-align-toggle input[type="checkbox"]:checked + .arrow-icon {
+      opacity: 1;
+    }
+
     #army-card-suite .code-box {
       margin-top: 14px;
       padding-top: 14px;
@@ -295,6 +343,32 @@
 
     #army-card-suite .keyword-block:last-child {
       margin-bottom: 0;
+    }
+
+    #army-card-suite .keyword-block {
+      cursor: grab;
+      transition: box-shadow .12s ease, transform .12s ease, outline-color .12s ease;
+    }
+
+    #army-card-suite .keyword-block:hover {
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    }
+
+    #army-card-suite .keyword-block.dragging {
+      opacity: 0.45;
+      cursor: grabbing;
+      transform: scale(0.99);
+    }
+
+    #army-card-suite .keyword-block.drag-over {
+      outline: 2px dashed #b8c84c;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 3px rgba(184, 200, 76, 0.12);
+    }
+
+    #army-card-suite .scifi-page .keyword-block.drag-over {
+      outline-color: var(--sf-purple);
+      box-shadow: 0 0 0 3px rgba(88, 63, 140, 0.12);
     }
 
     #army-card-suite .keyword-top {
@@ -409,6 +483,33 @@
       margin-top: 6px;
       font-size: 12px;
       color: #666;
+    }
+
+    #army-card-suite .stat-extra {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #army-card-suite .stat-extra input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: #222;
+      cursor: pointer;
+    }
+
+    #army-card-suite .scifi-page .stat-extra input[type="checkbox"] {
+      accent-color: var(--sf-purple);
+    }
+
+    #army-card-suite .stat-extra label {
+      margin: 0;
+      font-size: 12px;
+      cursor: pointer;
     }
 
     #army-card-suite .scifi-page .stat-note {
@@ -842,15 +943,6 @@ button[data-builder="scifi"].active,
           </div>
 
           <div class="full">
-            <label for="sfUnitCount">Unit Count</label>
-            <div class="unit-count-wrap">
-              <button type="button" class="count-btn" id="sfCountDown">◀</button>
-              <input id="sfUnitCount" type="number" min="1" max="99" value="1" />
-              <button type="button" class="count-btn" id="sfCountUp">▶</button>
-            </div>
-          </div>
-
-          <div class="full">
             <label>Keywords & Reminder Text</label>
             <div class="keywords-box" id="sfKeywordsBox"></div>
           </div>
@@ -1040,15 +1132,29 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         ctx.fill();
       }
 
+      function getLinkedStatKeys(key) {
+        if (key === "points" || key === "altPoints") return ["points", "altPoints"];
+        if (key === "cost" || key === "altCost") return ["cost", "altCost"];
+        return [key];
+      }
+
+      function getDragGroup(container, item) {
+        const keys = getLinkedStatKeys(item.dataset.key);
+        const group = keys.map(key => container.querySelector(`.stat-item[data-key="${key}"]`)).filter(Boolean);
+        return group.length ? group : [item];
+      }
+
       function bindDragReorder(container, item, onEnd) {
         item.addEventListener("dragstart", () => {
           container._draggedItem = item;
-          item.classList.add("dragging");
+          container._draggedGroup = getDragGroup(container, item);
+          container._draggedGroup.forEach(el => el.classList.add("dragging"));
         });
 
         item.addEventListener("dragend", () => {
-          item.classList.remove("dragging");
+          (container._draggedGroup || [item]).forEach(el => el.classList.remove("dragging"));
           container._draggedItem = null;
+          container._draggedGroup = null;
           Array.from(container.children).forEach(child => child.classList.remove("drag-over"));
           onEnd();
         });
@@ -1057,7 +1163,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         item.addEventListener("dragenter", e => {
           e.preventDefault();
-          if (item !== container._draggedItem) item.classList.add("drag-over");
+          const draggedGroup = container._draggedGroup || [container._draggedItem];
+          if (!draggedGroup.includes(item)) item.classList.add("drag-over");
         });
 
         item.addEventListener("dragleave", () => item.classList.remove("drag-over"));
@@ -1065,15 +1172,78 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         item.addEventListener("drop", e => {
           e.preventDefault();
           item.classList.remove("drag-over");
-          const dragged = container._draggedItem;
-          if (!dragged || dragged === item) return;
+          const draggedGroup = container._draggedGroup || (container._draggedItem ? [container._draggedItem] : []);
+          if (!draggedGroup.length || draggedGroup.includes(item)) return;
+
+          const items = Array.from(container.children);
+          const draggedIndexes = draggedGroup.map(el => items.indexOf(el)).filter(i => i >= 0).sort((a, b) => a - b);
+          const draggedIndex = draggedIndexes[0];
+          const targetIndex = items.indexOf(item);
+          const movingForward = draggedIndex < targetIndex;
+
+          const referenceNode = movingForward ? item.nextSibling : item;
+          const fragment = document.createDocumentFragment();
+          draggedGroup.forEach(el => fragment.appendChild(el));
+          container.insertBefore(fragment, referenceNode);
+        });
+      }
+
+      function bindKeywordDragReorder(container, block, onEnd) {
+        block.draggable = true;
+
+        const interactiveSelector = 'input, textarea, button, select, label';
+        block.querySelectorAll(interactiveSelector).forEach(el => {
+          el.addEventListener("mousedown", e => e.stopPropagation());
+          el.addEventListener("dragstart", e => e.stopPropagation());
+        });
+
+        block.addEventListener("dragstart", e => {
+          if (e.target.closest(interactiveSelector)) {
+            e.preventDefault();
+            return;
+          }
+          if (e.dataTransfer) {
+            e.dataTransfer.effectAllowed = "move";
+            try { e.dataTransfer.setData("text/plain", "drag-keyword"); } catch (err) {}
+          }
+          container._draggedKeyword = block;
+          block.classList.add("dragging");
+        });
+
+        block.addEventListener("dragend", () => {
+          block.classList.remove("dragging");
+          container._draggedKeyword = null;
+          Array.from(container.children).forEach(child => child.classList.remove("drag-over"));
+          onEnd();
+        });
+
+        block.addEventListener("dragover", e => {
+          e.preventDefault();
+          if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+        });
+
+        block.addEventListener("dragenter", e => {
+          e.preventDefault();
+          const dragged = container._draggedKeyword;
+          if (dragged && dragged !== block) block.classList.add("drag-over");
+        });
+
+        block.addEventListener("dragleave", () => {
+          block.classList.remove("drag-over");
+        });
+
+        block.addEventListener("drop", e => {
+          e.preventDefault();
+          block.classList.remove("drag-over");
+          const dragged = container._draggedKeyword;
+          if (!dragged || dragged === block) return;
 
           const items = Array.from(container.children);
           const draggedIndex = items.indexOf(dragged);
-          const targetIndex = items.indexOf(item);
+          const targetIndex = items.indexOf(block);
+          const movingForward = draggedIndex < targetIndex;
 
-          if (draggedIndex < targetIndex) container.insertBefore(dragged, item.nextSibling);
-          else container.insertBefore(dragged, item);
+          container.insertBefore(dragged, movingForward ? block.nextSibling : block);
         });
       }
 
@@ -1178,6 +1348,188 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         };
       }
 
+      function normalizeLinkedStatOrder(order, primaryKey, secondaryKey) {
+        const list = Array.isArray(order) ? order.slice() : [];
+        const withoutSecondary = list.filter(key => key !== secondaryKey);
+        const primaryIndex = withoutSecondary.indexOf(primaryKey);
+
+        if (primaryIndex >= 0) {
+          withoutSecondary.splice(primaryIndex + 1, 0, secondaryKey);
+        } else if (!withoutSecondary.includes(secondaryKey)) {
+          withoutSecondary.push(secondaryKey);
+        }
+
+        return withoutSecondary;
+      }
+
+      function groupKeywordsForColumns(keywords) {
+        const rows = [];
+        let pendingLeft = null;
+
+        (keywords || []).forEach(item => {
+          const normalized = {
+            keyword: String(item?.keyword || ""),
+            reminder: String(item?.reminder || ""),
+            rightAlign: !!item?.rightAlign
+          };
+
+          if (normalized.rightAlign) {
+            if (pendingLeft) {
+              rows.push({ left: pendingLeft, right: normalized });
+              pendingLeft = null;
+            } else {
+              rows.push({ left: null, right: normalized });
+            }
+          } else {
+            if (pendingLeft) rows.push({ left: pendingLeft, right: null });
+            pendingLeft = normalized;
+          }
+        });
+
+        if (pendingLeft) rows.push({ left: pendingLeft, right: null });
+        return rows;
+      }
+
+      function layoutKeywordRows(ctx, rows, options) {
+        const availableWidth = options.rightX - options.leftX;
+        let keywordFontSize = options.keywordFontSize;
+        let reminderFontSize = options.reminderFontSize;
+        let layout = null;
+
+        function layoutOneSide(item, side, keywordSize, reminderSize, maxWidth) {
+          if (!item) return null;
+          const block = {
+            side,
+            keywordLines: [],
+            reminderLines: [],
+            keywordWidth: 0,
+            reminderWidth: 0
+          };
+
+          if (item.keyword) {
+            ctx.font = `normal 700 ${keywordSize}px ${options.fontFamily}`;
+            block.keywordLines = wrapText(ctx, item.keyword.toUpperCase(), maxWidth);
+            block.keywordWidth = Math.max(0, ...block.keywordLines.map(line => ctx.measureText(line).width));
+          }
+
+          if (item.reminder) {
+            ctx.font = `italic 700 ${reminderSize}px ${options.fontFamily}`;
+            block.reminderLines = wrapText(ctx, item.reminder.toUpperCase(), Math.max(20, maxWidth - 8));
+            block.reminderWidth = Math.max(0, ...block.reminderLines.map(line => ctx.measureText(line).width));
+          }
+
+          let height = 0;
+          if (block.keywordLines.length) height += block.keywordLines.length * (keywordSize + 5);
+          if (block.reminderLines.length) {
+            if (block.keywordLines.length) height += 4;
+            height += block.reminderLines.length * (reminderSize + 4);
+          }
+          block.height = height;
+          return block;
+        }
+
+        function build(keywordSize, reminderSize) {
+          const renderedRows = [];
+          let totalHeight = 0;
+
+          rows.forEach(row => {
+            let leftBlock = null;
+            let rightBlock = null;
+
+            if (row.left && row.right) {
+              let testKeyword = keywordSize;
+              let testReminder = reminderSize;
+
+              while (true) {
+                const tentativeLeft = layoutOneSide(row.left, "left", testKeyword, testReminder, availableWidth);
+                const tentativeRight = layoutOneSide(row.right, "right", testKeyword, testReminder, availableWidth);
+
+                const leftWidth = Math.max(tentativeLeft.keywordWidth, tentativeLeft.reminderWidth);
+                const rightWidth = Math.max(tentativeRight.keywordWidth, tentativeRight.reminderWidth);
+
+                if (leftWidth + rightWidth + options.middleGap <= availableWidth || testKeyword <= options.minKeywordSize) {
+                  leftBlock = tentativeLeft;
+                  rightBlock = tentativeRight;
+                  keywordSize = testKeyword;
+                  reminderSize = testReminder;
+                  break;
+                }
+
+                testKeyword -= 1;
+                testReminder = Math.max(options.minReminderSize, testReminder - (testReminder > options.minReminderSize ? 1 : 0));
+              }
+            } else if (row.left) {
+              leftBlock = layoutOneSide(row.left, "left", keywordSize, reminderSize, availableWidth);
+            } else if (row.right) {
+              rightBlock = layoutOneSide(row.right, "right", keywordSize, reminderSize, availableWidth);
+            }
+
+            const rowHeight = Math.max(leftBlock?.height || 0, rightBlock?.height || 0);
+            totalHeight += rowHeight + options.rowGap;
+            renderedRows.push({ left: leftBlock, right: rightBlock, height: rowHeight });
+          });
+
+          return { rows: renderedRows, totalHeight, keywordFontSize: keywordSize, reminderFontSize: reminderSize };
+        }
+
+        layout = build(keywordFontSize, reminderFontSize);
+        while (layout.totalHeight > options.maxHeight && layout.keywordFontSize > options.minKeywordSize) {
+          keywordFontSize = layout.keywordFontSize - 1;
+          reminderFontSize = Math.max(options.minReminderSize, layout.reminderFontSize - (layout.reminderFontSize > options.minReminderSize ? 1 : 0));
+          layout = build(keywordFontSize, reminderFontSize);
+        }
+
+        return layout;
+      }
+
+      function drawKeywordRows(ctx, rows, options) {
+        ctx.textBaseline = "top";
+
+        const layout = layoutKeywordRows(ctx, rows, options);
+        let currentY = options.topY;
+
+        layout.rows.forEach(row => {
+          const drawBlock = (block, align) => {
+            if (!block) return;
+            const x = align === "left" ? options.leftX : options.rightX;
+            ctx.textAlign = align;
+
+            if (block.keywordLines.length) {
+              ctx.fillStyle = options.keywordColor;
+              ctx.font = `normal 700 ${layout.keywordFontSize}px ${options.fontFamily}`;
+              block.keywordLines.forEach(line => {
+                ctx.fillText(line, x, currentY);
+                currentY += layout.keywordFontSize + 5;
+              });
+            }
+
+            if (block.reminderLines.length) {
+              if (block.keywordLines.length) currentY += 4;
+              ctx.fillStyle = options.reminderColor;
+              ctx.font = `italic 700 ${layout.reminderFontSize}px ${options.fontFamily}`;
+              block.reminderLines.forEach(line => {
+                ctx.fillText(line, x + (align === "left" ? 6 : -6), currentY);
+                currentY += layout.reminderFontSize + 4;
+              });
+            }
+          };
+
+          const startY = currentY;
+
+          if (row.left) {
+            currentY = startY;
+            drawBlock(row.left, "left");
+          }
+
+          if (row.right) {
+            currentY = startY;
+            drawBlock(row.right, "right");
+          }
+
+          currentY = startY + row.height + options.rowGap;
+        });
+      }
+
       /* =========================
          Fantasy builder
       ========================= */
@@ -1190,6 +1542,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         unitName: document.getElementById("fantasyUnitName"),
         unitType: document.getElementById("fantasyUnitType"),
         statList: document.getElementById("fantasyStatList"),
+        altPointsCheckboxIdPrefix: "fantasyAltPointsToggle_",
         keywordsBox: document.getElementById("fantasyKeywordsBox"),
         downloadBtn: document.getElementById("fantasyDownloadPngBtn"),
         printAllBtn: document.getElementById("fantasyPrintAllBtn"),
@@ -1215,6 +1568,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           id: "f_" + Math.random().toString(36).slice(2, 9),
           unitName: name,
           unitType: "Light Infantry",
+          showAltPoints: false,
           statOrder: ["speed", "range", "strikes", "courage", "points", "altPoints"],
           stats: {
             speed: "8",
@@ -1224,7 +1578,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
             points: "275",
             altPoints: ""
           },
-          keywords: [{ keyword: "Unruly", reminder: "Does not benefit from Command" }]
+          keywords: [{ keyword: "Unruly", reminder: "Does not benefit from Command", rightAlign: false }]
         };
       }
 
@@ -1253,7 +1607,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         });
       }
 
-      function makeFantasyStatItem(def, value = "") {
+      function makeFantasyStatItem(def, value = "", showAltPoints = false) {
         const item = document.createElement("div");
         item.className = "stat-item";
         item.dataset.key = def.key;
@@ -1285,10 +1639,32 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         const note = document.createElement("div");
         note.className = "stat-note";
-        note.textContent = def.note;
+        note.textContent = def.note || "";
 
         content.appendChild(fields);
-        content.appendChild(note);
+        if (def.key === "points") {
+          const extra = document.createElement("div");
+          extra.className = "stat-extra";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = !!showAltPoints;
+          checkbox.id = fantasyEls.altPointsCheckboxIdPrefix + Math.random().toString(36).slice(2, 9);
+
+          const checkboxLabel = document.createElement("label");
+          checkboxLabel.setAttribute("for", checkbox.id);
+          checkboxLabel.textContent = "(alt points)";
+
+          extra.appendChild(checkbox);
+          extra.appendChild(checkboxLabel);
+          content.appendChild(extra);
+
+          checkbox.addEventListener("change", () => {
+            saveFantasyFormIntoState();
+            loadFantasyStateIntoForm();
+          });
+        }
+        if (def.note) content.appendChild(note);
 
         item.appendChild(handle);
         item.appendChild(content);
@@ -1306,13 +1682,13 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         bindDragReorder(fantasyEls.statList, item, () => {
           saveFantasyFormIntoState();
-          renderFantasyPreview();
+          loadFantasyStateIntoForm();
         });
 
         return item;
       }
 
-      function makeFantasyKeywordBlock(keywordValue = "", reminderValue = "") {
+      function makeFantasyKeywordBlock(keywordValue = "", reminderValue = "", rightAlign = false) {
         const block = document.createElement("div");
         block.className = "keyword-block";
 
@@ -1335,13 +1711,34 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         removeBtn.className = "kw-btn kw-remove";
         removeBtn.textContent = "−";
 
+        const reminderRow = document.createElement("div");
+        reminderRow.className = "keyword-reminder-row";
+
         const reminder = document.createElement("textarea");
         reminder.className = "keyword-reminder";
         reminder.placeholder = "Reminder text";
         reminder.value = reminderValue;
 
+        const alignToggle = document.createElement("label");
+        alignToggle.className = "keyword-align-toggle";
+        alignToggle.title = "Right align keyword block";
+
+        const alignCheckbox = document.createElement("input");
+        alignCheckbox.type = "checkbox";
+        alignCheckbox.className = "keyword-right-align";
+        alignCheckbox.checked = !!rightAlign;
+
+        const arrowIcon = document.createElement("span");
+        arrowIcon.className = "arrow-icon";
+        arrowIcon.textContent = "→";
+
+        alignToggle.appendChild(alignCheckbox);
+        alignToggle.appendChild(arrowIcon);
+        reminderRow.appendChild(reminder);
+        reminderRow.appendChild(alignToggle);
+
         addBtn.addEventListener("click", () => {
-          const newBlock = makeFantasyKeywordBlock("", "");
+          const newBlock = makeFantasyKeywordBlock("", "", false);
           block.after(newBlock);
           bindFantasyKeywordEvents(newBlock);
           saveFantasyFormIntoState();
@@ -1354,6 +1751,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           else {
             keywordInput.value = "";
             reminder.value = "";
+            alignCheckbox.checked = false;
           }
           saveFantasyFormIntoState();
           renderFantasyPreview();
@@ -1363,7 +1761,13 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         top.appendChild(addBtn);
         top.appendChild(removeBtn);
         block.appendChild(top);
-        block.appendChild(reminder);
+        block.appendChild(reminderRow);
+
+        bindKeywordDragReorder(fantasyEls.keywordsBox, block, () => {
+          saveFantasyFormIntoState();
+          renderFantasyPreview();
+        });
+
         return block;
       }
 
@@ -1377,6 +1781,10 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           saveFantasyFormIntoState();
           renderFantasyPreview();
         });
+        block.querySelector(".keyword-right-align").addEventListener("change", () => {
+          saveFantasyFormIntoState();
+          renderFantasyPreview();
+        });
       }
 
       function saveFantasyFormIntoState() {
@@ -1386,7 +1794,9 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         unit.unitName = fantasyEls.unitName.value.trim() || "Untitled Unit";
         unit.unitType = fantasyEls.unitType.value;
 
-        unit.statOrder = Array.from(fantasyEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
+        const visibleStatOrder = Array.from(fantasyEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
+        unit.showAltPoints = !!fantasyEls.statList.querySelector('.stat-item[data-key="points"] .stat-extra input[type="checkbox"]')?.checked;
+        unit.statOrder = normalizeLinkedStatOrder(visibleStatOrder, "points", "altPoints");
         unit.stats = {};
         Array.from(fantasyEls.statList.querySelectorAll(".stat-item")).forEach(item => {
           unit.stats[item.dataset.key] = item.querySelector(".stat-input").value.trim();
@@ -1394,7 +1804,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         unit.keywords = Array.from(fantasyEls.keywordsBox.querySelectorAll(".keyword-block")).map(block => ({
           keyword: block.querySelector(".keyword-input").value.trim(),
-          reminder: block.querySelector(".keyword-reminder").value.trim()
+          reminder: block.querySelector(".keyword-reminder").value.trim(),
+          rightAlign: !!block.querySelector(".keyword-right-align")?.checked
         })).filter(item => item.keyword || item.reminder);
       }
 
@@ -1406,15 +1817,18 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         fantasyEls.unitType.value = unit.unitType;
 
         fantasyEls.statList.innerHTML = "";
+        unit.statOrder = normalizeLinkedStatOrder(unit.statOrder, "points", "altPoints");
+        const showAltPoints = !!unit.showAltPoints;
         unit.statOrder.forEach(key => {
+          if (key === "altPoints" && !showAltPoints) return;
           const def = fantasyStatDefinitions.find(d => d.key === key);
-          fantasyEls.statList.appendChild(makeFantasyStatItem(def, unit.stats[key] || ""));
+          fantasyEls.statList.appendChild(makeFantasyStatItem(def, unit.stats[key] || "", showAltPoints));
         });
 
         fantasyEls.keywordsBox.innerHTML = "";
-        const kws = unit.keywords.length ? unit.keywords : [{ keyword: "", reminder: "" }];
+        const kws = unit.keywords.length ? unit.keywords : [{ keyword: "", reminder: "", rightAlign: false }];
         kws.forEach(k => {
-          const block = makeFantasyKeywordBlock(k.keyword, k.reminder);
+          const block = makeFantasyKeywordBlock(k.keyword, k.reminder, !!k.rightAlign);
           fantasyEls.keywordsBox.appendChild(block);
           bindFantasyKeywordEvents(block);
         });
@@ -1520,7 +1934,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           ctx.font = `normal 700 ${valueSize}px "EB Garamond", Garamond, Georgia, serif`;
           ctx.fillText(String(displayValue).toUpperCase(), x, valueY);
 
-          if (stat.key === "points" && altPoints && altPoints.value) {
+          if (stat.key === "points" && unit.showAltPoints && altPoints && altPoints.value) {
             const altText = `(${String(altPoints.value).toUpperCase()})`;
             const altSize = fitText(ctx, altText, 145, 50, 26, '"EB Garamond", Garamond, Georgia, serif');
             ctx.fillStyle = "#444";
@@ -1531,8 +1945,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         const kwTop = innerY + 330;
         const kwLeft = 42;
-        const kwRightPadding = 42;
-        const kwWidth = canvas.width - kwLeft - kwRightPadding;
+        const kwRight = canvas.width - 42;
+        const keywordRows = groupKeywordsForColumns(unit.keywords);
 
         let keywordFontSize = 36;
         let reminderFontSize = 22;
@@ -1542,65 +1956,20 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         if (unit.keywords.length >= 5 || totalChars > 110) { keywordFontSize = 27; reminderFontSize = 17; }
         if (unit.keywords.length >= 7 || totalChars > 180) { keywordFontSize = 23; reminderFontSize = 15; }
 
-        function layoutKeywords() {
-          const blocks = [];
-          let totalHeight = 0;
-
-          unit.keywords.forEach(item => {
-            const block = { keywordLines: [], reminderLines: [] };
-            if (item.keyword) {
-              ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-              block.keywordLines = wrapText(ctx, item.keyword.toUpperCase(), kwWidth);
-            }
-            if (item.reminder) {
-              ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-              block.reminderLines = wrapText(ctx, item.reminder.toUpperCase(), kwWidth - 8);
-            }
-            let h = 0;
-            if (block.keywordLines.length) h += block.keywordLines.length * (keywordFontSize + 5);
-            if (block.reminderLines.length) {
-              if (block.keywordLines.length) h += 4;
-              h += block.reminderLines.length * (reminderFontSize + 4);
-            }
-            h += 11;
-            totalHeight += h;
-            blocks.push(block);
-          });
-
-          return { blocks, totalHeight };
-        }
-
-        let layout = layoutKeywords();
-        const maxKeywordHeight = innerH - 365;
-        while (layout.totalHeight > maxKeywordHeight && keywordFontSize > 17) {
-          keywordFontSize -= 2;
-          reminderFontSize = Math.max(12, reminderFontSize - 1);
-          layout = layoutKeywords();
-        }
-
-        ctx.textAlign = "left";
-        ctx.textBaseline = "top";
-
-        let currentY = kwTop;
-        layout.blocks.forEach(block => {
-          if (block.keywordLines.length) {
-            ctx.fillStyle = "#202020";
-            ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-            block.keywordLines.forEach(line => {
-              ctx.fillText(line, kwLeft, currentY);
-              currentY += keywordFontSize + 5;
-            });
-          }
-          if (block.reminderLines.length) {
-            if (block.keywordLines.length) currentY += 4;
-            ctx.fillStyle = "#444";
-            ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-            block.reminderLines.forEach(line => {
-              ctx.fillText(line, kwLeft + 6, currentY);
-              currentY += reminderFontSize + 4;
-            });
-          }
-          currentY += 11;
+        drawKeywordRows(ctx, keywordRows, {
+          topY: kwTop,
+          leftX: kwLeft,
+          rightX: kwRight,
+          maxHeight: innerH - 365,
+          keywordFontSize,
+          reminderFontSize,
+          minKeywordSize: 17,
+          minReminderSize: 12,
+          middleGap: 26,
+          rowGap: 11,
+          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+          keywordColor: "#202020",
+          reminderColor: "#444"
         });
       }
 
@@ -1616,6 +1985,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           u: fantasyState.units.map(unit => [
             unit.unitName,
             unit.unitType,
+            unit.showAltPoints ? 1 : 0,
             unit.statOrder,
             unit.stats.speed || "",
             unit.stats.range || "",
@@ -1623,7 +1993,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
             unit.stats.courage || "",
             unit.stats.points || "",
             unit.stats.altPoints || "",
-            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || ""])
+            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || "", k.rightAlign ? 1 : 0])
           ])
         };
         return base64UrlEncodeUtf8(JSON.stringify(packed));
@@ -1635,22 +2005,30 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           if (!raw || raw.t !== "f" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 10) throw new Error("bad");
+            const hasShowAltPointsFlag = Array.isArray(row[2]) ? false : true;
+            const showAltPoints = hasShowAltPointsFlag ? !!row[2] : false;
+            const statOrder = hasShowAltPointsFlag
+              ? (Array.isArray(row[3]) ? row[3].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"])
+              : (Array.isArray(row[2]) ? row[2].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"]);
+            const baseIndex = hasShowAltPointsFlag ? 4 : 3;
             return {
               id: "f_" + Math.random().toString(36).slice(2, 9),
               unitName: String(row[0] || "Untitled Unit"),
               unitType: String(row[1] || "Light Infantry"),
-              statOrder: Array.isArray(row[2]) ? row[2].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"],
+              showAltPoints,
+              statOrder,
               stats: {
-                speed: String(row[3] || ""),
-                range: String(row[4] || ""),
-                strikes: String(row[5] || ""),
-                courage: String(row[6] || ""),
-                points: String(row[7] || ""),
-                altPoints: String(row[8] || "")
+                speed: String(row[baseIndex + 0] || ""),
+                range: String(row[baseIndex + 1] || ""),
+                strikes: String(row[baseIndex + 2] || ""),
+                courage: String(row[baseIndex + 3] || ""),
+                points: String(row[baseIndex + 4] || ""),
+                altPoints: String(row[baseIndex + 5] || "")
               },
-              keywords: Array.isArray(row[9]) ? row[9].map(k => ({
+              keywords: Array.isArray(row[baseIndex + 6]) ? row[baseIndex + 6].map(k => ({
                 keyword: String((k && k[0]) || ""),
-                reminder: String((k && k[1]) || "")
+                reminder: String((k && k[1]) || ""),
+                rightAlign: !!(k && k[2])
               })) : []
             };
           });
@@ -1760,9 +2138,6 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         unitName: document.getElementById("sfUnitName"),
         unitType: document.getElementById("sfUnitType"),
         statList: document.getElementById("sfStatList"),
-        unitCount: document.getElementById("sfUnitCount"),
-        countDown: document.getElementById("sfCountDown"),
-        countUp: document.getElementById("sfCountUp"),
         keywordsBox: document.getElementById("sfKeywordsBox"),
         downloadBtn: document.getElementById("sfDownloadPngBtn"),
         printAllBtn: document.getElementById("sfPrintAllBtn"),
@@ -1776,7 +2151,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
       const sfStatDefinitions = [
         { key: "cost", label: "Cost" },
-        { key: "altCost", label: "(Cost)", note: "Can be rearranged here, but always appears under Cost" },
+        { key: "altCost", label: "(Cost)"},
         { key: "range", label: "Range" },
         { key: "move", label: "Move" },
         { key: "combat", label: "Combat" },
@@ -1789,7 +2164,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           id: "s_" + Math.random().toString(36).slice(2, 9),
           unitName: name,
           unitType: "Light Infantry",
-          unitCount: "1",
+          showAltCost: false,
           statOrder: ["cost", "altCost", "range", "move", "combat", "defense", "morale"],
           stats: {
             cost: "50",
@@ -1801,8 +2176,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
             morale: "7"
           },
           keywords: [
-            { keyword: "SCOUT", reminder: "MAY REDEPLOY AFTER DEPLOYMENT." },
-            { keyword: "SCRAP ARMOR", reminder: "IGNORE THE FIRST FAILED DEFENSE EACH ROUND." }
+            { keyword: "SCOUT", reminder: "MAY REDEPLOY AFTER DEPLOYMENT.", rightAlign: false },
+            { keyword: "SCRAP ARMOR", reminder: "IGNORE THE FIRST FAILED DEFENSE EACH ROUND.", rightAlign: false }
           ]
         };
       }
@@ -1815,13 +2190,6 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
       function getActiveSciFiUnit() {
         return sfState.units.find(u => u.id === sfState.activeUnitId);
-      }
-
-      function clampSciFiCount() {
-        let value = parseInt(sfEls.unitCount.value || "1", 10);
-        if (isNaN(value)) value = 1;
-        value = Math.max(1, Math.min(99, value));
-        sfEls.unitCount.value = value;
       }
 
       function renderSciFiUnitTabs() {
@@ -1839,7 +2207,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         });
       }
 
-      function makeSciFiStatItem(def, value = "") {
+      function makeSciFiStatItem(def, value = "", showAltCost = false) {
         const item = document.createElement("div");
         item.className = "stat-item";
         item.dataset.key = def.key;
@@ -1871,10 +2239,34 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         const note = document.createElement("div");
         note.className = "stat-note";
-        note.textContent = def.note;
+        note.textContent = def.note || "";
 
         content.appendChild(fields);
-        content.appendChild(note);
+
+        if (def.key === "cost") {
+          const extra = document.createElement("div");
+          extra.className = "stat-extra";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = !!showAltCost;
+          checkbox.id = "scifiAltCostToggle_" + Math.random().toString(36).slice(2, 9);
+
+          const checkboxLabel = document.createElement("label");
+          checkboxLabel.setAttribute("for", checkbox.id);
+          checkboxLabel.textContent = "(alt cost)";
+
+          extra.appendChild(checkbox);
+          extra.appendChild(checkboxLabel);
+          content.appendChild(extra);
+
+          checkbox.addEventListener("change", () => {
+            saveSciFiFormIntoState();
+            loadSciFiStateIntoForm();
+          });
+        }
+
+        if (def.note) content.appendChild(note);
 
         item.appendChild(handle);
         item.appendChild(content);
@@ -1892,13 +2284,13 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         bindDragReorder(sfEls.statList, item, () => {
           saveSciFiFormIntoState();
-          renderSciFiPreview();
+          loadSciFiStateIntoForm();
         });
 
         return item;
       }
 
-      function makeSciFiKeywordBlock(keywordValue = "", reminderValue = "") {
+      function makeSciFiKeywordBlock(keywordValue = "", reminderValue = "", rightAlign = false) {
         const block = document.createElement("div");
         block.className = "keyword-block";
 
@@ -1921,13 +2313,34 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         removeBtn.className = "kw-btn kw-remove";
         removeBtn.textContent = "−";
 
+        const reminderRow = document.createElement("div");
+        reminderRow.className = "keyword-reminder-row";
+
         const reminder = document.createElement("textarea");
         reminder.className = "keyword-reminder";
         reminder.placeholder = "Reminder text";
         reminder.value = reminderValue;
 
+        const alignToggle = document.createElement("label");
+        alignToggle.className = "keyword-align-toggle";
+        alignToggle.title = "Right align keyword block";
+
+        const alignCheckbox = document.createElement("input");
+        alignCheckbox.type = "checkbox";
+        alignCheckbox.className = "keyword-right-align";
+        alignCheckbox.checked = !!rightAlign;
+
+        const arrowIcon = document.createElement("span");
+        arrowIcon.className = "arrow-icon";
+        arrowIcon.textContent = "→";
+
+        alignToggle.appendChild(alignCheckbox);
+        alignToggle.appendChild(arrowIcon);
+        reminderRow.appendChild(reminder);
+        reminderRow.appendChild(alignToggle);
+
         addBtn.addEventListener("click", () => {
-          const newBlock = makeSciFiKeywordBlock("", "");
+          const newBlock = makeSciFiKeywordBlock("", "", false);
           block.after(newBlock);
           bindSciFiKeywordEvents(newBlock);
           saveSciFiFormIntoState();
@@ -1940,6 +2353,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           else {
             keywordInput.value = "";
             reminder.value = "";
+            alignCheckbox.checked = false;
           }
           saveSciFiFormIntoState();
           renderSciFiPreview();
@@ -1949,7 +2363,13 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         top.appendChild(addBtn);
         top.appendChild(removeBtn);
         block.appendChild(top);
-        block.appendChild(reminder);
+        block.appendChild(reminderRow);
+
+        bindKeywordDragReorder(sfEls.keywordsBox, block, () => {
+          saveSciFiFormIntoState();
+          renderSciFiPreview();
+        });
+
         return block;
       }
 
@@ -1963,18 +2383,22 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           saveSciFiFormIntoState();
           renderSciFiPreview();
         });
+        block.querySelector(".keyword-right-align").addEventListener("change", () => {
+          saveSciFiFormIntoState();
+          renderSciFiPreview();
+        });
       }
 
       function saveSciFiFormIntoState() {
         const unit = getActiveSciFiUnit();
         if (!unit) return;
 
-        clampSciFiCount();
         unit.unitName = sfEls.unitName.value.trim() || "UNTITLED UNIT";
         unit.unitType = sfEls.unitType.value;
-        unit.unitCount = sfEls.unitCount.value.trim() || "1";
 
-        unit.statOrder = Array.from(sfEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
+        const visibleStatOrder = Array.from(sfEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
+        unit.showAltCost = !!sfEls.statList.querySelector('.stat-item[data-key="cost"] .stat-extra input[type="checkbox"]')?.checked;
+        unit.statOrder = normalizeLinkedStatOrder(visibleStatOrder, "cost", "altCost");
         unit.stats = {};
         Array.from(sfEls.statList.querySelectorAll(".stat-item")).forEach(item => {
           unit.stats[item.dataset.key] = item.querySelector(".stat-input").value.trim();
@@ -1982,7 +2406,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         unit.keywords = Array.from(sfEls.keywordsBox.querySelectorAll(".keyword-block")).map(block => ({
           keyword: block.querySelector(".keyword-input").value.trim(),
-          reminder: block.querySelector(".keyword-reminder").value.trim()
+          reminder: block.querySelector(".keyword-reminder").value.trim(),
+          rightAlign: !!block.querySelector(".keyword-right-align")?.checked
         })).filter(item => item.keyword || item.reminder);
       }
 
@@ -1992,18 +2417,20 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         sfEls.unitName.value = unit.unitName;
         sfEls.unitType.value = unit.unitType;
-        sfEls.unitCount.value = unit.unitCount;
 
         sfEls.statList.innerHTML = "";
+        unit.statOrder = normalizeLinkedStatOrder(unit.statOrder, "cost", "altCost");
+        const showAltCost = !!unit.showAltCost;
         unit.statOrder.forEach(key => {
+          if (key === "altCost" && !showAltCost) return;
           const def = sfStatDefinitions.find(d => d.key === key);
-          sfEls.statList.appendChild(makeSciFiStatItem(def, unit.stats[key] || ""));
+          sfEls.statList.appendChild(makeSciFiStatItem(def, unit.stats[key] || "", showAltCost));
         });
 
         sfEls.keywordsBox.innerHTML = "";
-        const kws = unit.keywords.length ? unit.keywords : [{ keyword: "", reminder: "" }];
+        const kws = unit.keywords.length ? unit.keywords : [{ keyword: "", reminder: "", rightAlign: false }];
         kws.forEach(k => {
-          const block = makeSciFiKeywordBlock(k.keyword, k.reminder);
+          const block = makeSciFiKeywordBlock(k.keyword, k.reminder, !!k.rightAlign);
           sfEls.keywordsBox.appendChild(block);
           bindSciFiKeywordEvents(block);
         });
@@ -2124,7 +2551,6 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         ctx.fillText(unit.unitType.toUpperCase(), canvas.width / 2, innerY + 112);
 
         ctx.font = `normal 700 24px "EB Garamond", Garamond, Georgia, serif`;
-        ctx.fillText(`UNIT COUNT ${unit.unitCount}`, canvas.width / 2, innerY + 148);
 
         const statsTop = innerY + 202;
         const labelY = statsTop;
@@ -2148,7 +2574,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           ctx.font = `normal 700 ${valueSize}px "EB Garamond", Garamond, Georgia, serif`;
           ctx.fillText(displayValue, x, valueY);
 
-          if (stat.key === "cost" && altCost && altCost.value) {
+          if (stat.key === "cost" && unit.showAltCost && altCost && altCost.value) {
             const altText = `(${altCost.value}PTS)`;
             const altSize = fitText(ctx, altText, 140, Math.max(24, Math.round(valueSize * 0.46)), 18, '"EB Garamond", Garamond, Georgia, serif', "italic", "700");
             ctx.fillStyle = "#583F8C";
@@ -2159,8 +2585,8 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
 
         const kwTop = innerY + 318;
         const kwLeft = 40;
-        const kwRightPadding = 40;
-        const kwWidth = canvas.width - kwLeft - kwRightPadding;
+        const kwRight = canvas.width - 40;
+        const keywordRows = groupKeywordsForColumns(unit.keywords);
 
         let keywordFontSize = 34;
         let reminderFontSize = 21;
@@ -2170,63 +2596,20 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         if (unit.keywords.length >= 5 || totalChars > 110) { keywordFontSize = 26; reminderFontSize = 16; }
         if (unit.keywords.length >= 7 || totalChars > 180) { keywordFontSize = 22; reminderFontSize = 14; }
 
-        function layoutKeywords() {
-          const blocks = [];
-          let totalHeight = 0;
-          unit.keywords.forEach(item => {
-            const block = { keywordLines: [], reminderLines: [] };
-            if (item.keyword) {
-              ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-              block.keywordLines = wrapText(ctx, item.keyword.toUpperCase(), kwWidth);
-            }
-            if (item.reminder) {
-              ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-              block.reminderLines = wrapText(ctx, item.reminder.toUpperCase(), kwWidth - 8);
-            }
-            let h = 0;
-            if (block.keywordLines.length) h += block.keywordLines.length * (keywordFontSize + 5);
-            if (block.reminderLines.length) {
-              if (block.keywordLines.length) h += 4;
-              h += block.reminderLines.length * (reminderFontSize + 4);
-            }
-            h += 11;
-            totalHeight += h;
-            blocks.push(block);
-          });
-          return { blocks, totalHeight };
-        }
-
-        let layout = layoutKeywords();
-        const maxKeywordHeight = innerH - 350;
-        while (layout.totalHeight > maxKeywordHeight && keywordFontSize > 16) {
-          keywordFontSize -= 2;
-          reminderFontSize = Math.max(12, reminderFontSize - 1);
-          layout = layoutKeywords();
-        }
-
-        ctx.textAlign = "left";
-        ctx.textBaseline = "top";
-
-        let currentY = kwTop;
-        layout.blocks.forEach(block => {
-          if (block.keywordLines.length) {
-            ctx.fillStyle = "#583F8C";
-            ctx.font = `normal 700 ${keywordFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-            block.keywordLines.forEach(line => {
-              ctx.fillText(line, kwLeft, currentY);
-              currentY += keywordFontSize + 5;
-            });
-          }
-          if (block.reminderLines.length) {
-            if (block.keywordLines.length) currentY += 4;
-            ctx.fillStyle = "#3D3066";
-            ctx.font = `italic 700 ${reminderFontSize}px "EB Garamond", Garamond, Georgia, serif`;
-            block.reminderLines.forEach(line => {
-              ctx.fillText(line, kwLeft + 6, currentY);
-              currentY += reminderFontSize + 4;
-            });
-          }
-          currentY += 11;
+        drawKeywordRows(ctx, keywordRows, {
+          topY: kwTop,
+          leftX: kwLeft,
+          rightX: kwRight,
+          maxHeight: innerH - 350,
+          keywordFontSize,
+          reminderFontSize,
+          minKeywordSize: 16,
+          minReminderSize: 12,
+          middleGap: 26,
+          rowGap: 11,
+          fontFamily: '"EB Garamond", Garamond, Georgia, serif',
+          keywordColor: "#583F8C",
+          reminderColor: "#3D3066"
         });
       }
 
@@ -2242,7 +2625,6 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           u: sfState.units.map(unit => [
             unit.unitName,
             unit.unitType,
-            unit.unitCount,
             unit.statOrder,
             unit.stats.cost || "",
             unit.stats.altCost || "",
@@ -2251,7 +2633,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
             unit.stats.combat || "",
             unit.stats.defense || "",
             unit.stats.morale || "",
-            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || ""])
+            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || "", k.rightAlign ? 1 : 0])
           ])
         };
         return base64UrlEncodeUtf8(JSON.stringify(packed));
@@ -2262,25 +2644,30 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
           const raw = JSON.parse(base64UrlDecodeUtf8(code));
           if (!raw || raw.t !== "s" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
-            if (!Array.isArray(row) || row.length < 12) throw new Error("bad");
+            if (!Array.isArray(row) || row.length < 11) throw new Error("bad");
+            const hasLegacyUnitCount = !Array.isArray(row[2]);
+            const statOrder = hasLegacyUnitCount
+              ? (Array.isArray(row[3]) ? row[3].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"])
+              : (Array.isArray(row[2]) ? row[2].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"]);
+            const baseIndex = hasLegacyUnitCount ? 4 : 3;
             return {
               id: "s_" + Math.random().toString(36).slice(2, 9),
               unitName: String(row[0] || "Untitled Unit"),
               unitType: String(row[1] || "Light Infantry"),
-              unitCount: String(row[2] || "1"),
-              statOrder: Array.isArray(row[3]) ? row[3].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"],
+              statOrder,
               stats: {
-                cost: String(row[4] || ""),
-                altCost: String(row[5] || ""),
-                range: String(row[6] || ""),
-                move: String(row[7] || ""),
-                combat: String(row[8] || ""),
-                defense: String(row[9] || ""),
-                morale: String(row[10] || "")
+                cost: String(row[baseIndex + 0] || ""),
+                altCost: String(row[baseIndex + 1] || ""),
+                range: String(row[baseIndex + 2] || ""),
+                move: String(row[baseIndex + 3] || ""),
+                combat: String(row[baseIndex + 4] || ""),
+                defense: String(row[baseIndex + 5] || ""),
+                morale: String(row[baseIndex + 6] || "")
               },
-              keywords: Array.isArray(row[11]) ? row[11].map(k => ({
+              keywords: Array.isArray(row[baseIndex + 7]) ? row[baseIndex + 7].map(k => ({
                 keyword: String((k && k[0]) || ""),
-                reminder: String((k && k[1]) || "")
+                reminder: String((k && k[1]) || ""),
+                rightAlign: !!(k && k[2])
               })) : []
             };
           });
@@ -2304,24 +2691,6 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         saveSciFiFormIntoState();
         renderSciFiPreview();
       });
-      sfEls.unitCount.addEventListener("input", () => {
-        saveSciFiFormIntoState();
-        renderSciFiPreview();
-      });
-
-      sfEls.countDown.addEventListener("click", () => {
-        clampSciFiCount();
-        sfEls.unitCount.value = Math.max(1, parseInt(sfEls.unitCount.value, 10) - 1);
-        saveSciFiFormIntoState();
-        renderSciFiPreview();
-      });
-
-      sfEls.countUp.addEventListener("click", () => {
-        clampSciFiCount();
-        sfEls.unitCount.value = Math.min(99, parseInt(sfEls.unitCount.value, 10) + 1);
-        saveSciFiFormIntoState();
-        renderSciFiPreview();
-      });
 
       sfEls.addUnitBtn.addEventListener("click", () => {
         saveSciFiFormIntoState();
@@ -2329,9 +2698,7 @@ function fitText(ctx, text, maxWidth, startSize, minSize, fontFamily, fontWeight
         sfState.units.push(unit);
         sfState.activeUnitId = unit.id;
         loadSciFiStateIntoForm();
-      });
-
-      sfEls.copyUnitBtn.addEventListener("click", () => {
+      });      sfEls.copyUnitBtn.addEventListener("click", () => {
         saveSciFiFormIntoState();
         const current = getActiveSciFiUnit();
         if (!current) return;
