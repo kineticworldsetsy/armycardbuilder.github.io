@@ -921,13 +921,13 @@ button[data-builder="scifi"].active,
 </style>
 
   <div class="mode-tabs">
-    <button class="mode-tab active" data-page="fantasyPage">Fantasy Builder</button>
-    <button class="mode-tab" data-page="scifiPage">Sci-Fi Builder</button>
+    <button class="mode-tab active" data-page="fantasyPage">Hobgoblin Builder</button>
+    <button class="mode-tab" data-page="scifiPage">Eternøl Builder</button>
   </div>
 
   <div id="fantasyPage" class="suite-page fantasy-page active">
     <div class="panel" style="margin-bottom:16px;">
-      <h3>Fantasy Units</h3>
+      <h3>Hobgoblin Units</h3>
       <div class="unit-tabs" id="fantasyUnitTabs"></div>
       <div class="actions" style="margin-top:0;">
         <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
@@ -938,7 +938,7 @@ button[data-builder="scifi"].active,
 
     <div class="builder-wrap">
       <div class="panel">
-        <h2>Fantasy Army Builder</h2>
+        <h2>Hobgoblin Army Builder</h2>
 
         <div class="form-grid">
           <div class="full">
@@ -976,13 +976,13 @@ button[data-builder="scifi"].active,
 
         <div class="actions">
           <button class="action-btn primary" id="fantasyDownloadPngBtn">Download Current PNG</button>
-          <button class="action-btn dark" id="fantasyPrintAllBtn">Print Fantasy Sheet</button>
+          <button class="action-btn dark" id="fantasyPrintAllBtn">Print Hobgoblin Sheet</button>
           <button class="action-btn light" id="fantasyResetUnitBtn">Reset Current Unit</button>
         </div>
 
         <div class="code-box">
           <label for="fantasyArmyCode">Army Code</label>
-          <textarea id="fantasyArmyCode" placeholder="Save will place a code here. Paste a fantasy army code here and click Load Army."></textarea>
+          <textarea id="fantasyArmyCode" placeholder="Save will place a code here. Paste a Hobgoblin army code here and click Load Army."></textarea>
           <label class="share-options-toggle">
             <input type="checkbox" id="fantasyShowShareOptions" />
             <span>Show share options</span>
@@ -990,8 +990,8 @@ button[data-builder="scifi"].active,
           <div class="actions">
             <button class="action-btn primary share-option-toggle-target share-option-hidden" id="fantasySaveArmyBtn">Save Army</button>
             <button class="action-btn light share-option-toggle-target share-option-hidden" id="fantasyCopyArmyBtn">Copy Code</button>
-            <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
             <button class="action-btn dark share-option-toggle-target share-option-hidden" id="fantasyLoadArmyBtn">Load Army</button>
+            <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
             <span class="status-label" id="fantasyCodeStatus">invalid army code</span>
           </div>
         </div>
@@ -1028,7 +1028,7 @@ button[data-builder="scifi"].active,
 
   <div id="scifiPage" class="suite-page scifi-page">
     <div class="panel" style="margin-bottom:16px;">
-      <h3>Sci-Fi Units</h3>
+      <h3>Eternøl Units</h3>
       <div class="unit-tabs" id="scifiUnitTabs"></div>
       <div class="actions" style="margin-top:0;">
         <button class="small-btn add" id="scifiAddUnitBtn">+ Add Unit</button>
@@ -1039,7 +1039,7 @@ button[data-builder="scifi"].active,
 
     <div class="builder-wrap">
       <div class="panel">
-        <h2>Sci-Fi Army Builder</h2>
+        <h2>Eternøl Army Builder</h2>
 
         <div class="form-grid">
           <div class="full">
@@ -1072,13 +1072,13 @@ button[data-builder="scifi"].active,
 
         <div class="actions">
           <button class="action-btn primary" id="sfDownloadPngBtn">Download Current PNG</button>
-          <button class="action-btn accent" id="sfPrintAllBtn">Print Sci-Fi Sheet</button>
+          <button class="action-btn accent" id="sfPrintAllBtn">Print Eternøl Sheet</button>
           <button class="action-btn light" id="sfResetUnitBtn">Reset Current Unit</button>
         </div>
 
         <div class="code-box">
           <label for="sfArmyCode">Army Code</label>
-          <textarea id="sfArmyCode" placeholder="Save will place a code here. Paste a sci-fi army code here and click Load Army."></textarea>
+          <textarea id="sfArmyCode" placeholder="Save will place a code here. Paste an Eternøl army code here and click Load Army."></textarea>
           <label class="share-options-toggle">
             <input type="checkbox" id="sfShowShareOptions" />
             <span>Show share options</span>
@@ -1086,8 +1086,8 @@ button[data-builder="scifi"].active,
           <div class="actions">
             <button class="action-btn primary share-option-toggle-target share-option-hidden" id="sfSaveArmyBtn">Save Army</button>
             <button class="action-btn light share-option-toggle-target share-option-hidden" id="sfCopyArmyBtn">Copy Code</button>
-            <button class="action-btn light" id="sfShareLinkBtn">Copy Share Link</button>
             <button class="action-btn accent share-option-toggle-target share-option-hidden" id="sfLoadArmyBtn">Load Army</button>
+            <button class="action-btn light" id="sfShareLinkBtn">Copy Share Link</button>
             <span class="status-label" id="sfCodeStatus">invalid army code</span>
           </div>
         </div>
@@ -2589,20 +2589,20 @@ const TITLE_FONT_MAP = {
           unitName: name,
           unitType: "Light Infantry",
           showAltCost: false,
-          titleFont: "frakturika",
+          titleFont: "orbitron",
           statOrder: ["cost", "altCost", "range", "move", "combat", "defense", "morale"],
           stats: {
-            cost: "50",
-            altCost: "40",
-            range: "24",
-            move: "6",
+            cost: "60",
+            altCost: "50",
+            range: "12",
+            move: "8",
             combat: "4",
             defense: "5",
-            morale: "7"
+            morale: "6"
           },
           keywords: [
-            { keyword: "SCOUT", reminder: "MAY REDEPLOY AFTER DEPLOYMENT.", rightAlign: false },
-            { keyword: "SCRAP ARMOR", reminder: "IGNORE THE FIRST FAILED DEFENSE EACH ROUND.", rightAlign: false }
+            { keyword: "COWARDLY", reminder: "Reduce this unit's Morale by 1.", rightAlign: false },
+            { keyword: "FAST", reminder: "Increase this unit's Move stat by 2”.", rightAlign: false }
           ]
         };
       }
