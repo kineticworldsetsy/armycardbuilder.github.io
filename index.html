@@ -921,13 +921,13 @@ button[data-builder="scifi"].active,
 </style>
 
   <div class="mode-tabs">
-    <button class="mode-tab active" data-page="fantasyPage">Fantasy Builder</button>
-    <button class="mode-tab" data-page="scifiPage">Sci-Fi Builder</button>
+    <button class="mode-tab active" data-page="fantasyPage">Hobgoblin Builder</button>
+    <button class="mode-tab" data-page="scifiPage">Eternøl Builder</button>
   </div>
 
   <div id="fantasyPage" class="suite-page fantasy-page active">
     <div class="panel" style="margin-bottom:16px;">
-      <h3>Fantasy Units</h3>
+      <h3>Hobgoblin Units</h3>
       <div class="unit-tabs" id="fantasyUnitTabs"></div>
       <div class="actions" style="margin-top:0;">
         <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
@@ -938,7 +938,7 @@ button[data-builder="scifi"].active,
 
     <div class="builder-wrap">
       <div class="panel">
-        <h2>Fantasy Army Builder</h2>
+        <h2>Hobgoblin Army Builder</h2>
 
         <div class="form-grid">
           <div class="full">
@@ -976,13 +976,13 @@ button[data-builder="scifi"].active,
 
         <div class="actions">
           <button class="action-btn primary" id="fantasyDownloadPngBtn">Download Current PNG</button>
-          <button class="action-btn dark" id="fantasyPrintAllBtn">Print Fantasy Sheet</button>
+          <button class="action-btn dark" id="fantasyPrintAllBtn">Print Hobgoblin Sheet</button>
           <button class="action-btn light" id="fantasyResetUnitBtn">Reset Current Unit</button>
         </div>
 
         <div class="code-box">
           <label for="fantasyArmyCode">Army Code</label>
-          <textarea id="fantasyArmyCode" placeholder="Save will place a code here. Paste a fantasy army code here and click Load Army."></textarea>
+          <textarea id="fantasyArmyCode" placeholder="Save will place a code here. Paste a Hobgoblin army code here and click Load Army."></textarea>
           <label class="share-options-toggle">
             <input type="checkbox" id="fantasyShowShareOptions" />
             <span>Show share options</span>
@@ -990,8 +990,8 @@ button[data-builder="scifi"].active,
           <div class="actions">
             <button class="action-btn primary share-option-toggle-target share-option-hidden" id="fantasySaveArmyBtn">Save Army</button>
             <button class="action-btn light share-option-toggle-target share-option-hidden" id="fantasyCopyArmyBtn">Copy Code</button>
-            <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
             <button class="action-btn dark share-option-toggle-target share-option-hidden" id="fantasyLoadArmyBtn">Load Army</button>
+            <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
             <span class="status-label" id="fantasyCodeStatus">invalid army code</span>
           </div>
         </div>
@@ -1028,7 +1028,7 @@ button[data-builder="scifi"].active,
 
   <div id="scifiPage" class="suite-page scifi-page">
     <div class="panel" style="margin-bottom:16px;">
-      <h3>Sci-Fi Units</h3>
+      <h3>Eternøl Units</h3>
       <div class="unit-tabs" id="scifiUnitTabs"></div>
       <div class="actions" style="margin-top:0;">
         <button class="small-btn add" id="scifiAddUnitBtn">+ Add Unit</button>
@@ -1039,7 +1039,7 @@ button[data-builder="scifi"].active,
 
     <div class="builder-wrap">
       <div class="panel">
-        <h2>Sci-Fi Army Builder</h2>
+        <h2>Eternøl Army Builder</h2>
 
         <div class="form-grid">
           <div class="full">
@@ -1072,13 +1072,13 @@ button[data-builder="scifi"].active,
 
         <div class="actions">
           <button class="action-btn primary" id="sfDownloadPngBtn">Download Current PNG</button>
-          <button class="action-btn accent" id="sfPrintAllBtn">Print Sci-Fi Sheet</button>
+          <button class="action-btn accent" id="sfPrintAllBtn">Print Eternøl Sheet</button>
           <button class="action-btn light" id="sfResetUnitBtn">Reset Current Unit</button>
         </div>
 
         <div class="code-box">
           <label for="sfArmyCode">Army Code</label>
-          <textarea id="sfArmyCode" placeholder="Save will place a code here. Paste a sci-fi army code here and click Load Army."></textarea>
+          <textarea id="sfArmyCode" placeholder="Save will place a code here. Paste an Eternøl army code here and click Load Army."></textarea>
           <label class="share-options-toggle">
             <input type="checkbox" id="sfShowShareOptions" />
             <span>Show share options</span>
@@ -1125,7 +1125,6 @@ button[data-builder="scifi"].active,
   <div id="printSheetArea" style="display:none;"></div>
   <div class="toast" id="shareToast">Copied!</div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
   <script>
       function refreshAfterFontsLoad() {
   if (!document.fonts) {
@@ -1277,160 +1276,6 @@ const TITLE_FONT_MAP = {
         toastTimer = setTimeout(() => {
           toast.classList.remove("show");
         }, 1300);
-      }
-
-      const CODEC_VERSION = "v2";
-      const FONT_DEFAULT_KEY = "frakturika";
-      const KW_RIGHT_DEFAULT = false;
-
-      const FANTASY_STAT_KEY_TO_CODE = {
-        speed: "sp",
-        range: "ra",
-        strikes: "st",
-        courage: "co",
-        points: "pt",
-        altPoints: "ap"
-      };
-
-      const SCIFI_STAT_KEY_TO_CODE = {
-        cost: "ct",
-        altCost: "ac",
-        range: "ra",
-        move: "mv",
-        combat: "cb",
-        defense: "df",
-        morale: "mo"
-      };
-
-      const FANTASY_STAT_CODE_TO_KEY = Object.fromEntries(Object.entries(FANTASY_STAT_KEY_TO_CODE).map(([k, v]) => [v, k]));
-      const SCIFI_STAT_CODE_TO_KEY = Object.fromEntries(Object.entries(SCIFI_STAT_KEY_TO_CODE).map(([k, v]) => [v, k]));
-
-      function encodeCompactString(obj) {
-        const json = JSON.stringify(obj);
-        if (window.LZString && typeof LZString.compressToEncodedURIComponent === "function") {
-          return CODEC_VERSION + ":" + LZString.compressToEncodedURIComponent(json);
-        }
-        return CODEC_VERSION + ":" + base64UrlEncodeUtf8(json);
-      }
-
-      function decodeCompactString(textValue) {
-        const raw = String(textValue || "").trim();
-        if (!raw) throw new Error("empty");
-        if (raw.startsWith(CODEC_VERSION + ":")) {
-          const body = raw.slice((CODEC_VERSION + ":").length);
-          let decoded = null;
-          if (window.LZString && typeof LZString.decompressFromEncodedURIComponent === "function") {
-            decoded = LZString.decompressFromEncodedURIComponent(body);
-          }
-          if (!decoded) decoded = base64UrlDecodeUtf8(body);
-          return JSON.parse(decoded);
-        }
-        return JSON.parse(base64UrlDecodeUtf8(raw));
-      }
-
-      function encodeStatOrder(order, map) {
-        return (Array.isArray(order) ? order : []).map(key => map[key] || key);
-      }
-
-      function decodeStatOrder(order, map, fallbackOrder) {
-        const decoded = (Array.isArray(order) ? order : []).map(code => map[code] || code).filter(Boolean);
-        return decoded.length ? decoded : fallbackOrder.slice();
-      }
-
-      function packFantasyKeywords(keywords) {
-        return (keywords || []).map(k => {
-          const row = [k.keyword || "", k.reminder || ""];
-          if (k.rightAlign) row.push(1);
-          return row;
-        });
-      }
-
-      function unpackKeywords(rows) {
-        return Array.isArray(rows) ? rows.map(k => ({
-          keyword: String((k && k[0]) || ""),
-          reminder: String((k && k[1]) || ""),
-          rightAlign: !!(k && k[2])
-        })) : [];
-      }
-
-      function packFantasyUnit(unit) {
-        return {
-          n: unit.unitName || "",
-          t: unit.unitType || "",
-          f: unit.titleFont && unit.titleFont !== FONT_DEFAULT_KEY ? unit.titleFont : undefined,
-          a: unit.showAltPoints ? 1 : undefined,
-          o: encodeStatOrder(unit.statOrder, FANTASY_STAT_KEY_TO_CODE),
-          s: {
-            sp: unit.stats.speed || "",
-            ra: unit.stats.range || "",
-            st: unit.stats.strikes || "",
-            co: unit.stats.courage || "",
-            pt: unit.stats.points || "",
-            ap: unit.stats.altPoints || ""
-          },
-          k: packFantasyKeywords(unit.keywords)
-        };
-      }
-
-      function unpackFantasyUnit(row) {
-        return {
-          id: "f_" + Math.random().toString(36).slice(2, 9),
-          unitName: String(row?.n || "Untitled Unit"),
-          unitType: String(row?.t || "Light Infantry"),
-          showAltPoints: !!row?.a,
-          titleFont: String(row?.f || FONT_DEFAULT_KEY),
-          statOrder: decodeStatOrder(row?.o, FANTASY_STAT_CODE_TO_KEY, ["speed", "range", "strikes", "courage", "points", "altPoints"]),
-          stats: {
-            speed: String(row?.s?.sp || ""),
-            range: String(row?.s?.ra || ""),
-            strikes: String(row?.s?.st || ""),
-            courage: String(row?.s?.co || ""),
-            points: String(row?.s?.pt || ""),
-            altPoints: String(row?.s?.ap || "")
-          },
-          keywords: unpackKeywords(row?.k)
-        };
-      }
-
-      function packSciFiUnit(unit) {
-        return {
-          n: unit.unitName || "",
-          t: unit.unitType || "",
-          f: unit.titleFont && unit.titleFont !== FONT_DEFAULT_KEY ? unit.titleFont : undefined,
-          a: unit.showAltCost ? 1 : undefined,
-          o: encodeStatOrder(unit.statOrder, SCIFI_STAT_KEY_TO_CODE),
-          s: {
-            ct: unit.stats.cost || "",
-            ac: unit.stats.altCost || "",
-            ra: unit.stats.range || "",
-            mv: unit.stats.move || "",
-            cb: unit.stats.combat || "",
-            df: unit.stats.defense || "",
-            mo: unit.stats.morale || ""
-          },
-          k: packFantasyKeywords(unit.keywords)
-        };
-      }
-
-      function unpackSciFiUnit(row) {
-        return {
-          id: "s_" + Math.random().toString(36).slice(2, 9),
-          unitName: String(row?.n || "Untitled Unit"),
-          unitType: String(row?.t || "Light Infantry"),
-          showAltCost: !!row?.a,
-          titleFont: String(row?.f || FONT_DEFAULT_KEY),
-          statOrder: decodeStatOrder(row?.o, SCIFI_STAT_CODE_TO_KEY, ["cost", "altCost", "range", "move", "combat", "defense", "morale"]),
-          stats: {
-            cost: String(row?.s?.ct || ""),
-            altCost: String(row?.s?.ac || ""),
-            range: String(row?.s?.ra || ""),
-            move: String(row?.s?.mv || ""),
-            combat: String(row?.s?.cb || ""),
-            defense: String(row?.s?.df || ""),
-            morale: String(row?.s?.mo || "")
-          },
-          keywords: unpackKeywords(row?.k)
-        };
       }
 
       async function loadTitleFont(key) {
@@ -2378,26 +2223,28 @@ const TITLE_FONT_MAP = {
       function encodeFantasyArmy() {
         saveFantasyFormIntoState();
         const packed = {
-          v: 2,
           t: "f",
-          u: fantasyState.units.map(unit => packFantasyUnit(unit))
+          u: fantasyState.units.map(unit => [
+            unit.unitName,
+            unit.unitType,
+            unit.showAltPoints ? 1 : 0,
+            unit.titleFont || "frakturika",
+            unit.statOrder,
+            unit.stats.speed || "",
+            unit.stats.range || "",
+            unit.stats.strikes || "",
+            unit.stats.courage || "",
+            unit.stats.points || "",
+            unit.stats.altPoints || "",
+            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || "", k.rightAlign ? 1 : 0])
+          ])
         };
-        return encodeCompactString(packed);
+        return base64UrlEncodeUtf8(JSON.stringify(packed));
       }
 
       function loadFantasyArmyFromCode(code) {
         try {
-          const raw = decodeCompactString(code);
-
-          if (raw && raw.v === 2 && raw.t === "f" && Array.isArray(raw.u)) {
-            const units = raw.u.map(row => unpackFantasyUnit(row));
-            if (!units.length) throw new Error("bad");
-            fantasyState.units = units;
-            fantasyState.activeUnitId = units[0].id;
-            loadFantasyStateIntoForm();
-            return true;
-          }
-
+          const raw = JSON.parse(base64UrlDecodeUtf8(code));
           if (!raw || raw.t !== "f" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 10) throw new Error("bad");
@@ -3048,26 +2895,28 @@ const TITLE_FONT_MAP = {
       function encodeSciFiArmy() {
         saveSciFiFormIntoState();
         const packed = {
-          v: 2,
           t: "s",
-          u: sfState.units.map(unit => packSciFiUnit(unit))
+          u: sfState.units.map(unit => [
+            unit.unitName,
+            unit.unitType,
+            unit.titleFont || "frakturika",
+            unit.statOrder,
+            unit.stats.cost || "",
+            unit.stats.altCost || "",
+            unit.stats.range || "",
+            unit.stats.move || "",
+            unit.stats.combat || "",
+            unit.stats.defense || "",
+            unit.stats.morale || "",
+            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || "", k.rightAlign ? 1 : 0])
+          ])
         };
-        return encodeCompactString(packed);
+        return base64UrlEncodeUtf8(JSON.stringify(packed));
       }
 
       function loadSciFiArmyFromCode(code) {
         try {
-          const raw = decodeCompactString(code);
-
-          if (raw && raw.v === 2 && raw.t === "s" && Array.isArray(raw.u)) {
-            const units = raw.u.map(row => unpackSciFiUnit(row));
-            if (!units.length) throw new Error("bad");
-            sfState.units = units;
-            sfState.activeUnitId = units[0].id;
-            loadSciFiStateIntoForm();
-            return true;
-          }
-
+          const raw = JSON.parse(base64UrlDecodeUtf8(code));
           if (!raw || raw.t !== "s" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 11) throw new Error("bad");
@@ -3086,7 +2935,6 @@ const TITLE_FONT_MAP = {
               unitType: String(row[1] || "Light Infantry"),
               titleFont,
               statOrder,
-              showAltCost: true,
               stats: {
                 cost: String(row[baseIndex + 0] || ""),
                 altCost: String(row[baseIndex + 1] || ""),
