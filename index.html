@@ -977,13 +977,13 @@ button[data-builder="scifi"].active,
         <div class="actions">
           <button class="action-btn primary" id="fantasyDownloadPngBtn">Download Current PNG</button>
           <button class="action-btn dark" id="fantasyPrintAllBtn">Print Hobgoblin Sheet</button>
-          <button class="action-btn light" id="fantasyResetUnitBtn">Reset Current Unit</button>
+          <button class="action-btn light" style="display:none" id="fantasyResetUnitBtn">Reset Current Unit</button>
         </div>
 
         <div class="code-box">
           <label for="fantasyArmyCode">Army Code</label>
           <textarea id="fantasyArmyCode" placeholder="Save will place a code here. Paste a Hobgoblin army code here and click Load Army."></textarea>
-          <label class="share-options-toggle">
+          <label class="share-options-toggle" style="display:none;">
             <input type="checkbox" id="fantasyShowShareOptions" />
             <span>Show share options</span>
           </label>
@@ -1003,13 +1003,13 @@ button[data-builder="scifi"].active,
           <div class="font-picker">
             <label for="fantasyTitleFont">Title Font</label>
             <select id="fantasyTitleFont">
-              <option data-font="frakturika" value="frakturika" selected>Frakturika</option>
+              <option data-font="frakturika" value="frakturika">Frakturika</option>
               <option data-font="medievalsharp" value="medievalsharp">Medieval Sharp</option>
               <option data-font="unifrakturcook" value="unifrakturcook">UnifrakturCook</option>
               <option data-font="cormorantunicase" value="cormorantunicase">Cormorant Unicase</option>
               <option data-font="pirataone" value="pirataone">Pirata One</option>
               <option data-font="cinzeldecorative" value="cinzeldecorative">Cinzel Decorative</option>
-              <option data-font="orbitron" value="orbitron">Orbitron</option>
+              <option data-font="orbitron" value="orbitron" selected>Orbitron</option>
               <option data-font="audiowide" value="audiowide">Audiowide</option>
               <option data-font="exo2" value="exo2">Exo 2</option>
               <option data-font="russoone" value="russoone">Russo One</option>
@@ -1073,13 +1073,13 @@ button[data-builder="scifi"].active,
         <div class="actions">
           <button class="action-btn primary" id="sfDownloadPngBtn">Download Current PNG</button>
           <button class="action-btn accent" id="sfPrintAllBtn">Print Eternøl Sheet</button>
-          <button class="action-btn light" id="sfResetUnitBtn">Reset Current Unit</button>
+          <button class="action-btn light" style="display:none" id="sfResetUnitBtn">Reset Current Unit</button>
         </div>
 
         <div class="code-box">
           <label for="sfArmyCode">Army Code</label>
           <textarea id="sfArmyCode" placeholder="Save will place a code here. Paste an Eternøl army code here and click Load Army."></textarea>
-          <label class="share-options-toggle">
+          <label class="share-options-toggle" style="display:none;">
             <input type="checkbox" id="sfShowShareOptions" />
             <span>Show share options</span>
           </label>
@@ -1281,6 +1281,7 @@ const TITLE_FONT_MAP = {
 
       const CODEC_VERSION = "v2";
       const FONT_DEFAULT_KEY = "frakturika";
+      const SCIFI_DEFAULT_FONT_KEY = "orbitron";
       const KW_RIGHT_DEFAULT = false;
 
       const FANTASY_STAT_KEY_TO_CODE = {
@@ -1418,7 +1419,7 @@ const TITLE_FONT_MAP = {
           unitName: String(row?.n || "Untitled Unit"),
           unitType: String(row?.t || "Light Infantry"),
           showAltCost: !!row?.a,
-          titleFont: String(row?.f || FONT_DEFAULT_KEY),
+          titleFont: String(row?.f || SCIFI_DEFAULT_FONT_KEY),
           statOrder: decodeStatOrder(row?.o, SCIFI_STAT_CODE_TO_KEY, ["cost", "altCost", "range", "move", "combat", "defense", "morale"]),
           stats: {
             cost: String(row?.s?.ct || ""),
@@ -1535,7 +1536,36 @@ const TITLE_FONT_MAP = {
       }
 
       function bindDragReorder(container, item, onEnd) {
-        item.addEventListener("dragstart", () => {
+        item.draggable = true;
+
+        const noDragSelector = 'input[type="text"], input[type="number"], textarea, select';
+        item.querySelectorAll(noDragSelector).forEach(el => {
+          const disableDrag = e => {
+            item.draggable = false;
+            e.stopPropagation();
+          };
+          const enableDrag = () => {
+            item.draggable = true;
+          };
+
+          el.addEventListener("pointerdown", disableDrag);
+          el.addEventListener("mousedown", disableDrag);
+          el.addEventListener("touchstart", disableDrag, { passive: true });
+          el.addEventListener("focus", disableDrag);
+          el.addEventListener("click", e => e.stopPropagation());
+          el.addEventListener("dragstart", e => e.stopPropagation());
+          el.addEventListener("blur", enableDrag);
+          el.addEventListener("pointerup", enableDrag);
+          el.addEventListener("mouseup", enableDrag);
+          el.addEventListener("touchend", enableDrag, { passive: true });
+          el.addEventListener("change", enableDrag);
+        });
+
+        item.addEventListener("dragstart", e => {
+          if (!item.draggable || e.target.closest(noDragSelector)) {
+            e.preventDefault();
+            return;
+          }
           container._draggedItem = item;
           container._draggedGroup = getDragGroup(container, item);
           container._draggedGroup.forEach(el => el.classList.add("dragging"));
@@ -1581,14 +1611,31 @@ const TITLE_FONT_MAP = {
       function bindKeywordDragReorder(container, block, onEnd) {
         block.draggable = true;
 
-        const interactiveSelector = 'input, textarea, button, select, label';
-        block.querySelectorAll(interactiveSelector).forEach(el => {
-          el.addEventListener("mousedown", e => e.stopPropagation());
+        const noDragSelector = 'input[type="text"], input[type="number"], textarea, select';
+        block.querySelectorAll(noDragSelector).forEach(el => {
+          const disableDrag = e => {
+            block.draggable = false;
+            e.stopPropagation();
+          };
+          const enableDrag = () => {
+            block.draggable = true;
+          };
+
+          el.addEventListener("pointerdown", disableDrag);
+          el.addEventListener("mousedown", disableDrag);
+          el.addEventListener("touchstart", disableDrag, { passive: true });
+          el.addEventListener("focus", disableDrag);
+          el.addEventListener("click", e => e.stopPropagation());
           el.addEventListener("dragstart", e => e.stopPropagation());
+          el.addEventListener("blur", enableDrag);
+          el.addEventListener("pointerup", enableDrag);
+          el.addEventListener("mouseup", enableDrag);
+          el.addEventListener("touchend", enableDrag, { passive: true });
+          el.addEventListener("change", enableDrag);
         });
 
         block.addEventListener("dragstart", e => {
-          if (e.target.closest(interactiveSelector)) {
+          if (!block.draggable || e.target.closest(noDragSelector)) {
             e.preventDefault();
             return;
           }
@@ -2843,7 +2890,7 @@ const TITLE_FONT_MAP = {
 
         sfEls.unitName.value = unit.unitName;
         sfEls.unitType.value = unit.unitType;
-        sfEls.titleFont.value = unit.titleFont || "frakturika";
+        sfEls.titleFont.value = unit.titleFont || SCIFI_DEFAULT_FONT_KEY;
 
         sfEls.statList.innerHTML = "";
         unit.statOrder = normalizeLinkedStatOrder(unit.statOrder, "cost", "altCost");
@@ -3060,7 +3107,11 @@ const TITLE_FONT_MAP = {
           const raw = decodeCompactString(code);
 
           if (raw && raw.v === 2 && raw.t === "s" && Array.isArray(raw.u)) {
-            const units = raw.u.map(row => unpackSciFiUnit(row));
+            const units = raw.u.map(row => {
+              const unit = unpackSciFiUnit(row);
+              if (!row?.f || unit.titleFont === FONT_DEFAULT_KEY) unit.titleFont = SCIFI_DEFAULT_FONT_KEY;
+              return unit;
+            });
             if (!units.length) throw new Error("bad");
             sfState.units = units;
             sfState.activeUnitId = units[0].id;
@@ -3071,9 +3122,9 @@ const TITLE_FONT_MAP = {
           if (!raw || raw.t !== "s" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 11) throw new Error("bad");
-            const hasTitleFont = typeof row[2] === "string" && !Array.isArray(row[2]);
+            const hasTitleFont = typeof row[2] === "string" && !Array.isArray(row[2]) && !/^(0|1)$/.test(String(row[2]));
             const hasLegacyUnitCount = !hasTitleFont && !Array.isArray(row[2]);
-            const titleFont = hasTitleFont ? String(row[2] || "frakturika") : "frakturika";
+            const titleFont = hasTitleFont ? String(row[2] || SCIFI_DEFAULT_FONT_KEY) : SCIFI_DEFAULT_FONT_KEY;
             const statOrder = hasTitleFont
               ? (Array.isArray(row[3]) ? row[3].slice() : ["cost", "altCost", "range", "move", "combat", "defense", "morale"])
               : hasLegacyUnitCount
