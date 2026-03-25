@@ -524,6 +524,49 @@
       align-items: center;
     }
 
+    #army-card-suite .share-options-toggle {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    #army-card-suite .share-options-toggle input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    #army-card-suite .share-option-hidden {
+      display: none !important;
+    }
+
+    #army-card-suite .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(34, 34, 34, 0.92);
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+
+    #army-card-suite .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     #army-card-suite .action-btn {
       padding: 11px 16px;
     }
@@ -592,6 +635,17 @@
       background: #fff;
       font-family: Arial, Helvetica, sans-serif;
     }
+
+    #army-card-suite .font-picker option[data-font="frakturika"] { font-family: "Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+    #army-card-suite .font-picker option[data-font="medievalsharp"] { font-family: "MedievalSharp", "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+    #army-card-suite .font-picker option[data-font="unifrakturcook"] { font-family: "UnifrakturCook", "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+    #army-card-suite .font-picker option[data-font="cormorantunicase"] { font-family: "Cormorant Unicase", "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+    #army-card-suite .font-picker option[data-font="pirataone"] { font-family: "Pirata One", "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+    #army-card-suite .font-picker option[data-font="cinzeldecorative"] { font-family: "Cinzel Decorative", "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+    #army-card-suite .font-picker option[data-font="orbitron"] { font-family: "Orbitron", "Trebuchet MS", Arial, sans-serif; }
+    #army-card-suite .font-picker option[data-font="audiowide"] { font-family: "Audiowide", "Trebuchet MS", Arial, sans-serif; }
+    #army-card-suite .font-picker option[data-font="exo2"] { font-family: "Exo 2", "Trebuchet MS", Arial, sans-serif; }
+    #army-card-suite .font-picker option[data-font="russoone"] { font-family: "Russo One", "Trebuchet MS", Arial, sans-serif; }
 
     #army-card-suite .fantasy-page .font-picker select {
       border: 1px solid #bfc3bc;
@@ -928,10 +982,15 @@ button[data-builder="scifi"].active,
         <div class="code-box">
           <label for="fantasyArmyCode">Army Code</label>
           <textarea id="fantasyArmyCode" placeholder="Save will place a code here. Paste a fantasy army code here and click Load Army."></textarea>
+          <label class="share-options-toggle">
+            <input type="checkbox" id="fantasyShowShareOptions" />
+            <span>Show share options</span>
+          </label>
           <div class="actions">
-            <button class="action-btn primary" id="fantasySaveArmyBtn">Save Army</button>
-            <button class="action-btn light" id="fantasyCopyArmyBtn">Copy Code</button>
-            <button class="action-btn dark" id="fantasyLoadArmyBtn">Load Army</button>
+            <button class="action-btn primary share-option-toggle-target share-option-hidden" id="fantasySaveArmyBtn">Save Army</button>
+            <button class="action-btn light share-option-toggle-target share-option-hidden" id="fantasyCopyArmyBtn">Copy Code</button>
+            <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
+            <button class="action-btn dark share-option-toggle-target share-option-hidden" id="fantasyLoadArmyBtn">Load Army</button>
             <span class="status-label" id="fantasyCodeStatus">invalid army code</span>
           </div>
         </div>
@@ -943,16 +1002,16 @@ button[data-builder="scifi"].active,
           <div class="font-picker">
             <label for="fantasyTitleFont">Title Font</label>
             <select id="fantasyTitleFont">
-              <option value="frakturika" selected>Frakturika</option>
-              <option value="medievalsharp">Medieval Sharp</option>
-              <option value="unifrakturcook">UnifrakturCook</option>
-              <option value="cormorantunicase">Cormorant Unicase</option>
-              <option value="pirataone">Pirata One</option>
-              <option value="cinzeldecorative">Cinzel Decorative</option>
-              <option value="orbitron">Orbitron</option>
-              <option value="audiowide">Audiowide</option>
-              <option value="exo2">Exo 2</option>
-              <option value="russoone">Russo One</option>
+              <option data-font="frakturika" value="frakturika" selected>Frakturika</option>
+              <option data-font="medievalsharp" value="medievalsharp">Medieval Sharp</option>
+              <option data-font="unifrakturcook" value="unifrakturcook">UnifrakturCook</option>
+              <option data-font="cormorantunicase" value="cormorantunicase">Cormorant Unicase</option>
+              <option data-font="pirataone" value="pirataone">Pirata One</option>
+              <option data-font="cinzeldecorative" value="cinzeldecorative">Cinzel Decorative</option>
+              <option data-font="orbitron" value="orbitron">Orbitron</option>
+              <option data-font="audiowide" value="audiowide">Audiowide</option>
+              <option data-font="exo2" value="exo2">Exo 2</option>
+              <option data-font="russoone" value="russoone">Russo One</option>
             </select>
           </div>
         </div>
@@ -1019,10 +1078,15 @@ button[data-builder="scifi"].active,
         <div class="code-box">
           <label for="sfArmyCode">Army Code</label>
           <textarea id="sfArmyCode" placeholder="Save will place a code here. Paste a sci-fi army code here and click Load Army."></textarea>
+          <label class="share-options-toggle">
+            <input type="checkbox" id="sfShowShareOptions" />
+            <span>Show share options</span>
+          </label>
           <div class="actions">
-            <button class="action-btn primary" id="sfSaveArmyBtn">Save Army</button>
-            <button class="action-btn light" id="sfCopyArmyBtn">Copy Code</button>
-            <button class="action-btn accent" id="sfLoadArmyBtn">Load Army</button>
+            <button class="action-btn primary share-option-toggle-target share-option-hidden" id="sfSaveArmyBtn">Save Army</button>
+            <button class="action-btn light share-option-toggle-target share-option-hidden" id="sfCopyArmyBtn">Copy Code</button>
+            <button class="action-btn light" id="sfShareLinkBtn">Copy Share Link</button>
+            <button class="action-btn accent share-option-toggle-target share-option-hidden" id="sfLoadArmyBtn">Load Army</button>
             <span class="status-label" id="sfCodeStatus">invalid army code</span>
           </div>
         </div>
@@ -1034,16 +1098,16 @@ button[data-builder="scifi"].active,
           <div class="font-picker">
             <label for="sfTitleFont">Title Font</label>
             <select id="sfTitleFont">
-              <option value="frakturika" selected>Frakturika</option>
-              <option value="medievalsharp">Medieval Sharp</option>
-              <option value="unifrakturcook">UnifrakturCook</option>
-              <option value="cormorantunicase">Cormorant Unicase</option>
-              <option value="pirataone">Pirata One</option>
-              <option value="cinzeldecorative">Cinzel Decorative</option>
-              <option value="orbitron">Orbitron</option>
-              <option value="audiowide">Audiowide</option>
-              <option value="exo2">Exo 2</option>
-              <option value="russoone">Russo One</option>
+              <option data-font="frakturika" value="frakturika" selected>Frakturika</option>
+              <option data-font="medievalsharp" value="medievalsharp">Medieval Sharp</option>
+              <option data-font="unifrakturcook" value="unifrakturcook">UnifrakturCook</option>
+              <option data-font="cormorantunicase" value="cormorantunicase">Cormorant Unicase</option>
+              <option data-font="pirataone" value="pirataone">Pirata One</option>
+              <option data-font="cinzeldecorative" value="cinzeldecorative">Cinzel Decorative</option>
+              <option data-font="orbitron" value="orbitron">Orbitron</option>
+              <option data-font="audiowide" value="audiowide">Audiowide</option>
+              <option data-font="exo2" value="exo2">Exo 2</option>
+              <option data-font="russoone" value="russoone">Russo One</option>
             </select>
           </div>
         </div>
@@ -1058,7 +1122,9 @@ button[data-builder="scifi"].active,
   </div>
 
   <div id="printSheetArea" style="display:none;"></div>
+  <div class="toast" id="shareToast">Copied!</div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
   <script>
       function refreshAfterFontsLoad() {
   if (!document.fonts) {
@@ -1166,6 +1232,204 @@ const TITLE_FONT_MAP = {
 
       function getTitleFontStack(key) {
         return TITLE_FONT_MAP[key] || TITLE_FONT_MAP.frakturika;
+      }
+
+      function buildShareLink(mode, encodedArmy) {
+        const url = new URL(window.location.href);
+        url.hash = "";
+        url.searchParams.delete("mode");
+        url.searchParams.delete("army");
+        url.searchParams.set("mode", mode);
+        url.searchParams.set("army", encodedArmy);
+        return url.toString();
+      }
+
+      function readSharedArmyFromUrl() {
+        const url = new URL(window.location.href);
+        const armyFromQuery = url.searchParams.get("army");
+        const modeFromQuery = url.searchParams.get("mode");
+        if (armyFromQuery && modeFromQuery) return { mode: modeFromQuery, army: armyFromQuery };
+
+        if (url.hash && url.hash.length > 1) {
+          const params = new URLSearchParams(url.hash.slice(1));
+          const armyFromHash = params.get("army");
+          const modeFromHash = params.get("mode");
+          if (armyFromHash && modeFromHash) return { mode: modeFromHash, army: armyFromHash };
+        }
+
+        return null;
+      }
+
+      function setShareOptionsVisibility(container, isVisible) {
+        container.querySelectorAll(".share-option-toggle-target").forEach(el => {
+          el.classList.toggle("share-option-hidden", !isVisible);
+        });
+      }
+
+      let toastTimer = null;
+      function showToast(message = "Copied!") {
+        const toast = document.getElementById("shareToast");
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add("show");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 1300);
+      }
+
+      const CODEC_VERSION = "v2";
+      const FONT_DEFAULT_KEY = "frakturika";
+      const KW_RIGHT_DEFAULT = false;
+
+      const FANTASY_STAT_KEY_TO_CODE = {
+        speed: "sp",
+        range: "ra",
+        strikes: "st",
+        courage: "co",
+        points: "pt",
+        altPoints: "ap"
+      };
+
+      const SCIFI_STAT_KEY_TO_CODE = {
+        cost: "ct",
+        altCost: "ac",
+        range: "ra",
+        move: "mv",
+        combat: "cb",
+        defense: "df",
+        morale: "mo"
+      };
+
+      const FANTASY_STAT_CODE_TO_KEY = Object.fromEntries(Object.entries(FANTASY_STAT_KEY_TO_CODE).map(([k, v]) => [v, k]));
+      const SCIFI_STAT_CODE_TO_KEY = Object.fromEntries(Object.entries(SCIFI_STAT_KEY_TO_CODE).map(([k, v]) => [v, k]));
+
+      function encodeCompactString(obj) {
+        const json = JSON.stringify(obj);
+        if (window.LZString && typeof LZString.compressToEncodedURIComponent === "function") {
+          return CODEC_VERSION + ":" + LZString.compressToEncodedURIComponent(json);
+        }
+        return CODEC_VERSION + ":" + base64UrlEncodeUtf8(json);
+      }
+
+      function decodeCompactString(textValue) {
+        const raw = String(textValue || "").trim();
+        if (!raw) throw new Error("empty");
+        if (raw.startsWith(CODEC_VERSION + ":")) {
+          const body = raw.slice((CODEC_VERSION + ":").length);
+          let decoded = null;
+          if (window.LZString && typeof LZString.decompressFromEncodedURIComponent === "function") {
+            decoded = LZString.decompressFromEncodedURIComponent(body);
+          }
+          if (!decoded) decoded = base64UrlDecodeUtf8(body);
+          return JSON.parse(decoded);
+        }
+        return JSON.parse(base64UrlDecodeUtf8(raw));
+      }
+
+      function encodeStatOrder(order, map) {
+        return (Array.isArray(order) ? order : []).map(key => map[key] || key);
+      }
+
+      function decodeStatOrder(order, map, fallbackOrder) {
+        const decoded = (Array.isArray(order) ? order : []).map(code => map[code] || code).filter(Boolean);
+        return decoded.length ? decoded : fallbackOrder.slice();
+      }
+
+      function packFantasyKeywords(keywords) {
+        return (keywords || []).map(k => {
+          const row = [k.keyword || "", k.reminder || ""];
+          if (k.rightAlign) row.push(1);
+          return row;
+        });
+      }
+
+      function unpackKeywords(rows) {
+        return Array.isArray(rows) ? rows.map(k => ({
+          keyword: String((k && k[0]) || ""),
+          reminder: String((k && k[1]) || ""),
+          rightAlign: !!(k && k[2])
+        })) : [];
+      }
+
+      function packFantasyUnit(unit) {
+        return {
+          n: unit.unitName || "",
+          t: unit.unitType || "",
+          f: unit.titleFont && unit.titleFont !== FONT_DEFAULT_KEY ? unit.titleFont : undefined,
+          a: unit.showAltPoints ? 1 : undefined,
+          o: encodeStatOrder(unit.statOrder, FANTASY_STAT_KEY_TO_CODE),
+          s: {
+            sp: unit.stats.speed || "",
+            ra: unit.stats.range || "",
+            st: unit.stats.strikes || "",
+            co: unit.stats.courage || "",
+            pt: unit.stats.points || "",
+            ap: unit.stats.altPoints || ""
+          },
+          k: packFantasyKeywords(unit.keywords)
+        };
+      }
+
+      function unpackFantasyUnit(row) {
+        return {
+          id: "f_" + Math.random().toString(36).slice(2, 9),
+          unitName: String(row?.n || "Untitled Unit"),
+          unitType: String(row?.t || "Light Infantry"),
+          showAltPoints: !!row?.a,
+          titleFont: String(row?.f || FONT_DEFAULT_KEY),
+          statOrder: decodeStatOrder(row?.o, FANTASY_STAT_CODE_TO_KEY, ["speed", "range", "strikes", "courage", "points", "altPoints"]),
+          stats: {
+            speed: String(row?.s?.sp || ""),
+            range: String(row?.s?.ra || ""),
+            strikes: String(row?.s?.st || ""),
+            courage: String(row?.s?.co || ""),
+            points: String(row?.s?.pt || ""),
+            altPoints: String(row?.s?.ap || "")
+          },
+          keywords: unpackKeywords(row?.k)
+        };
+      }
+
+      function packSciFiUnit(unit) {
+        return {
+          n: unit.unitName || "",
+          t: unit.unitType || "",
+          f: unit.titleFont && unit.titleFont !== FONT_DEFAULT_KEY ? unit.titleFont : undefined,
+          a: unit.showAltCost ? 1 : undefined,
+          o: encodeStatOrder(unit.statOrder, SCIFI_STAT_KEY_TO_CODE),
+          s: {
+            ct: unit.stats.cost || "",
+            ac: unit.stats.altCost || "",
+            ra: unit.stats.range || "",
+            mv: unit.stats.move || "",
+            cb: unit.stats.combat || "",
+            df: unit.stats.defense || "",
+            mo: unit.stats.morale || ""
+          },
+          k: packFantasyKeywords(unit.keywords)
+        };
+      }
+
+      function unpackSciFiUnit(row) {
+        return {
+          id: "s_" + Math.random().toString(36).slice(2, 9),
+          unitName: String(row?.n || "Untitled Unit"),
+          unitType: String(row?.t || "Light Infantry"),
+          showAltCost: !!row?.a,
+          titleFont: String(row?.f || FONT_DEFAULT_KEY),
+          statOrder: decodeStatOrder(row?.o, SCIFI_STAT_CODE_TO_KEY, ["cost", "altCost", "range", "move", "combat", "defense", "morale"]),
+          stats: {
+            cost: String(row?.s?.ct || ""),
+            altCost: String(row?.s?.ac || ""),
+            range: String(row?.s?.ra || ""),
+            move: String(row?.s?.mv || ""),
+            combat: String(row?.s?.cb || ""),
+            defense: String(row?.s?.df || ""),
+            morale: String(row?.s?.mo || "")
+          },
+          keywords: unpackKeywords(row?.k)
+        };
       }
 
       async function loadTitleFont(key) {
@@ -1675,9 +1939,12 @@ const TITLE_FONT_MAP = {
         codeBox: document.getElementById("fantasyArmyCode"),
         saveArmyBtn: document.getElementById("fantasySaveArmyBtn"),
         copyArmyBtn: document.getElementById("fantasyCopyArmyBtn"),
+        shareLinkBtn: document.getElementById("fantasyShareLinkBtn"),
         loadArmyBtn: document.getElementById("fantasyLoadArmyBtn"),
         codeStatus: document.getElementById("fantasyCodeStatus"),
-        titleFont: document.getElementById("fantasyTitleFont")
+        titleFont: document.getElementById("fantasyTitleFont"),
+        showShareOptions: document.getElementById("fantasyShowShareOptions"),
+        toast: document.getElementById("shareToast")
       };
 
       const fantasyStatDefinitions = [
@@ -2110,28 +2377,26 @@ const TITLE_FONT_MAP = {
       function encodeFantasyArmy() {
         saveFantasyFormIntoState();
         const packed = {
+          v: 2,
           t: "f",
-          u: fantasyState.units.map(unit => [
-            unit.unitName,
-            unit.unitType,
-            unit.showAltPoints ? 1 : 0,
-            unit.titleFont || "frakturika",
-            unit.statOrder,
-            unit.stats.speed || "",
-            unit.stats.range || "",
-            unit.stats.strikes || "",
-            unit.stats.courage || "",
-            unit.stats.points || "",
-            unit.stats.altPoints || "",
-            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || "", k.rightAlign ? 1 : 0])
-          ])
+          u: fantasyState.units.map(unit => packFantasyUnit(unit))
         };
-        return base64UrlEncodeUtf8(JSON.stringify(packed));
+        return encodeCompactString(packed);
       }
 
       function loadFantasyArmyFromCode(code) {
         try {
-          const raw = JSON.parse(base64UrlDecodeUtf8(code));
+          const raw = decodeCompactString(code);
+
+          if (raw && raw.v === 2 && raw.t === "f" && Array.isArray(raw.u)) {
+            const units = raw.u.map(row => unpackFantasyUnit(row));
+            if (!units.length) throw new Error("bad");
+            fantasyState.units = units;
+            fantasyState.activeUnitId = units[0].id;
+            loadFantasyStateIntoForm();
+            return true;
+          }
+
           if (!raw || raw.t !== "f" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 10) throw new Error("bad");
@@ -2193,6 +2458,11 @@ const TITLE_FONT_MAP = {
         await loadTitleFont(fantasyEls.titleFont.value);
         renderFantasyPreview();
         renderFantasyUnitTabs();
+      });
+
+      fantasyEls.showShareOptions.addEventListener("change", () => {
+        const panel = fantasyEls.showShareOptions.closest(".code-box");
+        setShareOptionsVisibility(panel, fantasyEls.showShareOptions.checked);
       });
 
       fantasyEls.addUnitBtn.addEventListener("click", () => {
@@ -2262,6 +2532,13 @@ const TITLE_FONT_MAP = {
         await copyTextToClipboard(fantasyEls.codeBox.value.trim());
       });
 
+      fantasyEls.shareLinkBtn.addEventListener("click", async () => {
+        const code = encodeFantasyArmy();
+        fantasyEls.codeBox.value = code;
+        await copyTextToClipboard(buildShareLink("fantasy", code));
+        showToast("Copied!");
+      });
+
       fantasyEls.loadArmyBtn.addEventListener("click", () => {
         if (!loadFantasyArmyFromCode(fantasyEls.codeBox.value.trim())) {
           showInvalid(fantasyEls.codeStatus);
@@ -2287,9 +2564,12 @@ const TITLE_FONT_MAP = {
         codeBox: document.getElementById("sfArmyCode"),
         saveArmyBtn: document.getElementById("sfSaveArmyBtn"),
         copyArmyBtn: document.getElementById("sfCopyArmyBtn"),
+        shareLinkBtn: document.getElementById("sfShareLinkBtn"),
         loadArmyBtn: document.getElementById("sfLoadArmyBtn"),
         codeStatus: document.getElementById("sfCodeStatus"),
-        titleFont: document.getElementById("sfTitleFont")
+        titleFont: document.getElementById("sfTitleFont"),
+        showShareOptions: document.getElementById("sfShowShareOptions"),
+        toast: document.getElementById("shareToast")
       };
 
       const sfStatDefinitions = [
@@ -2308,20 +2588,20 @@ const TITLE_FONT_MAP = {
           unitName: name,
           unitType: "Light Infantry",
           showAltCost: false,
-          titleFont: "orbitron",
+          titleFont: "frakturika",
           statOrder: ["cost", "altCost", "range", "move", "combat", "defense", "morale"],
           stats: {
-            cost: "60",
-            altCost: "50",
-            range: "10",
-            move: "8",
-            combat: "7",
-            defense: "7",
-            morale: "2"
+            cost: "50",
+            altCost: "40",
+            range: "24",
+            move: "6",
+            combat: "4",
+            defense: "5",
+            morale: "7"
           },
           keywords: [
-            { keyword: "COWARDLY", reminder: "Reduce this unit's Morale by 1.", rightAlign: false },
-            { keyword: "FAST", reminder: "Increase this unit's Move stat by 2.", rightAlign: false }
+            { keyword: "SCOUT", reminder: "MAY REDEPLOY AFTER DEPLOYMENT.", rightAlign: false },
+            { keyword: "SCRAP ARMOR", reminder: "IGNORE THE FIRST FAILED DEFENSE EACH ROUND.", rightAlign: false }
           ]
         };
       }
@@ -2767,28 +3047,26 @@ const TITLE_FONT_MAP = {
       function encodeSciFiArmy() {
         saveSciFiFormIntoState();
         const packed = {
+          v: 2,
           t: "s",
-          u: sfState.units.map(unit => [
-            unit.unitName,
-            unit.unitType,
-            unit.titleFont || "frakturika",
-            unit.statOrder,
-            unit.stats.cost || "",
-            unit.stats.altCost || "",
-            unit.stats.range || "",
-            unit.stats.move || "",
-            unit.stats.combat || "",
-            unit.stats.defense || "",
-            unit.stats.morale || "",
-            (unit.keywords || []).map(k => [k.keyword || "", k.reminder || "", k.rightAlign ? 1 : 0])
-          ])
+          u: sfState.units.map(unit => packSciFiUnit(unit))
         };
-        return base64UrlEncodeUtf8(JSON.stringify(packed));
+        return encodeCompactString(packed);
       }
 
       function loadSciFiArmyFromCode(code) {
         try {
-          const raw = JSON.parse(base64UrlDecodeUtf8(code));
+          const raw = decodeCompactString(code);
+
+          if (raw && raw.v === 2 && raw.t === "s" && Array.isArray(raw.u)) {
+            const units = raw.u.map(row => unpackSciFiUnit(row));
+            if (!units.length) throw new Error("bad");
+            sfState.units = units;
+            sfState.activeUnitId = units[0].id;
+            loadSciFiStateIntoForm();
+            return true;
+          }
+
           if (!raw || raw.t !== "s" || !Array.isArray(raw.u)) throw new Error("bad");
           const units = raw.u.map(row => {
             if (!Array.isArray(row) || row.length < 11) throw new Error("bad");
@@ -2807,6 +3085,7 @@ const TITLE_FONT_MAP = {
               unitType: String(row[1] || "Light Infantry"),
               titleFont,
               statOrder,
+              showAltCost: true,
               stats: {
                 cost: String(row[baseIndex + 0] || ""),
                 altCost: String(row[baseIndex + 1] || ""),
@@ -2849,6 +3128,11 @@ const TITLE_FONT_MAP = {
         await loadTitleFont(sfEls.titleFont.value);
         renderSciFiPreview();
         renderSciFiUnitTabs();
+      });
+
+      sfEls.showShareOptions.addEventListener("change", () => {
+        const panel = sfEls.showShareOptions.closest(".code-box");
+        setShareOptionsVisibility(panel, sfEls.showShareOptions.checked);
       });
 
       sfEls.addUnitBtn.addEventListener("click", () => {
@@ -2916,6 +3200,13 @@ const TITLE_FONT_MAP = {
         await copyTextToClipboard(sfEls.codeBox.value.trim());
       });
 
+      sfEls.shareLinkBtn.addEventListener("click", async () => {
+        const code = encodeSciFiArmy();
+        sfEls.codeBox.value = code;
+        await copyTextToClipboard(buildShareLink("scifi", code));
+        showToast("Copied!");
+      });
+
       sfEls.loadArmyBtn.addEventListener("click", () => {
         if (!loadSciFiArmyFromCode(sfEls.codeBox.value.trim())) {
           showInvalid(sfEls.codeStatus);
@@ -2928,6 +3219,29 @@ const TITLE_FONT_MAP = {
     await ensureAppFontsLoaded();
 loadFantasyStateIntoForm();
 loadSciFiStateIntoForm();
+
+setShareOptionsVisibility(fantasyEls.showShareOptions.closest(".code-box"), fantasyEls.showShareOptions.checked);
+setShareOptionsVisibility(sfEls.showShareOptions.closest(".code-box"), sfEls.showShareOptions.checked);
+
+const sharedArmy = readSharedArmyFromUrl();
+if (sharedArmy?.mode === "fantasy" && sharedArmy.army) {
+  if (loadFantasyArmyFromCode(sharedArmy.army)) {
+    document.querySelectorAll("#army-card-suite .mode-tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("#army-card-suite .suite-page").forEach(p => p.classList.remove("active"));
+    document.querySelector('#army-card-suite .mode-tab[data-page="fantasyPage"]').classList.add("active");
+    document.getElementById("fantasyPage").classList.add("active");
+    fantasyEls.codeBox.value = sharedArmy.army;
+  }
+} else if (sharedArmy?.mode === "scifi" && sharedArmy.army) {
+  if (loadSciFiArmyFromCode(sharedArmy.army)) {
+    document.querySelectorAll("#army-card-suite .mode-tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("#army-card-suite .suite-page").forEach(p => p.classList.remove("active"));
+    document.querySelector('#army-card-suite .mode-tab[data-page="scifiPage"]').classList.add("active");
+    document.getElementById("scifiPage").classList.add("active");
+    sfEls.codeBox.value = sharedArmy.army;
+  }
+}
+
 refreshAfterFontsLoad();
 
 window.addEventListener("load", () => {
