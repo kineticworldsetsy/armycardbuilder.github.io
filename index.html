@@ -2209,6 +2209,12 @@ const TITLE_FONT_MAP = {
         fantasyEls.importArmyUrl.classList.toggle("default-api-url", fantasyEls.importArmyUrl.value.trim() === DEFAULT_HOBGOBLIN_ARMY_URL);
       }
 
+      function selectDefaultApiUrl() {
+        if (fantasyEls.importArmyUrl.value.trim() === DEFAULT_HOBGOBLIN_ARMY_URL) {
+          fantasyEls.importArmyUrl.select();
+        }
+      }
+
       function getFantasyArmyName() {
         return fantasyState.armyName || DEFAULT_FANTASY_ARMY_NAME;
       }
@@ -2971,6 +2977,8 @@ const TITLE_FONT_MAP = {
 
       fantasyEls.importArmyUrl.addEventListener("input", updateDefaultApiUrlStyle);
       fantasyEls.importArmyUrl.addEventListener("change", updateDefaultApiUrlStyle);
+      fantasyEls.importArmyUrl.addEventListener("focus", selectDefaultApiUrl);
+      fantasyEls.importArmyUrl.addEventListener("click", selectDefaultApiUrl);
 
       /* =========================
          Sci-fi builder
