@@ -156,6 +156,7 @@
 
     #army-card-suite input[type="text"],
     #army-card-suite input[type="number"],
+    #army-card-suite input[type="url"],
     #army-card-suite select,
     #army-card-suite textarea {
       width: 100%;
@@ -168,6 +169,7 @@
 
     #army-card-suite .fantasy-page input[type="text"],
     #army-card-suite .fantasy-page input[type="number"],
+    #army-card-suite .fantasy-page input[type="url"],
     #army-card-suite .fantasy-page select,
     #army-card-suite .fantasy-page textarea {
       border: 1px solid #bfc3bc;
@@ -175,6 +177,7 @@
 
     #army-card-suite .scifi-page input[type="text"],
     #army-card-suite .scifi-page input[type="number"],
+    #army-card-suite .scifi-page input[type="url"],
     #army-card-suite .scifi-page select,
     #army-card-suite .scifi-page textarea {
       border: 1px solid rgba(88, 63, 140, 0.25);
@@ -523,6 +526,24 @@
       flex-wrap: wrap;
       margin-top: 16px;
       align-items: center;
+    }
+
+    #army-card-suite .import-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+      margin-top: 12px;
+    }
+
+    #army-card-suite .import-row label {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 720px) {
+      #army-card-suite .import-row {
+        grid-template-columns: 1fr;
+      }
     }
 
     #army-card-suite .share-options-toggle {
@@ -983,6 +1004,13 @@ button[data-builder="scifi"].active,
         <div class="code-box">
           <label for="fantasyArmyCode">Army Code</label>
           <textarea style="display:none;" id="fantasyArmyCode" placeholder="Save will place a code here. Paste a Hobgoblin army code here and click Load Army."></textarea>
+          <div class="import-row">
+            <label for="fantasyImportArmyUrl">
+              Hobgoblin API URL
+              <input id="fantasyImportArmyUrl" type="url" value="https://hobgoblin.indietabletop.club/army/s/eeOpm6BUfuSq.json" />
+            </label>
+            <button class="action-btn light" id="fantasyImportArmyBtn" type="button">Load From API</button>
+          </div>
           <label class="share-options-toggle" style="display:none;">
             <input type="checkbox" id="fantasyShowShareOptions" />
             <span>Show share options</span>
@@ -1989,6 +2017,8 @@ const TITLE_FONT_MAP = {
         copyArmyBtn: document.getElementById("fantasyCopyArmyBtn"),
         shareLinkBtn: document.getElementById("fantasyShareLinkBtn"),
         loadArmyBtn: document.getElementById("fantasyLoadArmyBtn"),
+        importArmyUrl: document.getElementById("fantasyImportArmyUrl"),
+        importArmyBtn: document.getElementById("fantasyImportArmyBtn"),
         codeStatus: document.getElementById("fantasyCodeStatus"),
         titleFont: document.getElementById("fantasyTitleFont"),
         showShareOptions: document.getElementById("fantasyShowShareOptions"),
@@ -2022,6 +2052,105 @@ const TITLE_FONT_MAP = {
           },
           keywords: [{ keyword: "Unruly", reminder: "Does not benefit from Command", rightAlign: false }]
         };
+      }
+
+      function normalizeImportedText(value) {
+        return String(value ?? "")
+          .replace(/\u00a0/g, " ")
+          .replace(/\r\n/g, "\n")
+          .trim();
+      }
+
+      function importedNumber(value) {
+        return value === null || value === undefined || value === "" ? "" : String(value);
+      }
+
+      function getFantasyUnitType(value) {
+        const incoming = normalizeImportedText(value);
+        const options = Array.from(fantasyEls.unitType.options);
+        const match = options.find(option => option.value.toLowerCase() === incoming.toLowerCase());
+        return match ? match.value : "Light Infantry";
+      }
+
+      function collectHobgoblinApiKeywords(apiUnit) {
+        return [
+          ...(Array.isArray(apiUnit?.keywords) ? apiUnit.keywords : []),
+          ...(Array.isArray(apiUnit?.cursedArtefacts) ? apiUnit.cursedArtefacts : []),
+          ...(Array.isArray(apiUnit?.abyssalAllegiances) ? apiUnit.abyssalAllegiances : [])
+        ];
+      }
+
+      function mapHobgoblinApiKeyword(keyword, index) {
+        return {
+          keyword: normalizeImportedText(keyword?.name || keyword?.keyword || "Keyword"),
+          reminder: normalizeImportedText(keyword?.description || keyword?.reminder || ""),
+          rightAlign: index % 2 === 1
+        };
+      }
+
+      function mapHobgoblinApiUnit(apiUnit, copyIndex = 0, copyCount = 1) {
+        const unitName = normalizeImportedText(apiUnit?.name) || "Untitled Unit";
+        const keywords = collectHobgoblinApiKeywords(apiUnit)
+          .map((keyword, index) => mapHobgoblinApiKeyword(keyword, index))
+          .filter(keyword => keyword.keyword || keyword.reminder);
+
+        return {
+          id: "f_api_" + Math.random().toString(36).slice(2, 9),
+          unitName: copyCount > 1 ? `${unitName} (${copyIndex + 1})` : unitName,
+          unitType: getFantasyUnitType(apiUnit?.type),
+          showAltPoints: false,
+          titleFont: fantasyEls.titleFont.value || FONT_DEFAULT_KEY,
+          statOrder: ["speed", "range", "strikes", "courage", "points", "altPoints"],
+          stats: {
+            speed: importedNumber(apiUnit?.speed),
+            range: importedNumber(apiUnit?.range),
+            strikes: importedNumber(apiUnit?.strikes),
+            courage: importedNumber(apiUnit?.courage),
+            points: importedNumber(apiUnit?.points),
+            altPoints: ""
+          },
+          keywords: keywords.length ? keywords : [{ keyword: "Imported", reminder: "No keywords were provided by the API.", rightAlign: false }]
+        };
+      }
+
+      function mapHobgoblinApiArmy(apiArmy) {
+        if (!apiArmy || !Array.isArray(apiArmy.units)) throw new Error("The API response did not include a units array.");
+
+        const units = [];
+        apiArmy.units.forEach(apiUnit => {
+          const count = Math.max(1, Math.min(20, Number(apiUnit?.count) || 1));
+          for (let i = 0; i < count; i++) {
+            units.push(mapHobgoblinApiUnit(apiUnit, i, count));
+          }
+        });
+
+        if (!units.length) throw new Error("The API response did not include any units.");
+        return units;
+      }
+
+      async function fetchJsonWithCorsFallback(url) {
+        const response = await fetch(url, { headers: { Accept: "application/json" } }).catch(async directError => {
+          const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url);
+          const proxyResponse = await fetch(proxyUrl, { headers: { Accept: "application/json" } });
+          if (!proxyResponse.ok) throw directError;
+          return proxyResponse;
+        });
+
+        if (!response.ok) throw new Error(`Import failed with HTTP ${response.status}.`);
+        return response.json();
+      }
+
+      async function importHobgoblinArmyFromUrl(rawUrl) {
+        const url = new URL(String(rawUrl || "").trim(), window.location.href);
+        if (!/^https?:$/.test(url.protocol)) throw new Error("Only HTTP and HTTPS URLs can be imported.");
+
+        const apiArmy = await fetchJsonWithCorsFallback(url.href);
+        const units = mapHobgoblinApiArmy(apiArmy);
+        fantasyState.units = units;
+        fantasyState.activeUnitId = units[0].id;
+        loadFantasyStateIntoForm();
+        fantasyEls.codeBox.value = encodeFantasyArmy();
+        showToast(`Imported ${units.length} card${units.length === 1 ? "" : "s"}.`);
       }
 
       const fantasyState = {
@@ -2589,7 +2718,25 @@ const TITLE_FONT_MAP = {
 
       fantasyEls.loadArmyBtn.addEventListener("click", () => {
         if (!loadFantasyArmyFromCode(fantasyEls.codeBox.value.trim())) {
+          fantasyEls.codeStatus.textContent = "invalid army code";
           showInvalid(fantasyEls.codeStatus);
+        }
+      });
+
+      fantasyEls.importArmyBtn.addEventListener("click", async () => {
+        const originalText = fantasyEls.importArmyBtn.textContent;
+        fantasyEls.importArmyBtn.disabled = true;
+        fantasyEls.importArmyBtn.textContent = "Loading...";
+
+        try {
+          await importHobgoblinArmyFromUrl(fantasyEls.importArmyUrl.value);
+        } catch (e) {
+          console.error(e);
+          fantasyEls.codeStatus.textContent = "api import failed";
+          showInvalid(fantasyEls.codeStatus);
+        } finally {
+          fantasyEls.importArmyBtn.disabled = false;
+          fantasyEls.importArmyBtn.textContent = originalText;
         }
       });
 
