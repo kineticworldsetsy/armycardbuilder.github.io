@@ -60,6 +60,10 @@
       margin-bottom: 14px;
     }
 
+    #army-card-suite .mode-tabs {
+      align-items: end;
+    }
+
     #army-card-suite .mode-tab,
     #army-card-suite .unit-tab,
     #army-card-suite .small-btn,
@@ -528,6 +532,69 @@
       align-items: center;
     }
 
+    #army-card-suite .army-header-actions {
+      display: flex;
+      gap: 18px;
+      align-items: end;
+      margin-top: 0;
+    }
+
+    #army-card-suite .unit-button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    #army-card-suite .army-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    #army-card-suite .army-title-row h3 {
+      margin-bottom: 0;
+    }
+
+    #army-card-suite .army-title-edit {
+      display: none;
+      max-width: 360px;
+    }
+
+    #army-card-suite .army-title-row.editing h3 {
+      display: none;
+    }
+
+    #army-card-suite .army-title-row.editing .army-title-edit {
+      display: block;
+    }
+
+    #army-card-suite .icon-btn {
+      border: 1px solid rgba(34, 34, 34, 0.18);
+      background: transparent;
+      color: #333;
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    #army-card-suite .icon-btn:hover {
+      background: rgba(34, 34, 34, 0.06);
+    }
+
+    @media (max-width: 760px) {
+      #army-card-suite .army-header-actions {
+        gap: 12px;
+      }
+    }
+
     #army-card-suite .import-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -540,9 +607,50 @@
       margin-bottom: 0;
     }
 
+    #army-card-suite .top-import-row {
+      flex: 1 1 520px;
+      max-width: 760px;
+      margin: 0 0 0 12px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      background: #0e2744;
+      box-shadow: 0 5px 16px rgba(5, 18, 34, 0.26);
+    }
+
+    #army-card-suite .top-import-row label {
+      color: #fff;
+      font-weight: 800;
+    }
+
+    #army-card-suite .top-import-row input[type="url"] {
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: #fff;
+      color: #172033;
+    }
+
+    #army-card-suite .top-import-row input[type="url"].default-api-url {
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    #army-card-suite .top-import-row .api-import-btn {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 3px 0 #143d91;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
     @media (max-width: 720px) {
       #army-card-suite .import-row {
         grid-template-columns: 1fr;
+      }
+
+      #army-card-suite .top-import-row {
+        flex-basis: 100%;
+        max-width: none;
+        margin-left: 0;
       }
     }
 
@@ -944,22 +1052,35 @@ button[data-builder="scifi"].active,
   <div class="mode-tabs">
     <button class="mode-tab active" data-page="fantasyPage">Hobgoblin Builder</button>
     <button class="mode-tab" data-page="scifiPage">Eternøl Builder</button>
+    <div class="import-row top-import-row">
+      <label for="fantasyImportArmyUrl">
+        Indie Tabletop Club Army Link
+        <input id="fantasyImportArmyUrl" class="default-api-url" type="url" value="https://hobgoblin.indietabletop.club/army/s/sD6C57KMETC2" />
+      </label>
+      <button class="action-btn api-import-btn" id="fantasyImportArmyBtn" type="button">Load Army</button>
+    </div>
   </div>
 
   <div id="fantasyPage" class="suite-page fantasy-page active">
     <div class="panel" style="margin-bottom:16px;">
-      <h3>Hobgoblin Units</h3>
+      <div class="army-title-row" id="fantasyArmyTitleRow">
+        <h3 id="fantasyArmyUnitsTitle">Goblin Clan</h3>
+        <input class="army-title-edit" id="fantasyArmyNameEdit" type="text" />
+        <button class="icon-btn" id="fantasyEditArmyNameBtn" type="button" title="Edit army name" aria-label="Edit army name">✎</button>
+      </div>
       <div class="unit-tabs" id="fantasyUnitTabs"></div>
-      <div class="actions" style="margin-top:0;">
-        <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
-        <button class="small-btn" id="fantasyCopyUnitBtn">Copy Unit</button>
-        <button class="small-btn danger" id="fantasyDeleteUnitBtn">Delete Current Unit</button>
+      <div class="actions army-header-actions">
+        <div class="unit-button-group">
+          <button class="small-btn add" id="fantasyAddUnitBtn">+ Add Unit</button>
+          <button class="small-btn" id="fantasyCopyUnitBtn">Copy Unit</button>
+          <button class="small-btn danger" id="fantasyDeleteUnitBtn">Delete Current Unit</button>
+        </div>
       </div>
     </div>
 
     <div class="builder-wrap">
       <div class="panel">
-        <h2>Hobgoblin Army Builder</h2>
+        <h2 id="fantasyCardBuilderTitle">Goblin Clan Card Builder</h2>
 
         <div class="form-grid">
           <div class="full">
@@ -1004,13 +1125,6 @@ button[data-builder="scifi"].active,
         <div class="code-box">
           <label for="fantasyArmyCode">Army Code</label>
           <textarea style="display:none;" id="fantasyArmyCode" placeholder="Save will place a code here. Paste a Hobgoblin army code here and click Load Army."></textarea>
-          <div class="import-row">
-            <label for="fantasyImportArmyUrl">
-              Hobgoblin API URL
-              <input id="fantasyImportArmyUrl" type="url" value="https://hobgoblin.indietabletop.club/army/s/eeOpm6BUfuSq.json" />
-            </label>
-            <button class="action-btn light" id="fantasyImportArmyBtn" type="button">Load From API</button>
-          </div>
           <label class="share-options-toggle" style="display:none;">
             <input type="checkbox" id="fantasyShowShareOptions" />
             <span>Show share options</span>
@@ -1020,6 +1134,7 @@ button[data-builder="scifi"].active,
             <button class="action-btn light share-option-toggle-target share-option-hidden" id="fantasyCopyArmyBtn">Copy Code</button>
             <button class="action-btn dark share-option-toggle-target share-option-hidden" id="fantasyLoadArmyBtn">Load Army</button>
             <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
+            <span class="status-label" id="fantasyShareLinkStatus"></span>
             <span class="status-label" id="fantasyCodeStatus">invalid army code</span>
           </div>
         </div>
@@ -1036,8 +1151,8 @@ button[data-builder="scifi"].active,
               <option data-font="unifrakturcook" value="unifrakturcook">UnifrakturCook</option>
               <option data-font="cormorantunicase" value="cormorantunicase">Cormorant Unicase</option>
               <option data-font="pirataone" value="pirataone">Pirata One</option>
-              <option data-font="cinzeldecorative" value="cinzeldecorative">Cinzel Decorative</option>
-              <option data-font="orbitron" value="orbitron" selected>Orbitron</option>
+              <option data-font="cinzeldecorative" value="cinzeldecorative" selected>Cinzel Decorative</option>
+              <option data-font="orbitron" value="orbitron">Orbitron</option>
               <option data-font="audiowide" value="audiowide">Audiowide</option>
               <option data-font="exo2" value="exo2">Exo 2</option>
               <option data-font="russoone" value="russoone">Russo One</option>
@@ -1308,9 +1423,11 @@ const TITLE_FONT_MAP = {
       }
 
       const CODEC_VERSION = "v2";
-      const FONT_DEFAULT_KEY = "frakturika";
+      const FONT_DEFAULT_KEY = "cinzeldecorative";
       const SCIFI_DEFAULT_FONT_KEY = "orbitron";
       const KW_RIGHT_DEFAULT = false;
+      const DEFAULT_HOBGOBLIN_ARMY_URL = "https://hobgoblin.indietabletop.club/army/s/sD6C57KMETC2";
+      const DEFAULT_FANTASY_ARMY_NAME = "Goblin Clan";
 
       const FANTASY_STAT_KEY_TO_CODE = {
         speed: "sp",
@@ -1399,6 +1516,11 @@ const TITLE_FONT_MAP = {
           },
           k: packFantasyKeywords(unit.keywords)
         };
+      }
+
+      function getPackedFantasyArmyName(raw) {
+        const armyName = String(raw || "").trim();
+        return armyName && armyName !== DEFAULT_FANTASY_ARMY_NAME ? armyName : undefined;
       }
 
       function unpackFantasyUnit(row) {
@@ -1865,6 +1987,8 @@ const TITLE_FONT_MAP = {
           if (!item) return null;
           const block = {
             side,
+            keywordFontSize: keywordSize,
+            reminderFontSize: reminderSize,
             keywordLines: [],
             reminderLines: [],
             keywordWidth: 0,
@@ -1904,10 +2028,11 @@ const TITLE_FONT_MAP = {
             if (row.left && row.right) {
               let testKeyword = keywordSize;
               let testReminder = reminderSize;
+              const pairedMaxWidth = Math.max(60, (availableWidth - options.middleGap) / 2);
 
               while (true) {
-                const tentativeLeft = layoutOneSide(row.left, "left", testKeyword, testReminder, availableWidth);
-                const tentativeRight = layoutOneSide(row.right, "right", testKeyword, testReminder, availableWidth);
+                const tentativeLeft = layoutOneSide(row.left, "left", testKeyword, testReminder, pairedMaxWidth);
+                const tentativeRight = layoutOneSide(row.right, "right", testKeyword, testReminder, pairedMaxWidth);
 
                 const leftWidth = Math.max(tentativeLeft.keywordWidth, tentativeLeft.reminderWidth);
                 const rightWidth = Math.max(tentativeRight.keywordWidth, tentativeRight.reminderWidth);
@@ -1915,8 +2040,6 @@ const TITLE_FONT_MAP = {
                 if (leftWidth + rightWidth + options.middleGap <= availableWidth || testKeyword <= options.minKeywordSize) {
                   leftBlock = tentativeLeft;
                   rightBlock = tentativeRight;
-                  keywordSize = testKeyword;
-                  reminderSize = testReminder;
                   break;
                 }
 
@@ -1961,20 +2084,20 @@ const TITLE_FONT_MAP = {
 
             if (block.keywordLines.length) {
               ctx.fillStyle = options.keywordColor;
-              ctx.font = `normal 700 ${layout.keywordFontSize}px ${options.fontFamily}`;
+              ctx.font = `normal 700 ${block.keywordFontSize}px ${options.fontFamily}`;
               block.keywordLines.forEach(line => {
                 ctx.fillText(line, x, currentY);
-                currentY += layout.keywordFontSize + 5;
+                currentY += block.keywordFontSize + 5;
               });
             }
 
             if (block.reminderLines.length) {
               if (block.keywordLines.length) currentY += 4;
               ctx.fillStyle = options.reminderColor;
-              ctx.font = `italic 700 ${layout.reminderFontSize}px ${options.fontFamily}`;
+              ctx.font = `italic 700 ${block.reminderFontSize}px ${options.fontFamily}`;
               block.reminderLines.forEach(line => {
                 ctx.fillText(line, x + (align === "left" ? 6 : -6), currentY);
-                currentY += layout.reminderFontSize + 4;
+                currentY += block.reminderFontSize + 4;
               });
             }
           };
@@ -2001,6 +2124,11 @@ const TITLE_FONT_MAP = {
       const fantasyCanvas = document.getElementById("fantasyCardCanvas");
       const fantasyEls = {
         unitTabs: document.getElementById("fantasyUnitTabs"),
+        armyUnitsTitle: document.getElementById("fantasyArmyUnitsTitle"),
+        cardBuilderTitle: document.getElementById("fantasyCardBuilderTitle"),
+        armyTitleRow: document.getElementById("fantasyArmyTitleRow"),
+        armyNameEdit: document.getElementById("fantasyArmyNameEdit"),
+        editArmyNameBtn: document.getElementById("fantasyEditArmyNameBtn"),
         addUnitBtn: document.getElementById("fantasyAddUnitBtn"),
         copyUnitBtn: document.getElementById("fantasyCopyUnitBtn"),
         deleteUnitBtn: document.getElementById("fantasyDeleteUnitBtn"),
@@ -2016,6 +2144,7 @@ const TITLE_FONT_MAP = {
         saveArmyBtn: document.getElementById("fantasySaveArmyBtn"),
         copyArmyBtn: document.getElementById("fantasyCopyArmyBtn"),
         shareLinkBtn: document.getElementById("fantasyShareLinkBtn"),
+        shareLinkStatus: document.getElementById("fantasyShareLinkStatus"),
         loadArmyBtn: document.getElementById("fantasyLoadArmyBtn"),
         importArmyUrl: document.getElementById("fantasyImportArmyUrl"),
         importArmyBtn: document.getElementById("fantasyImportArmyBtn"),
@@ -2040,17 +2169,20 @@ const TITLE_FONT_MAP = {
           unitName: name,
           unitType: "Light Infantry",
           showAltPoints: false,
-          titleFont: "frakturika",
+          titleFont: FONT_DEFAULT_KEY,
           statOrder: ["speed", "range", "strikes", "courage", "points", "altPoints"],
           stats: {
             speed: "8",
             range: "",
             strikes: "10",
-            courage: "10",
+            courage: "20",
             points: "275",
             altPoints: ""
           },
-          keywords: [{ keyword: "Unruly", reminder: "Does not benefit from Command", rightAlign: false }]
+          keywords: [
+            { keyword: "Horde", reminder: "Increase Courage by 10. Uses the Horde Footprint.", rightAlign: false },
+            { keyword: "Unruly", reminder: "Does not benefit from Command", rightAlign: true }
+          ]
         };
       }
 
@@ -2072,6 +2204,64 @@ const TITLE_FONT_MAP = {
         return match ? match.value : "Light Infantry";
       }
 
+      function updateDefaultApiUrlStyle() {
+        if (!fantasyEls.importArmyUrl) return;
+        fantasyEls.importArmyUrl.classList.toggle("default-api-url", fantasyEls.importArmyUrl.value.trim() === DEFAULT_HOBGOBLIN_ARMY_URL);
+      }
+
+      function getFantasyArmyName() {
+        return fantasyState.armyName || DEFAULT_FANTASY_ARMY_NAME;
+      }
+
+      function updateFantasyArmyTitles() {
+        const armyName = getFantasyArmyName();
+        fantasyEls.armyUnitsTitle.textContent = armyName;
+        fantasyEls.cardBuilderTitle.textContent = `${armyName} Card Builder`;
+        fantasyEls.armyNameEdit.value = armyName;
+      }
+
+      function setFantasyArmyNameEditing(isEditing) {
+        fantasyEls.armyTitleRow.classList.toggle("editing", isEditing);
+        fantasyEls.editArmyNameBtn.textContent = isEditing ? "✓" : "✎";
+        fantasyEls.editArmyNameBtn.title = isEditing ? "Save army name" : "Edit army name";
+        fantasyEls.editArmyNameBtn.setAttribute("aria-label", fantasyEls.editArmyNameBtn.title);
+
+        if (isEditing) {
+          fantasyEls.armyNameEdit.value = getFantasyArmyName();
+          fantasyEls.armyNameEdit.focus();
+          fantasyEls.armyNameEdit.select();
+        }
+      }
+
+      function saveFantasyArmyNameEdit() {
+        if (!fantasyEls.armyTitleRow.classList.contains("editing")) return;
+        fantasyState.armyName = fantasyEls.armyNameEdit.value.trim() || DEFAULT_FANTASY_ARMY_NAME;
+        updateFantasyArmyTitles();
+        setFantasyArmyNameEditing(false);
+      }
+
+      function parseNumberedUnitName(name) {
+        const match = String(name || "").match(/^(.*?)\s*\((\d+)\)$/);
+        if (!match) return null;
+        return {
+          baseName: match[1].trim(),
+          number: Number(match[2])
+        };
+      }
+
+      function cleanSoloFirstCopyName(deletedUnit) {
+        const deletedName = parseNumberedUnitName(deletedUnit?.unitName);
+        if (!deletedName || deletedName.number <= 1 || !deletedName.baseName) return;
+
+        const matchingUnits = fantasyState.units
+          .map(unit => ({ unit, parsed: parseNumberedUnitName(unit.unitName) }))
+          .filter(item => item.parsed?.baseName.toLowerCase() === deletedName.baseName.toLowerCase());
+
+        if (matchingUnits.length === 1 && matchingUnits[0].parsed.number === 1) {
+          matchingUnits[0].unit.unitName = matchingUnits[0].parsed.baseName;
+        }
+      }
+
       function collectHobgoblinApiKeywords(apiUnit) {
         return [
           ...(Array.isArray(apiUnit?.keywords) ? apiUnit.keywords : []),
@@ -2080,18 +2270,19 @@ const TITLE_FONT_MAP = {
         ];
       }
 
-      function mapHobgoblinApiKeyword(keyword, index) {
+      function mapHobgoblinApiKeyword(keyword, index, keywordCount) {
         return {
           keyword: normalizeImportedText(keyword?.name || keyword?.keyword || "Keyword"),
           reminder: normalizeImportedText(keyword?.description || keyword?.reminder || ""),
-          rightAlign: index % 2 === 1
+          rightAlign: keywordCount > 3 && index % 2 === 1
         };
       }
 
       function mapHobgoblinApiUnit(apiUnit, copyIndex = 0, copyCount = 1) {
         const unitName = normalizeImportedText(apiUnit?.name) || "Untitled Unit";
-        const keywords = collectHobgoblinApiKeywords(apiUnit)
-          .map((keyword, index) => mapHobgoblinApiKeyword(keyword, index))
+        const apiKeywords = collectHobgoblinApiKeywords(apiUnit);
+        const keywords = apiKeywords
+          .map((keyword, index) => mapHobgoblinApiKeyword(keyword, index, apiKeywords.length))
           .filter(keyword => keyword.keyword || keyword.reminder);
 
         return {
@@ -2128,6 +2319,10 @@ const TITLE_FONT_MAP = {
         return units;
       }
 
+      function getHobgoblinApiArmyName(apiArmy) {
+        return normalizeImportedText(apiArmy?.name || apiArmy?.armyName || apiArmy?.title) || DEFAULT_FANTASY_ARMY_NAME;
+      }
+
       async function fetchJsonWithCorsFallback(url) {
         const response = await fetch(url, { headers: { Accept: "application/json" } }).catch(async directError => {
           const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url);
@@ -2140,12 +2335,21 @@ const TITLE_FONT_MAP = {
         return response.json();
       }
 
-      async function importHobgoblinArmyFromUrl(rawUrl) {
+      function getHobgoblinApiUrl(rawUrl) {
         const url = new URL(String(rawUrl || "").trim(), window.location.href);
         if (!/^https?:$/.test(url.protocol)) throw new Error("Only HTTP and HTTPS URLs can be imported.");
 
-        const apiArmy = await fetchJsonWithCorsFallback(url.href);
+        if (!url.pathname.endsWith(".json")) {
+          url.pathname += ".json";
+        }
+
+        return url.href;
+      }
+
+      async function importHobgoblinArmyFromUrl(rawUrl) {
+        const apiArmy = await fetchJsonWithCorsFallback(getHobgoblinApiUrl(rawUrl));
         const units = mapHobgoblinApiArmy(apiArmy);
+        fantasyState.armyName = getHobgoblinApiArmyName(apiArmy);
         fantasyState.units = units;
         fantasyState.activeUnitId = units[0].id;
         loadFantasyStateIntoForm();
@@ -2154,7 +2358,8 @@ const TITLE_FONT_MAP = {
       }
 
       const fantasyState = {
-        units: [createDefaultFantasyUnit("The Mob of Carcosa")],
+        armyName: DEFAULT_FANTASY_ARMY_NAME,
+        units: [createDefaultFantasyUnit("Goblin Rabble")],
         activeUnitId: null
       };
       fantasyState.activeUnitId = fantasyState.units[0].id;
@@ -2364,7 +2569,7 @@ const TITLE_FONT_MAP = {
 
         unit.unitName = fantasyEls.unitName.value.trim() || "Untitled Unit";
         unit.unitType = fantasyEls.unitType.value;
-        unit.titleFont = fantasyEls.titleFont.value || "frakturika";
+        unit.titleFont = fantasyEls.titleFont.value || FONT_DEFAULT_KEY;
 
         const visibleStatOrder = Array.from(fantasyEls.statList.querySelectorAll(".stat-item")).map(item => item.dataset.key);
         unit.showAltPoints = !!fantasyEls.statList.querySelector('.stat-item[data-key="points"] .stat-extra input[type="checkbox"]')?.checked;
@@ -2385,9 +2590,10 @@ const TITLE_FONT_MAP = {
         const unit = getActiveFantasyUnit();
         if (!unit) return;
 
+        updateFantasyArmyTitles();
         fantasyEls.unitName.value = unit.unitName;
         fantasyEls.unitType.value = unit.unitType;
-        fantasyEls.titleFont.value = unit.titleFont || "frakturika";
+        fantasyEls.titleFont.value = unit.titleFont || FONT_DEFAULT_KEY;
 
         fantasyEls.statList.innerHTML = "";
         unit.statOrder = normalizeLinkedStatOrder(unit.statOrder, "points", "altPoints");
@@ -2462,13 +2668,14 @@ const TITLE_FONT_MAP = {
         const innerW = canvas.width - 110;
         const innerH = canvas.height - 84;
 
+        const titleFontStack = getTitleFontStack(unit.titleFont);
         const titleSize = fitText(
           ctx,
           unit.unitName,
           innerW - 30,
           unit.unitName.length > 42 ? 46 : unit.unitName.length > 34 ? 52 : unit.unitName.length > 26 ? 60 : unit.unitName.length > 18 ? 68 : 76,
           28,
-          '"Frakturika", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+          titleFontStack,
           "normal",
           "normal"
         );
@@ -2476,7 +2683,7 @@ const TITLE_FONT_MAP = {
         ctx.fillStyle = "#232323";
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.font = `normal ${titleSize}px ${getTitleFontStack(unit.titleFont)}`;
+        ctx.font = `normal ${titleSize}px ${titleFontStack}`;
         ctx.fillText(unit.unitName, canvas.width / 2, innerY + 4);
 
         ctx.font = `normal 700 34px "EB Garamond", Garamond, Georgia, serif`;
@@ -2521,13 +2728,8 @@ const TITLE_FONT_MAP = {
         const kwRight = canvas.width - 42;
         const keywordRows = groupKeywordsForColumns(unit.keywords);
 
-        let keywordFontSize = 36;
-        let reminderFontSize = 22;
-        const totalChars = unit.keywords.reduce((sum, item) => sum + item.keyword.length + item.reminder.length, 0);
-
-        if (unit.keywords.length >= 3) { keywordFontSize = 31; reminderFontSize = 19; }
-        if (unit.keywords.length >= 5 || totalChars > 110) { keywordFontSize = 27; reminderFontSize = 17; }
-        if (unit.keywords.length >= 7 || totalChars > 180) { keywordFontSize = 23; reminderFontSize = 15; }
+        let keywordFontSize = 41;
+        let reminderFontSize = 26;
 
         drawKeywordRows(ctx, keywordRows, {
           topY: kwTop,
@@ -2556,6 +2758,7 @@ const TITLE_FONT_MAP = {
         const packed = {
           v: 2,
           t: "f",
+          n: getPackedFantasyArmyName(fantasyState.armyName),
           u: fantasyState.units.map(unit => packFantasyUnit(unit))
         };
         return encodeCompactString(packed);
@@ -2568,6 +2771,7 @@ const TITLE_FONT_MAP = {
           if (raw && raw.v === 2 && raw.t === "f" && Array.isArray(raw.u)) {
             const units = raw.u.map(row => unpackFantasyUnit(row));
             if (!units.length) throw new Error("bad");
+            fantasyState.armyName = String(raw.n || DEFAULT_FANTASY_ARMY_NAME);
             fantasyState.units = units;
             fantasyState.activeUnitId = units[0].id;
             loadFantasyStateIntoForm();
@@ -2580,7 +2784,7 @@ const TITLE_FONT_MAP = {
             const hasShowAltPointsFlag = Array.isArray(row[2]) ? false : true;
             const hasTitleFont = hasShowAltPointsFlag && typeof row[3] === "string" && !Array.isArray(row[3]);
             const showAltPoints = hasShowAltPointsFlag ? !!row[2] : false;
-            const titleFont = hasTitleFont ? String(row[3] || "frakturika") : "frakturika";
+            const titleFont = hasTitleFont ? String(row[3] || FONT_DEFAULT_KEY) : FONT_DEFAULT_KEY;
             const statOrder = hasShowAltPointsFlag
               ? (hasTitleFont
                 ? (Array.isArray(row[4]) ? row[4].slice() : ["speed", "range", "strikes", "courage", "points", "altPoints"])
@@ -2611,6 +2815,7 @@ const TITLE_FONT_MAP = {
           });
 
           if (!units.length) throw new Error("bad");
+          fantasyState.armyName = DEFAULT_FANTASY_ARMY_NAME;
           fantasyState.units = units;
           fantasyState.activeUnitId = units[0].id;
           loadFantasyStateIntoForm();
@@ -2635,6 +2840,26 @@ const TITLE_FONT_MAP = {
         await loadTitleFont(fantasyEls.titleFont.value);
         renderFantasyPreview();
         renderFantasyUnitTabs();
+      });
+
+      fantasyEls.editArmyNameBtn.addEventListener("click", () => {
+        if (fantasyEls.armyTitleRow.classList.contains("editing")) saveFantasyArmyNameEdit();
+        else setFantasyArmyNameEditing(true);
+      });
+
+      fantasyEls.armyNameEdit.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          saveFantasyArmyNameEdit();
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          updateFantasyArmyTitles();
+          setFantasyArmyNameEditing(false);
+        }
+      });
+
+      fantasyEls.armyNameEdit.addEventListener("blur", () => {
+        if (fantasyEls.armyTitleRow.classList.contains("editing")) saveFantasyArmyNameEdit();
       });
 
       fantasyEls.showShareOptions.addEventListener("change", () => {
@@ -2663,8 +2888,11 @@ const TITLE_FONT_MAP = {
 
       fantasyEls.deleteUnitBtn.addEventListener("click", () => {
         if (fantasyState.units.length <= 1) return;
+        saveFantasyFormIntoState();
         const idx = fantasyState.units.findIndex(u => u.id === fantasyState.activeUnitId);
+        const deletedUnit = fantasyState.units[idx];
         fantasyState.units.splice(idx, 1);
+        cleanSoloFirstCopyName(deletedUnit);
         fantasyState.activeUnitId = fantasyState.units[Math.max(0, idx - 1)].id;
         loadFantasyStateIntoForm();
       });
@@ -2713,6 +2941,7 @@ const TITLE_FONT_MAP = {
         const code = encodeFantasyArmy();
         fantasyEls.codeBox.value = code;
         await copyTextToClipboard(buildShareLink("fantasy", code));
+        fantasyEls.shareLinkStatus.textContent = "Your share link is ready to load your army!";
         showToast("Copied!");
       });
 
@@ -2739,6 +2968,9 @@ const TITLE_FONT_MAP = {
           fantasyEls.importArmyBtn.textContent = originalText;
         }
       });
+
+      fantasyEls.importArmyUrl.addEventListener("input", updateDefaultApiUrlStyle);
+      fantasyEls.importArmyUrl.addEventListener("change", updateDefaultApiUrlStyle);
 
       /* =========================
          Sci-fi builder
@@ -3415,9 +3647,10 @@ const TITLE_FONT_MAP = {
       /* =========================
          Initial load
       ========================= */
-    await ensureAppFontsLoaded();
-loadFantasyStateIntoForm();
-loadSciFiStateIntoForm();
+      await ensureAppFontsLoaded();
+      updateDefaultApiUrlStyle();
+      loadFantasyStateIntoForm();
+      loadSciFiStateIntoForm();
 
 setShareOptionsVisibility(fantasyEls.showShareOptions.closest(".code-box"), fantasyEls.showShareOptions.checked);
 setShareOptionsVisibility(sfEls.showShareOptions.closest(".code-box"), sfEls.showShareOptions.checked);
