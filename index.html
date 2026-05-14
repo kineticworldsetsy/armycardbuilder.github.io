@@ -805,6 +805,16 @@
       overflow: auto;
     }
 
+    #army-card-suite .preview-actions {
+      justify-content: center;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    #army-card-suite .preview-actions .status-label {
+      flex-basis: 100%;
+    }
+
     #army-card-suite .fantasy-page .canvas-shell {
       background: #e9e9e3;
       border: 1px solid #d4d4cc;
@@ -1116,11 +1126,7 @@ button[data-builder="scifi"].active,
           </div>
         </div>
 
-        <div class="actions">
-          <button class="action-btn primary" id="fantasyDownloadPngBtn">Download Current PNG</button>
-          <button class="action-btn dark" id="fantasyPrintAllBtn">Print Hobgoblin Sheet</button>
-          <button class="action-btn light" style="display:none" id="fantasyResetUnitBtn">Reset Current Unit</button>
-        </div>
+        <button class="action-btn light" style="display:none" id="fantasyResetUnitBtn">Reset Current Unit</button>
 
         <div class="code-box">
           <label for="fantasyArmyCode">Army Code</label>
@@ -1133,8 +1139,6 @@ button[data-builder="scifi"].active,
             <button class="action-btn primary share-option-toggle-target share-option-hidden" id="fantasySaveArmyBtn">Save Army</button>
             <button class="action-btn light share-option-toggle-target share-option-hidden" id="fantasyCopyArmyBtn">Copy Code</button>
             <button class="action-btn dark share-option-toggle-target share-option-hidden" id="fantasyLoadArmyBtn">Load Army</button>
-            <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
-            <span class="status-label" id="fantasyShareLinkStatus"></span>
             <span class="status-label" id="fantasyCodeStatus">invalid army code</span>
           </div>
         </div>
@@ -1164,6 +1168,12 @@ button[data-builder="scifi"].active,
         </div>
         <div class="canvas-shell">
           <canvas id="fantasyCardCanvas" width="1050" height="750"></canvas>
+        </div>
+        <div class="actions preview-actions">
+          <button class="action-btn primary" id="fantasyDownloadPngBtn">Download This Card</button>
+          <button class="action-btn dark" id="fantasyPrintAllBtn">Print Hobgoblin Sheet</button>
+          <button class="action-btn light" id="fantasyShareLinkBtn">Copy Share Link</button>
+          <span class="status-label" id="fantasyShareLinkStatus"></span>
         </div>
       </div>
     </div>
